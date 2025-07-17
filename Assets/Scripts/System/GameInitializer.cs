@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class GameInitializer : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] List<CardData> testCardDatas;
+    [SerializeField] HeroData testHeroData;
     void Start()
     {
-        
+        CardSystem.Instance.Init(testCardDatas);  
+        Hero hero = new Hero(testHeroData);
+        HeroView heroView = HeroCreator.Instance.CreateHeroView(hero,Vector3.zero,Quaternion.identity);
+        HeroSlotSystem.Instance.MoveToSlot(heroView,HeroSlotSystem.Instance.battlefieldView.heroSlotViews[0]);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

@@ -5,25 +5,16 @@ using DG.Tweening;
 
 public class CardSystem : Singleton<CardSystem>
 {
-    [SerializeField] List<CardData> testCardDatas;
     public List<Card> cardsInDeck{get ; private set;}=new();
     public Card[,] cardsInBattlefield { get; private set; } = new Card[5, 5];
     [SerializeField] float cardPositionInterval = 0.15f;
     [SerializeField] Transform cardParent;
     [SerializeField] BattlefieldView battlefieldView;
-    private void Start()
-    {
-        Init(testCardDatas);
-        StartCoroutine(DrawAllCardS());
-    }
 
     void OnGUI()
     {
-        if(GUI.Button(new Rect(10,10,100,50),"Draw")){
-            StartCoroutine(DrawAllCardS());
-        }
-        if(GUI.Button(new Rect(10,70,100,50),"Remove")){
-            StartCoroutine(RemoveAllCardS());
+        if(GUI.Button(new Rect(10,10,100,50),"New Turn")){
+            StartCoroutine(CardSystem.Instance.NewTurn());
         }
     }
 
@@ -33,6 +24,13 @@ public class CardSystem : Singleton<CardSystem>
         {
             cardsInDeck.Add(new Card(cardData));
         }
+
+        StartCoroutine(DrawAllCardS());
+    }
+
+    public IEnumerator NewTurn(){
+        yield return RemoveAllCardS();
+        yield return DrawAllCardS();
     }
 
     /// <summary>

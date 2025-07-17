@@ -6,6 +6,8 @@ using DG.Tweening;
 public class BattlefieldView : MonoBehaviour
 {
     public CardView[,] cardViews;
+    public List<HeroSlotView> heroSlotViews=new();
+    public HeroSlotView currentHeroSlotView;
     private void Start()
     {
         cardViews = new CardView[5,5];

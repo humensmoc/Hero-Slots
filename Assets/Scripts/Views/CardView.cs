@@ -19,5 +19,15 @@ public class CardView : MonoBehaviour
         attackText.text = card.Attack.ToString();
     }
 
-    
+    void OnMouseEnter()
+    {
+        if(!InteractionSystem.Instance.PlayerCanHover())return;
+        transform.DOScale(1.1f, 0.15f);
+    }
+
+    void OnMouseExit()
+    {
+        if(!InteractionSystem.Instance.PlayerCanHover())return;
+        transform.DOScale(1f, 0.15f);
+    }
 }
