@@ -19,12 +19,14 @@ public class HeroView : MonoBehaviour
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1.1f, 0.15f);
+        HoverInfoController.Instance.ShowHoverInfoPanel(new HoverInfoPanelData(HoverInfoPanelType.Hero, spriteRenderer.sprite, hero.Name, hero.Description), gameObject);
     }
 
     void OnMouseExit()
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1f, 0.15f);
+        HoverInfoController.Instance.HideHoverInfoPanel();
     }
 
     void OnMouseDown(){

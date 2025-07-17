@@ -23,11 +23,13 @@ public class CardView : MonoBehaviour
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1.1f, 0.15f);
+        HoverInfoController.Instance.ShowHoverInfoPanel(new HoverInfoPanelData(HoverInfoPanelType.Card, image.sprite, card.Name, card.Description), gameObject);
     }
 
     void OnMouseExit()
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1f, 0.15f);
+        HoverInfoController.Instance.HideHoverInfoPanel();
     }
 }

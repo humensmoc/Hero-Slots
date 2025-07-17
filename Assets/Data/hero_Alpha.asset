@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: hero_Alpha
   m_EditorClassIdentifier: 
   <Name>k__BackingField: hero_Alpha
-  <Description>k__BackingField: hero_Alpha
+  <Description>k__BackingField: hero_Alpha description
   <Image>k__BackingField: {fileID: 329727683, guid: 75a5e5c8e7784af41887f621e36fdd7f, type: 3}
   <Attack>k__BackingField: 2

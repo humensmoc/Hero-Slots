@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea4f3755decab8e41a9305937784a383, type: 3}
   m_Name: card_B
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: 
-  <Description>k__BackingField: 
+  <Name>k__BackingField: card_B
+  <Description>k__BackingField: card_B description
   <Image>k__BackingField: {fileID: 503966114, guid: 75a5e5c8e7784af41887f621e36fdd7f, type: 3}
   <Attack>k__BackingField: 1
