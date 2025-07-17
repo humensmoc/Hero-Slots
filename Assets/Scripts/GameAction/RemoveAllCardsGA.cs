@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NextTurnGA : GameAction
+public class RemoveAllCardsGA : GameAction
 {
+
+
+
 }

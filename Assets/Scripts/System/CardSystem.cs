@@ -11,10 +11,26 @@ public class CardSystem : Singleton<CardSystem>
     [SerializeField] Transform cardParent;
     [SerializeField] BattlefieldView battlefieldView;
 
+    void OnEnable()
+    {
+        ActionSystem.AttachPerformer<DrawAllCardsGA>(DrawAllCardsPerformer);
+        ActionSystem.AttachPerformer<RemoveAllCardsGA>(RemoveAllCardsPerformer);
+        ActionSystem.SubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<NextTurnGA>(NextTurnPostReaction,ReactionTiming.POST);
+    }
+
+    void OnDisable()
+    {
+        ActionSystem.DetachPerformer<DrawAllCardsGA>();
+        ActionSystem.DetachPerformer<RemoveAllCardsGA>();
+        ActionSystem.UnsubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<NextTurnGA>(NextTurnPostReaction,ReactionTiming.POST);
+    }
+
     void OnGUI()
     {
-        if(GUI.Button(new Rect(10,10,100,50),"New Turn")){
-            StartCoroutine(CardSystem.Instance.NewTurn());
+        if(GUI.Button(new Rect(10,10,100,50),"Next Turn")){
+            ActionSystem.Instance.Perform(new NextTurnGA());
         }
     }
 
@@ -25,18 +41,17 @@ public class CardSystem : Singleton<CardSystem>
             cardsInDeck.Add(new Card(cardData));
         }
 
-        StartCoroutine(DrawAllCardS());
+        StartCoroutine(DrawAllCardsPerformer(new DrawAllCardsGA()));
     }
 
-    public IEnumerator NewTurn(){
-        yield return RemoveAllCardS();
-        yield return DrawAllCardS();
-    }
 
+#region Performer
     /// <summary>
     /// 一次性全部抽卡，直到牌堆为空或战场满
     /// </summary>
-    private IEnumerator DrawAllCardS()
+    /// <param name="nextTurnGA"></param>
+    /// <returns></returns>
+    private IEnumerator DrawAllCardsPerformer(DrawAllCardsGA drawAllCardsGA)
     {
         // 检查cardsInDeck和cardsInBattlefield是否有效
         if (cardsInDeck == null || cardsInBattlefield == null)
@@ -66,7 +81,12 @@ public class CardSystem : Singleton<CardSystem>
         }
     }
 
-    private IEnumerator RemoveAllCardS(){
+    /// <summary>
+    /// 移除所有卡牌
+    /// </summary>
+    /// <param name="nextTurnGA"></param>
+    /// <returns></returns>
+    private IEnumerator RemoveAllCardsPerformer(RemoveAllCardsGA removeAllCardsGA){
         for (int x = 0; x < cardsInBattlefield.GetLength(0); x++)
         {
             for (int y = 0; y < cardsInBattlefield.GetLength(1); y++)
@@ -79,6 +99,29 @@ public class CardSystem : Singleton<CardSystem>
             }
         }
     }
+
+#endregion
+
+#region Reaction
+    /// <summary>
+    /// 下一回合开始前，移除所有卡牌
+    /// </summary>
+    /// <param name="nextTurnGA"></param>
+    private void NextTurnPreReaction(NextTurnGA nextTurnGA){
+        RemoveAllCardsGA removeAllCardsGA = new RemoveAllCardsGA();
+        ActionSystem.Instance.AddReaction(removeAllCardsGA);
+    }
+
+    /// <summary>
+    /// 下一回合开始后，抽取所有卡牌
+    /// </summary>
+    /// <param name="nextTurnGA"></param>
+    private void NextTurnPostReaction(NextTurnGA nextTurnGA){
+        DrawAllCardsGA drawAllCardsGA = new DrawAllCardsGA();
+        ActionSystem.Instance.AddReaction(drawAllCardsGA);
+    }
+    
+#endregion
 
     /// <summary>
     /// 单次抽卡，将一张牌放到一个空位上
