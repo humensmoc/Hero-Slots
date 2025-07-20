@@ -9,24 +9,25 @@ public class HeroView : MonoBehaviour
     [SerializeField] private Vector3 startPosition;
     [SerializeField] private SpriteRenderer spriteRenderer;
     public Hero hero{get;private set;}
-
+    public HoverInfoPanelData hoverInfoPanelData{get;private set;}
     public void Init(Hero hero){
         this.hero = hero;
         spriteRenderer.sprite = hero.Image;
+        hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Hero, spriteRenderer.sprite, hero.Name, hero.Description);
     }
 
     void OnMouseEnter()
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1.1f, 0.15f);
-        HoverInfoController.Instance.ShowHoverInfoPanel(new HoverInfoPanelData(HoverInfoPanelType.Hero, spriteRenderer.sprite, hero.Name, hero.Description), gameObject);
+        HoverInfoController.Instance.MouseEnterTargetView(hoverInfoPanelData);
     }
 
     void OnMouseExit()
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1f, 0.15f);
-        HoverInfoController.Instance.HideHoverInfoPanel();
+        HoverInfoController.Instance.MouseExitTargetView(hoverInfoPanelData);
     }
 
     void OnMouseDown(){

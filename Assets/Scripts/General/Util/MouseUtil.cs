@@ -15,4 +15,8 @@ public static  class MouseUtil
         }
         return Vector3.zero;
     }
+
+    public static Vector2 GetMousePostionInScreenSpace(){
+        return Input.mousePosition;
+    }
 }

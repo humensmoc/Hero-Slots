@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: card_B
   m_EditorClassIdentifier: 
   <Name>k__BackingField: card_B
-  <Description>k__BackingField: card_B description
+  <Description>k__BackingField: card_B description <link="keyword"><b>keyword</b></link>
   <Image>k__BackingField: {fileID: 503966114, guid: 75a5e5c8e7784af41887f621e36fdd7f, type: 3}
   <Attack>k__BackingField: 1

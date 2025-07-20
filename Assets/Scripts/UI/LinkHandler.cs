@@ -5,21 +5,16 @@ using TMPro;
 using UnityEngine.EventSystems;
 using System;
 
-[RequireComponent(typeof(TMP_Text))]
 public class LinkHandler : MonoBehaviour
 {
-    public static event Action<string> OnLinkClickedEvent;
-    public static event Action<string> OnLinkHoveredEvent;
-    public static event Action OnLinkExitEvent;
     
-    private TMP_Text _tmpTextBox;
+    [SerializeField]private TMP_Text _tmpTextBox;
     private Canvas _canvasToCheck;
     [SerializeField] private Camera cameraToUse;
     private int currentHoveredLinkIndex = -1;
     
     void Awake()
     {
-        _tmpTextBox = GetComponent<TMP_Text>();
         _canvasToCheck = GetComponentInParent<Canvas>();
 
         if(_canvasToCheck.renderMode == RenderMode.ScreenSpaceOverlay){
@@ -55,12 +50,15 @@ public class LinkHandler : MonoBehaviour
             TMP_LinkInfo linkInfo = _tmpTextBox.textInfo.linkInfo[linkTaggedText];
             string linkText = linkInfo.GetLinkText();
             Debug.Log("🔍 悬停到链接: " + linkText);
-            OnLinkHoveredEvent?.Invoke(linkText);
+
+            EnterLink(linkText);
+
         }
         else if(linkTaggedText == -1 && currentHoveredLinkIndex != -1){
             Debug.Log("👋 离开链接");
             currentHoveredLinkIndex = -1;
-            OnLinkExitEvent?.Invoke();
+
+            ExitLink();
         }
     }
     
@@ -74,5 +72,13 @@ public class LinkHandler : MonoBehaviour
         
         // 其他模式使用原始方法
         return TMP_TextUtilities.FindIntersectingLink(_tmpTextBox, mousePosition, cameraToUse);
+    }
+
+    void EnterLink(string linkText){
+        // HoverInfoController.Instance.MouseEnterKeyWord(linkText,this);
+    }
+
+    void ExitLink(){
+        // HoverInfoController.Instance.MouseExitKeyWord(this);
     }
 }

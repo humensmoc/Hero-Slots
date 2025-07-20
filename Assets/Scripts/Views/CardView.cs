@@ -8,6 +8,7 @@ using DG.Tweening;
 public class CardView : MonoBehaviour
 {
     public Card card{get ; private set;}
+    public HoverInfoPanelData hoverInfoPanelData{get;private set;}
 
 
     [SerializeField] private SpriteRenderer image;
@@ -17,19 +18,20 @@ public class CardView : MonoBehaviour
         this.card = card;
         image.sprite = card.Image;
         attackText.text = card.Attack.ToString();
+        hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Card, image.sprite, card.Name, card.Description);
     }
 
     void OnMouseEnter()
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1.1f, 0.15f);
-        HoverInfoController.Instance.ShowHoverInfoPanel(new HoverInfoPanelData(HoverInfoPanelType.Card, image.sprite, card.Name, card.Description), gameObject);
+        HoverInfoController.Instance.MouseEnterTargetView(hoverInfoPanelData);
     }
 
     void OnMouseExit()
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1f, 0.15f);
-        HoverInfoController.Instance.HideHoverInfoPanel();
+        HoverInfoController.Instance.MouseExitTargetView(hoverInfoPanelData);
     }
 }

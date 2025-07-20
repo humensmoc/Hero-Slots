@@ -4,124 +4,119 @@ using UnityEngine;
 
 public class HoverInfoController : Singleton<HoverInfoController>
 {
-    public HoverInfoPanel hoverInfoPanel;
-    public GameObject hoverTarget;
-    private Camera mainCamera;
-    private Canvas canvas;
-    private GameObject currentHoverTarget;
-
-    void Start()
-    {
-        // 获取主摄像机和Canvas引用
-        mainCamera = Camera.main;
-        if (mainCamera == null)
-        {
-            mainCamera = FindFirstObjectByType<Camera>();
-        }
-        
-        canvas = hoverInfoPanel.GetComponentInParent<Canvas>();
-    }
+    [SerializeField] private GameObject hoverInfoPanelPrefab;
+    [SerializeField] private Canvas canvas;
+    private HoverInfoPanel currentHoverInfoPanel;
+    private List<HoverInfoPanel> panels = new List<HoverInfoPanel>();
+    private bool isHoverTargetView = false;
 
     void Update(){
-        if(hoverInfoPanel.gameObject.activeSelf && hoverTarget != null){
-            UpdateHoverPanelPosition();
+        UpdateHoverPanelPosition();
+    }
+
+    void UpdateHoverPanelPosition(){
+        Debug.Log("UpdateHoverPanelPosition");
+
+        if(currentHoverInfoPanel==null)return;
+
+        if(currentHoverInfoPanel.isFocus)return;
+
+        bool isInLeftArea = MouseUtil.GetMousePostionInScreenSpace().x<Screen.width/2;
+        bool isInBottomArea = MouseUtil.GetMousePostionInScreenSpace().y<Screen.height/2;
+
+        currentHoverInfoPanel.rectTransform.pivot = new Vector2(isInLeftArea?0:1,isInBottomArea?0:1);
+
+        Vector2 pos = MouseUtil.GetMousePostionInScreenSpace()-new Vector2(Screen.width/2,Screen.height/2);
+        Vector2 offset = new Vector2(isInLeftArea?-10:10,isInBottomArea?-10:10);
+        pos += offset;
+        currentHoverInfoPanel.rectTransform.anchoredPosition = pos;
+
+    }
+
+    public void CreateHoverInfoPanel(HoverInfoPanelData hoverInfoPanelData){
+        Debug.Log("CreateHoverInfoPanel");
+
+        HoverInfoPanel hoverInfoPanel = Instantiate(hoverInfoPanelPrefab,canvas.transform).GetComponent<HoverInfoPanel>();
+        panels.Add(hoverInfoPanel);
+        currentHoverInfoPanel = hoverInfoPanel;
+        currentHoverInfoPanel.Init(hoverInfoPanelData);
+    }
+
+    public void DestroyHoverInfoPanel(HoverInfoPanel panel){
+        Debug.Log("DestroyHoverInfoPanel");
+
+        panels.Remove(panel);
+        Destroy(panel.gameObject);
+        if(panels.Count>0){
+            currentHoverInfoPanel = panels[panels.Count-1];
+        }else{
+            currentHoverInfoPanel = null;
         }
     }
 
-    private void UpdateHoverPanelPosition()
-    {
-        if (mainCamera == null || canvas == null) return;
+    public void MouseEnterTargetView(HoverInfoPanelData hoverInfoPanelData){
+        Debug.Log("MouseEnterTargetView");
 
-        // 将3D世界坐标转换为屏幕坐标
-        Vector3 screenPoint = mainCamera.WorldToScreenPoint(hoverTarget.transform.position);
-        
-        // 获取目标对象的高度
-        float targetHeight = GetTargetHeight(hoverTarget);
-        float targetHeightInScreenSpace = GetScreenSpaceHeight(targetHeight);
-        
-        // 获取面板的RectTransform
-        RectTransform panelRectTransform = hoverInfoPanel.GetComponent<RectTransform>();
-        float panelHeight = panelRectTransform.rect.height;
-        
-        // 根据鼠标在屏幕的位置决定面板显示在上方还是下方
-        Vector3 finalScreenPoint = screenPoint;
-        if(Input.mousePosition.y > Screen.height / 2)
-        {
-            // 鼠标在屏幕上半部分，面板显示在目标下方
-            finalScreenPoint.y -= (targetHeightInScreenSpace / 2 + panelHeight / 2);
+        if(!isHoverTargetView||currentHoverInfoPanel==null){
+            CreateHoverInfoPanel(hoverInfoPanelData);
+            isHoverTargetView = true;
         }
-        else
-        {
-            // 鼠标在屏幕下半部分，面板显示在目标上方
-            finalScreenPoint.y += (targetHeightInScreenSpace / 2 + panelHeight / 2);
+    }
+
+    public void MouseExitTargetView(HoverInfoPanelData hoverInfoPanelData){
+        Debug.Log("MouseExitTargetView");
+
+        if(currentHoverInfoPanel==null)return;
+
+        bool isFocus = false;
+        foreach(HoverInfoPanel panel in panels){
+            if(panel.isFocus){
+                isFocus = true;
+                break;
+            }
         }
-        
-        // 将屏幕坐标转换为Canvas局部坐标
-        Vector2 localPoint;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvas.transform as RectTransform, 
-            finalScreenPoint, 
-            canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCamera, 
-            out localPoint
-        );
-        
-        // 设置面板位置
-        panelRectTransform.localPosition = localPoint;
+        if(isFocus)return;
+
+        DestroyHoverInfoPanel(currentHoverInfoPanel);
+        isHoverTargetView = false;
     }
 
-    // 获取目标对象的高度，支持RectTransform和普通Transform
-    private float GetTargetHeight(GameObject target)
-    {
-        // 首先尝试获取RectTransform（UI元素）
-        RectTransform rectTransform = target.GetComponent<RectTransform>();
-        if (rectTransform != null)
-        {
-            return rectTransform.rect.height;
+    public void MouseEnterKeyWord(string keyWord,HoverInfoPanel panel){
+        if(panel!=currentHoverInfoPanel||!panel.isFocus)return;
+
+        HoverInfoPanelData hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Keyword,null,keyWord,"hero_Alpha description <link=keyword><b>keyword</b></link>");
+        CreateHoverInfoPanel(hoverInfoPanelData);
+    }
+
+    public void MouseExitKeyWord(HoverInfoPanel panel){
+        if(currentHoverInfoPanel.isFocus)return;
+        
+        if(panel==panels[panels.Count-2]){
+            DestroyHoverInfoPanel(currentHoverInfoPanel);
         }
-        
-        // 如果没有RectTransform，尝试获取Renderer的bounds（3D/2D对象）
-        Renderer renderer = target.GetComponent<Renderer>();
-        if (renderer != null)
-        {
-            return renderer.bounds.size.y;
+    }
+
+    public void MouseExitHoverPanel(HoverInfoPanel panel){
+        Debug.Log("MouseExitHoverPanel");
+
+        if(panel!=currentHoverInfoPanel||!panel.isFocus)return;
+        DestroyHoverInfoPanel(panel);
+
+        if(panels.Count>0){
+            for(int i=panels.Count-1;i>=0;i--){
+                Vector3 mousePosition = Input.mousePosition;
+                RectTransform rectTransform = panels[i].rectTransform;
+                // 将鼠标屏幕坐标转换为UI坐标
+                bool isMouseOver = RectTransformUtility.RectangleContainsScreenPoint(rectTransform, mousePosition, null);
+                if (!isMouseOver)
+                {
+                    DestroyHoverInfoPanel(panels[i]);
+                }
+            }
         }
-        
-        // 如果都没有，返回默认值
-        return 1.0f;
     }
 
-    // 将世界空间的高度转换为屏幕空间的高度
-    private float GetScreenSpaceHeight(float worldHeight)
-    {
-        if (mainCamera == null) return worldHeight;
-        
-        // 获取目标位置的世界坐标
-        Vector3 worldPos = hoverTarget.transform.position;
-        
-        // 计算目标上边缘和下边缘的世界坐标
-        Vector3 topPoint = worldPos + Vector3.up * (worldHeight / 2);
-        Vector3 bottomPoint = worldPos - Vector3.up * (worldHeight / 2);
-        
-        // 转换为屏幕坐标
-        Vector3 topScreen = mainCamera.WorldToScreenPoint(topPoint);
-        Vector3 bottomScreen = mainCamera.WorldToScreenPoint(bottomPoint);
-        
-        // 返回屏幕空间中的高度差
-        return Mathf.Abs(topScreen.y - bottomScreen.y);
-    }
-
-    public void ShowHoverInfoPanel(HoverInfoPanelData hoverInfoPanelData, GameObject hoverTarget){
-        this.hoverTarget = hoverTarget;
-        hoverInfoPanel.gameObject.SetActive(true);
-        hoverInfoPanel.ShowHoverInfoPanel(hoverInfoPanelData);
-    }
-
-    public void HideHoverInfoPanel(){
-        hoverInfoPanel.gameObject.SetActive(false);
-        hoverTarget = null;
-    }
-
-    public void MouseEnterTarget(HoverInfoPanelData hoverInfoPanelData, GameObject hoverTarget){
-        ShowHoverInfoPanel(hoverInfoPanelData, hoverTarget);
+    public void FocusPanel(HoverInfoPanel panel){
+        Debug.Log("FocusPanel");
     }
 }
