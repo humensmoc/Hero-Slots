@@ -15,16 +15,16 @@ public class CardSystem : Singleton<CardSystem>
     {
         ActionSystem.AttachPerformer<DrawAllCardsGA>(DrawAllCardsPerformer);
         ActionSystem.AttachPerformer<RemoveAllCardsGA>(RemoveAllCardsPerformer);
-        ActionSystem.SubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.PRE);
-        ActionSystem.SubscribeReaction<NextTurnGA>(NextTurnPostReaction,ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<AllHeroShotGA>(AllHeroShotPostReaction_RemoveAllCards,ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<RemoveAllCardsGA>(RemoveAllCardsPostReaction_DrawAllCards,ReactionTiming.POST);
     }
 
     void OnDisable()
     {
         ActionSystem.DetachPerformer<DrawAllCardsGA>();
         ActionSystem.DetachPerformer<RemoveAllCardsGA>();
-        ActionSystem.UnsubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.PRE);
-        ActionSystem.UnsubscribeReaction<NextTurnGA>(NextTurnPostReaction,ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<AllHeroShotGA>(AllHeroShotPostReaction_RemoveAllCards,ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<RemoveAllCardsGA>(RemoveAllCardsPostReaction_DrawAllCards,ReactionTiming.POST);
     }
 
     void OnGUI()
@@ -108,7 +108,7 @@ public class CardSystem : Singleton<CardSystem>
     /// 下一回合开始前，移除所有卡牌
     /// </summary>
     /// <param name="nextTurnGA"></param>
-    private void NextTurnPreReaction(NextTurnGA nextTurnGA){
+    private void AllHeroShotPostReaction_RemoveAllCards(AllHeroShotGA allHeroShotGA){
         RemoveAllCardsGA removeAllCardsGA = new RemoveAllCardsGA();
         ActionSystem.Instance.AddReaction(removeAllCardsGA);
     }
@@ -117,7 +117,7 @@ public class CardSystem : Singleton<CardSystem>
     /// 下一回合开始后，抽取所有卡牌
     /// </summary>
     /// <param name="nextTurnGA"></param>
-    private void NextTurnPostReaction(NextTurnGA nextTurnGA){
+    private void RemoveAllCardsPostReaction_DrawAllCards(RemoveAllCardsGA removeAllCardsGA){
         DrawAllCardsGA drawAllCardsGA = new DrawAllCardsGA();
         ActionSystem.Instance.AddReaction(drawAllCardsGA);
     }

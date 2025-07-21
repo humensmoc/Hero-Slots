@@ -15,4 +15,4 @@ MonoBehaviour:
   <Name>k__BackingField: enemy_default
   <Description>k__BackingField: enemy_default description
   <Image>k__BackingField: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  <Health>k__BackingField: 5
+  <Health>k__BackingField: 10

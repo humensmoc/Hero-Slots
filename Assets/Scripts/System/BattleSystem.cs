@@ -10,8 +10,8 @@ public class BattleSystem : Singleton<BattleSystem>
         ActionSystem.AttachPerformer<AllCardShotGA>(AllCardShotPerformer);
         ActionSystem.AttachPerformer<AllHeroShotGA>(AllHeroShotPerformer);
         ActionSystem.AttachPerformer<BulletCollisionGA>(BulletCollisionPerformer);
-        ActionSystem.SubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.PRE);
-        ActionSystem.SubscribeReaction<AllCardShotGA>(AllCardShotPostReaction,ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<NextTurnGA>(NextTurnPostReaction_AllCardShot,ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<AllCardShotGA>(AllCardShotPostReaction_AllHeroShot,ReactionTiming.POST);
     }
 
     void OnDisable()
@@ -19,8 +19,8 @@ public class BattleSystem : Singleton<BattleSystem>
         ActionSystem.DetachPerformer<AllCardShotGA>();
         ActionSystem.DetachPerformer<AllHeroShotGA>();
         ActionSystem.DetachPerformer<BulletCollisionGA>();
-        ActionSystem.UnsubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.PRE);
-        ActionSystem.UnsubscribeReaction<AllCardShotGA>(AllCardShotPostReaction,ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<NextTurnGA>(NextTurnPostReaction_AllCardShot,ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<AllCardShotGA>(AllCardShotPostReaction_AllHeroShot,ReactionTiming.POST);
     }
 
     private IEnumerator AllCardShotPerformer(AllCardShotGA allCardShotGA){
@@ -86,12 +86,12 @@ public class BattleSystem : Singleton<BattleSystem>
         yield return null;
     }
 
-    private void AllCardShotPostReaction(AllCardShotGA allCardShotGA){
+    private void AllCardShotPostReaction_AllHeroShot(AllCardShotGA allCardShotGA){
         AllHeroShotGA allHeroShotGA = new AllHeroShotGA();
         ActionSystem.Instance.AddReaction(allHeroShotGA);
     }
 
-    private void NextTurnPreReaction(NextTurnGA nextTurnGA){
+    private void NextTurnPostReaction_AllCardShot(NextTurnGA nextTurnGA){
         AllCardShotGA allCardShotGA = new AllCardShotGA();
         ActionSystem.Instance.AddReaction(allCardShotGA);
 

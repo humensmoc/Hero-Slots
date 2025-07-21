@@ -12,16 +12,16 @@ public class EnemySystem : Singleton<EnemySystem>
     {
         ActionSystem.AttachPerformer<MoveAllEnemyGA>(MoveAllEnemyPerformer);
         ActionSystem.AttachPerformer<AddEnemyGA>(AddEnemyPerformer);
-        ActionSystem.SubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.POST);
-        ActionSystem.SubscribeReaction<NextTurnGA>(AddEnemyPreReaction,ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<DrawAllCardsGA>(DrawAllCardsPostReaction_MoveAllEnemy,ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<MoveAllEnemyGA>(MoveAllEnemyPostReaction_AddEnemy,ReactionTiming.POST);
     }
     
     void OnDisable()
     {
         ActionSystem.DetachPerformer<MoveAllEnemyGA>();
         ActionSystem.DetachPerformer<AddEnemyGA>();
-        ActionSystem.UnsubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.POST);
-        ActionSystem.UnsubscribeReaction<NextTurnGA>(AddEnemyPreReaction,ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<DrawAllCardsGA>(DrawAllCardsPostReaction_MoveAllEnemy,ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<MoveAllEnemyGA>(MoveAllEnemyPostReaction_AddEnemy,ReactionTiming.POST);
     }
 
 
@@ -37,12 +37,12 @@ public class EnemySystem : Singleton<EnemySystem>
         yield return null;
     }
 
-    private void NextTurnPreReaction(NextTurnGA nextTurnGA){
+    private void DrawAllCardsPostReaction_MoveAllEnemy(DrawAllCardsGA drawAllCardsGA){
         MoveAllEnemyGA moveAllEnemyGA = new MoveAllEnemyGA();
         ActionSystem.Instance.AddReaction(moveAllEnemyGA);
     }
 
-    private void AddEnemyPreReaction(NextTurnGA nextTurnGA){
+    private void MoveAllEnemyPostReaction_AddEnemy(MoveAllEnemyGA moveAllEnemyGA){
         AddEnemyGA addEnemyGA = new AddEnemyGA(GameInitializer.Instance.testEnemyData);
         ActionSystem.Instance.AddReaction(addEnemyGA);
     }
