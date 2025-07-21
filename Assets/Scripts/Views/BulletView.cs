@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,11 +9,13 @@ public class BulletView : MonoBehaviour
 {
     public Bullet bullet;
     [SerializeField] private SpriteRenderer image;
+    [SerializeField] private TMP_Text attackText;
     public Vector3 dir;
 
     public void Init(Bullet bullet){
         this.bullet = bullet;
         image.sprite = bullet.Image;
+        attackText.text = bullet.Attack.ToString();
     }
 
     public void SetDirection(Vector3 dir){

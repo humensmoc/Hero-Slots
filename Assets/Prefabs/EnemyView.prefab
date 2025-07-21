@@ -77,7 +77,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &5684046272019030004
 MonoBehaviour:
@@ -305,6 +305,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   image: {fileID: 7718790370511789619}
   healthText: {fileID: 5684046272019030004}
+  originalColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!65 &6996878234928077507
 BoxCollider:
   m_ObjectHideFlags: 0

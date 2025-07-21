@@ -31,7 +31,7 @@ public class EnemyView : MonoBehaviour
         Health -= damage;
         healthText.text = "HP:"+Health.ToString()+"/"+MaxHealth.ToString();
         if(Health <= 0){
-            Destroy(this.gameObject);
+            EnemySystem.Instance.RemoveEnemy(enemy);
         }
     }
 }

@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class HeroSlotSystem : Singleton<HeroSlotSystem>
+public class HeroSystem : Singleton<HeroSystem>
 {
     public BattlefieldView battlefieldView;
+    public List<Hero> heroes{get;private set;}=new();
+    public List<HeroView> heroViews{get;private set;}=new();
     public int currentHeroSlotIndex{get;private set;}=0;
+
+    public void Init(HeroData heroData){
+        AddHero(new Hero(heroData));
+        MoveToSlot(heroViews[0],battlefieldView.heroSlotViews[0]);
+    }
 
     public void MoveToSlot(HeroView heroView,HeroSlotView heroSlotView){
         // 如果当前英雄槽位不为空，则将其缩放为1
@@ -32,5 +39,18 @@ public class HeroSlotSystem : Singleton<HeroSlotSystem>
                 battlefieldView.cardViews[i,currentHeroSlotIndex].transform.DOScale(1.1f,0.15f);
             }
         }
+    }
+
+    public void AddHero(Hero hero){
+        heroes.Add(hero);
+        HeroView heroView = HeroCreator.Instance.CreateHeroView(hero,Vector3.zero,Quaternion.identity);
+        heroViews.Add(heroView);
+    }
+
+    public void RemoveHero(Hero hero){
+        heroes.Remove(hero);
+        HeroView heroView = heroViews.Find(view => view.hero == hero);
+        heroViews.Remove(heroView);
+        Destroy(heroView.gameObject);
     }
 }

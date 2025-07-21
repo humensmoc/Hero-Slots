@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 public class HeroView : MonoBehaviour
@@ -8,11 +9,14 @@ public class HeroView : MonoBehaviour
     [SerializeField] private LayerMask dropLayerMask;
     [SerializeField] private Vector3 startPosition;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private TMP_Text attackText;
     public Hero hero{get;private set;}
     public HoverInfoPanelData hoverInfoPanelData{get;private set;}
+
     public void Init(Hero hero){
         this.hero = hero;
         spriteRenderer.sprite = hero.Image;
+        attackText.text = hero.Attack.ToString();
         hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Hero, spriteRenderer.sprite, hero.Name, hero.Description);
     }
 
@@ -54,7 +58,7 @@ public class HeroView : MonoBehaviour
         {
             HeroSlotView heroSlotView =InteractionSystem.Instance.EndTargeting(MouseUtil.GetMousePostionInWorldSpace(-1));
 
-            HeroSlotSystem.Instance.MoveToSlot(this,heroSlotView);
+            HeroSystem.Instance.MoveToSlot(this,heroSlotView);
         }
         else
         {

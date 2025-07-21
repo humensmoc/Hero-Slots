@@ -392,6 +392,7 @@ MonoBehaviour:
     m_Bits: 64
   startPosition: {x: 0, y: 0, z: 0}
   spriteRenderer: {fileID: 201457353699698743}
+  attackText: {fileID: 5310374271254141835}
 --- !u!65 &6808960320134763491
 BoxCollider:
   m_ObjectHideFlags: 0

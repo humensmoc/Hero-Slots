@@ -1,21 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class BattleSystem : Singleton<BattleSystem>
 {
     void OnEnable()
     {
         ActionSystem.AttachPerformer<AllCardShotGA>(AllCardShotPerformer);
+        ActionSystem.AttachPerformer<AllHeroShotGA>(AllHeroShotPerformer);
         ActionSystem.AttachPerformer<BulletCollisionGA>(BulletCollisionPerformer);
         ActionSystem.SubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<AllCardShotGA>(AllCardShotPostReaction,ReactionTiming.POST);
     }
 
     void OnDisable()
     {
         ActionSystem.DetachPerformer<AllCardShotGA>();
+        ActionSystem.DetachPerformer<AllHeroShotGA>();
         ActionSystem.DetachPerformer<BulletCollisionGA>();
         ActionSystem.UnsubscribeReaction<NextTurnGA>(NextTurnPreReaction,ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<AllCardShotGA>(AllCardShotPostReaction,ReactionTiming.POST);
     }
 
     private IEnumerator AllCardShotPerformer(AllCardShotGA allCardShotGA){
@@ -24,9 +29,17 @@ public class BattleSystem : Singleton<BattleSystem>
             for(int y = 0; y < CardSystem.Instance.cardsInBattlefield.GetLength(1); y++){
                 if(CardSystem.Instance.cardsInBattlefield[x,y]==null)
                     continue;
-                
+
+                Tween tw = CardSystem.Instance.battlefieldView.cardViews[x,y].transform.DOScale(1.1f,0.075f).OnComplete(()=>{
+                    CardSystem.Instance.battlefieldView.cardViews[x,y].transform.DOScale(1f,0.075f);
+                });
+                yield return tw.WaitForCompletion();
+
+                Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
+                bullet.Attack=CardSystem.Instance.cardsInBattlefield[x,y].Attack;
+                Debug.Log("bullet.Attack:"+bullet.Attack);
                 BulletView bulletView = BulletSystem.Instance.CreateBullet(
-                    new Bullet(GameInitializer.Instance.testBulletData),
+                    bullet,
                     CardSystem.Instance.battlefieldView.cardViews[x,y].transform.position,
                     CardSystem.Instance.battlefieldView.cardViews[x,y].transform.rotation);
 
@@ -39,13 +52,48 @@ public class BattleSystem : Singleton<BattleSystem>
         }
     }
 
+    private IEnumerator AllHeroShotPerformer(AllHeroShotGA allHeroShotGA){
+        for(int i=0;i<HeroSystem.Instance.heroViews.Count;i++){
+            HeroView heroView = HeroSystem.Instance.heroViews[i];
+            Tween tw = heroView.transform.DOScale(1.1f,0.075f).OnComplete(()=>{
+                heroView.transform.DOScale(1f,0.075f);
+            });
+            yield return tw.WaitForCompletion();
+
+            Tween tw2 = HeroSystem.Instance.heroViews[i].transform.DOShakePosition(0.1f,0.1f,10,90,false,true);
+            yield return tw2.WaitForCompletion();
+            
+            Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
+            bullet.Attack=HeroSystem.Instance.heroViews[i].hero.Attack;
+
+            Debug.Log("bullet.Attack:"+bullet.Attack);
+
+            BulletView bulletView = BulletSystem.Instance.CreateBullet(
+                bullet,
+                HeroSystem.Instance.heroViews[i].transform.position,
+                HeroSystem.Instance.heroViews[i].transform.rotation);
+
+            BulletSystem.Instance.Shot(
+                bulletView,
+                HeroSystem.Instance.heroViews[i].transform.right*10);
+
+        }
+        yield return null;
+    }
+
     private IEnumerator BulletCollisionPerformer(BulletCollisionGA bulletCollisionGA){
         
         yield return null;
     }
 
+    private void AllCardShotPostReaction(AllCardShotGA allCardShotGA){
+        AllHeroShotGA allHeroShotGA = new AllHeroShotGA();
+        ActionSystem.Instance.AddReaction(allHeroShotGA);
+    }
+
     private void NextTurnPreReaction(NextTurnGA nextTurnGA){
         AllCardShotGA allCardShotGA = new AllCardShotGA();
         ActionSystem.Instance.AddReaction(allCardShotGA);
+
     }
 }
