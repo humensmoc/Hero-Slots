@@ -554,9 +554,8 @@ MonoBehaviour:
   infoDescription: {fileID: 2387607486073932089}
   rectTransform: {fileID: 0}
   focusCDImage: {fileID: 6526026774124218583}
-  focusCD: 1
+  focusCD: 0.5
   isFocus: 0
-  cameraToUse: {fileID: 0}
 --- !u!222 &8567626876351392749
 CanvasRenderer:
   m_ObjectHideFlags: 0

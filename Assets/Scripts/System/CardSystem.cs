@@ -8,8 +8,8 @@ public class CardSystem : Singleton<CardSystem>
     public List<Card> cardsInDeck{get ; private set;}=new();
     public Card[,] cardsInBattlefield { get; private set; } = new Card[5, 5];
     [SerializeField] float cardPositionInterval = 0.15f;
-    [SerializeField] Transform cardParent;
-    [SerializeField] BattlefieldView battlefieldView;
+    [SerializeField] Transform cardParent;  
+    public BattlefieldView battlefieldView;
 
     void OnEnable()
     {
@@ -99,6 +99,7 @@ public class CardSystem : Singleton<CardSystem>
             }
         }
     }
+
 
 #endregion
 

@@ -15,8 +15,6 @@ public class HoverInfoController : Singleton<HoverInfoController>
     }
 
     void UpdateHoverPanelPosition(){
-        Debug.Log("UpdateHoverPanelPosition");
-
         if(currentHoverInfoPanel==null)return;
 
         if(currentHoverInfoPanel.isFocus)return;
@@ -34,7 +32,7 @@ public class HoverInfoController : Singleton<HoverInfoController>
     }
 
     public void CreateHoverInfoPanel(HoverInfoPanelData hoverInfoPanelData){
-        Debug.Log("CreateHoverInfoPanel");
+        // Debug.Log("CreateHoverInfoPanel");
 
         HoverInfoPanel hoverInfoPanel = Instantiate(hoverInfoPanelPrefab,canvas.transform).GetComponent<HoverInfoPanel>();
         panels.Add(hoverInfoPanel);
@@ -43,7 +41,7 @@ public class HoverInfoController : Singleton<HoverInfoController>
     }
 
     public void DestroyHoverInfoPanel(HoverInfoPanel panel){
-        Debug.Log("DestroyHoverInfoPanel");
+        // Debug.Log("DestroyHoverInfoPanel");
 
         panels.Remove(panel);
         Destroy(panel.gameObject);
@@ -55,7 +53,7 @@ public class HoverInfoController : Singleton<HoverInfoController>
     }
 
     public void MouseEnterTargetView(HoverInfoPanelData hoverInfoPanelData){
-        Debug.Log("MouseEnterTargetView");
+        // Debug.Log("MouseEnterTargetView");
 
         if(!isHoverTargetView||currentHoverInfoPanel==null){
             CreateHoverInfoPanel(hoverInfoPanelData);
@@ -64,7 +62,7 @@ public class HoverInfoController : Singleton<HoverInfoController>
     }
 
     public void MouseExitTargetView(HoverInfoPanelData hoverInfoPanelData){
-        Debug.Log("MouseExitTargetView");
+        // Debug.Log("MouseExitTargetView");
 
         if(currentHoverInfoPanel==null)return;
 
@@ -97,7 +95,7 @@ public class HoverInfoController : Singleton<HoverInfoController>
     }
 
     public void MouseExitHoverPanel(HoverInfoPanel panel){
-        Debug.Log("MouseExitHoverPanel");
+        // Debug.Log("MouseExitHoverPanel");
 
         if(panel!=currentHoverInfoPanel||!panel.isFocus)return;
         DestroyHoverInfoPanel(panel);
@@ -117,6 +115,6 @@ public class HoverInfoController : Singleton<HoverInfoController>
     }
 
     public void FocusPanel(HoverInfoPanel panel){
-        Debug.Log("FocusPanel");
+        // Debug.Log("FocusPanel");
     }
 }

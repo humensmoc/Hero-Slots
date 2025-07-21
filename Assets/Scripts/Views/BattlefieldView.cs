@@ -8,7 +8,7 @@ public class BattlefieldView : MonoBehaviour
     public CardView[,] cardViews;
     public List<HeroSlotView> heroSlotViews=new();
     public HeroSlotView currentHeroSlotView;
-    private void Start()
+    private void Awake()
     {
         cardViews = new CardView[5,5];
     }

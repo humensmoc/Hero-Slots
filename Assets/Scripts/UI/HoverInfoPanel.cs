@@ -40,7 +40,7 @@ public class HoverInfoPanel : MonoBehaviour,IPointerExitHandler
 
     [Header("Keyword Link")]
     private Canvas _canvasToCheck;
-    [SerializeField] private Camera cameraToUse;
+    private Camera cameraToUse;
     private int currentHoveredLinkIndex = -1;
 
     void OnEnable(){
