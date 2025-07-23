@@ -7,6 +7,7 @@ public class CardSystem : Singleton<CardSystem>
 {
     public List<Card> cardsInDeck{get ; private set;}=new();
     public Card[,] cardsInBattlefield { get; private set; } = new Card[5, 5];
+    public List<CardView> cardViews{get;private set;}=new();
     [SerializeField] float cardPositionInterval = 0.15f;
     [SerializeField] Transform cardParent;  
     public BattlefieldView battlefieldView;
@@ -25,13 +26,6 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.DetachPerformer<RemoveAllCardsGA>();
         ActionSystem.UnsubscribeReaction<AllHeroShotGA>(AllHeroShotPostReaction_RemoveAllCards,ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<RemoveAllCardsGA>(RemoveAllCardsPostReaction_DrawAllCards,ReactionTiming.POST);
-    }
-
-    void OnGUI()
-    {
-        if(GUI.Button(new Rect(10,10,100,50),"Next Turn")){
-            ActionSystem.Instance.Perform(new NextTurnGA());
-        }
     }
 
     public void Init(List<CardData> cardDatas)
@@ -95,6 +89,7 @@ public class CardSystem : Singleton<CardSystem>
                     continue;
                 cardsInDeck.Add(cardsInBattlefield[x,y]);
                 cardsInBattlefield[x,y] = null;
+                cardViews.Remove(battlefieldView.cardViews[x,y]);
                 yield return battlefieldView.RemoveCard(x,y);
             }
         }
@@ -171,7 +166,8 @@ public class CardSystem : Singleton<CardSystem>
         cardsInBattlefield[pos.x, pos.y] = card;
         emptySlots.RemoveAt(slotIndex);
 
-        CardView cardView = CardCreator.Instance.CreateCardView(card, cardParent.position, cardParent.rotation);
+        CardView cardView = CardCreator.Instance.CreateCardView(card, cardParent.position, cardParent.rotation,pos.x,pos.y);
+        cardViews.Add(cardView);
         battlefieldView.cardViews[pos.x, pos.y] = cardView; 
         Tween tween = cardView.transform.DOLocalMove(cardParent.position + new Vector3(pos.x * cardPositionInterval, pos.y * cardPositionInterval, 0), 0.15f);
         yield return tween.WaitForCompletion();

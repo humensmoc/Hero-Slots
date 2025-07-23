@@ -6,18 +6,26 @@ using UnityEngine;
 
 public class HeroView : MonoBehaviour
 {
+    public int y;
     [SerializeField] private LayerMask dropLayerMask;
     [SerializeField] private Vector3 startPosition;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private TMP_Text attackText;
     public Hero hero{get;private set;}
     public HoverInfoPanelData hoverInfoPanelData{get;private set;}
+    public int attack;
 
-    public void Init(Hero hero){
+    public void Init(Hero hero,int y){
         this.hero = hero;
         spriteRenderer.sprite = hero.Image;
-        attackText.text = hero.Attack.ToString();
+        attack = hero.Attack;
+        attackText.text = attack.ToString();
         hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Hero, spriteRenderer.sprite, hero.Name, hero.Description);
+        this.y = y;
+    }
+
+    public void UpdateUI(){
+        attackText.text = attack.ToString();
     }
 
     void OnMouseEnter()

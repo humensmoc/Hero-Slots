@@ -32,6 +32,7 @@ public class EnemySystem : Singleton<EnemySystem>
     public IEnumerator MoveAllEnemyPerformer(MoveAllEnemyGA moveAllEnemyGA){
         for(int i = 0; i < enemyViews.Count; i++){
             enemyViews[i].transform.Translate(Vector3.left);
+            enemyViews[i].x++;
             yield return new WaitForSeconds(0.15f);
         }
         yield return null;
@@ -54,7 +55,8 @@ public class EnemySystem : Singleton<EnemySystem>
 
     public void AddEnemy(Enemy enemy){
         enemies.Add(enemy);
-        EnemyView enemyView = EnemyCreator.Instance.CreateEnemyView(enemy,enemyParent.position+new Vector3(0,Random.Range(0,5)*1.2f,0),Quaternion.identity);
+        int yIndex = Random.Range(0,5);
+        EnemyView enemyView = EnemyCreator.Instance.CreateEnemyView(enemy,enemyParent.position+new Vector3(0,yIndex*1.2f,0),Quaternion.identity,0,yIndex);
         enemyViews.Add(enemyView);
     }
 

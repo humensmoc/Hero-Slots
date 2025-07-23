@@ -5,6 +5,7 @@ using DG.Tweening;
 
 public class BattleSystem : Singleton<BattleSystem>
 {
+
     void OnEnable()
     {
         ActionSystem.AttachPerformer<AllCardShotGA>(AllCardShotPerformer);
@@ -22,7 +23,7 @@ public class BattleSystem : Singleton<BattleSystem>
         ActionSystem.UnsubscribeReaction<NextTurnGA>(NextTurnPostReaction_AllCardShot,ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<AllCardShotGA>(AllCardShotPostReaction_AllHeroShot,ReactionTiming.POST);
     }
-
+#region Performer
     private IEnumerator AllCardShotPerformer(AllCardShotGA allCardShotGA){
         Debug.Log("AllCardShotPerformer");
         for(int x = 0; x < CardSystem.Instance.cardsInBattlefield.GetLength(0); x++){
@@ -36,7 +37,7 @@ public class BattleSystem : Singleton<BattleSystem>
                 yield return tw.WaitForCompletion();
 
                 Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
-                bullet.Attack=CardSystem.Instance.cardsInBattlefield[x,y].Attack;
+                bullet.Attack=CardSystem.Instance.battlefieldView.cardViews[x,y].attack;
                 Debug.Log("bullet.Attack:"+bullet.Attack);
                 BulletView bulletView = BulletSystem.Instance.CreateBullet(
                     bullet,
@@ -64,7 +65,7 @@ public class BattleSystem : Singleton<BattleSystem>
             yield return tw2.WaitForCompletion();
             
             Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
-            bullet.Attack=HeroSystem.Instance.heroViews[i].hero.Attack;
+            bullet.Attack=HeroSystem.Instance.heroViews[i].attack;
 
             Debug.Log("bullet.Attack:"+bullet.Attack);
 
@@ -85,7 +86,9 @@ public class BattleSystem : Singleton<BattleSystem>
         
         yield return null;
     }
+#endregion
 
+#region Reaction
     private void AllCardShotPostReaction_AllHeroShot(AllCardShotGA allCardShotGA){
         AllHeroShotGA allHeroShotGA = new AllHeroShotGA();
         ActionSystem.Instance.AddReaction(allHeroShotGA);
@@ -96,4 +99,36 @@ public class BattleSystem : Singleton<BattleSystem>
         ActionSystem.Instance.AddReaction(allCardShotGA);
 
     }
+#endregion
+
+    public List<CardView> GetCardViewByYIndex(int yIndex){
+        List<CardView> cardViews = new List<CardView>();
+        for(int i=0;i<CardSystem.Instance.cardViews.Count;i++){
+            if(CardSystem.Instance.cardViews[i].y==yIndex){
+                cardViews.Add(CardSystem.Instance.cardViews[i]);
+            }
+        }
+        return cardViews;
+    }
+
+    public List<HeroView> GetHeroViewByYIndex(int yIndex){
+        List<HeroView> heroViews = new List<HeroView>();
+        for(int i=0;i<HeroSystem.Instance.heroViews.Count;i++){
+            if(HeroSystem.Instance.heroViews[i].y==yIndex){
+                heroViews.Add(HeroSystem.Instance.heroViews[i]);
+            }
+        }
+        return heroViews;
+    }
+
+    public List<EnemyView> GetEnemyViewByYIndex(int yIndex){
+        List<EnemyView> enemyViews = new List<EnemyView>();
+        for(int i=0;i<EnemySystem.Instance.enemyViews.Count;i++){
+            if(EnemySystem.Instance.enemyViews[i].y==yIndex){
+                enemyViews.Add(EnemySystem.Instance.enemyViews[i]);
+            }
+        }
+        return enemyViews;
+    }
+
 }

@@ -25,6 +25,10 @@ public class HeroSystem : Singleton<HeroSystem>
         battlefieldView.currentHeroSlotView.transform.DOScale(1.1f,0.15f);
         heroView.transform.DOMove(heroSlotView.transform.position,0.15f);
 
+        heroView.y = battlefieldView.heroSlotViews.IndexOf(heroSlotView);
+
+        TestHeroEffect(heroView);
+
         //放大当前英雄槽位上的卡牌
         if(currentHeroSlotIndex==battlefieldView.heroSlotViews.IndexOf(heroSlotView)) return;
         for(int i=0;i<5;i++){
@@ -41,9 +45,19 @@ public class HeroSystem : Singleton<HeroSystem>
         }
     }
 
+    public void TestHeroEffect(HeroView heroView){
+        List<CardView> cardViews = BattleSystem.Instance.GetCardViewByYIndex(heroView.y);
+        foreach(CardView cardView in cardViews){
+            cardView.attack += 1;
+            cardView.UpdateUI();
+            heroView.attack += 1;
+            heroView.UpdateUI();
+        }
+    }
+
     public void AddHero(Hero hero){
         heroes.Add(hero);
-        HeroView heroView = HeroCreator.Instance.CreateHeroView(hero,Vector3.zero,Quaternion.identity);
+        HeroView heroView = HeroCreator.Instance.CreateHeroView(hero,Vector3.zero,Quaternion.identity,0);
         heroViews.Add(heroView);
     }
 

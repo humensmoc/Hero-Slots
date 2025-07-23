@@ -10,16 +10,20 @@ public class EnemyView : MonoBehaviour
     [SerializeField] private SpriteRenderer image;  
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Color originalColor;
+    public int x;
+    public int y;
     public int MaxHealth{get;private set;}
     public int Health{get;private set;}
 
-    public void Init(Enemy enemy){
+    public void Init(Enemy enemy,int x,int y){
         this.enemy = enemy;
         image.sprite = enemy.Image;
         MaxHealth = enemy.Health;
         Health = enemy.Health;
         healthText.text = "HP:"+Health.ToString()+"/"+MaxHealth.ToString();
         originalColor = image.color;
+        this.x = x;
+        this.y = y;
     }
 
     public void Damage(int damage){
