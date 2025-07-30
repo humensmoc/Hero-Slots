@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea4f3755decab8e41a9305937784a383, type: 3}
-  m_Name: card_A
+  m_Script: {fileID: 11500000, guid: 2530cb9947200604baa0bbb3a334213d, type: 3}
+  m_Name: hero_Beta
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: card_A
-  <Description>k__BackingField: card_A description <link="keyword"><b>keyword</b></link>
+  <Name>k__BackingField: hero_Beta
+  <Description>k__BackingField: hero_Beta description <link="keyword"><b>keyword</b></link>
   <Image>k__BackingField: {fileID: -745084330, guid: 75a5e5c8e7784af41887f621e36fdd7f, type: 3}
-  <Attack>k__BackingField: 2
-  <CardType>k__BackingField: 0
+  <Attack>k__BackingField: 4
+  <HeroType>k__BackingField: 1

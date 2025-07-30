@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Card
 {
-    private readonly CardData cardData;
+    public CardData cardData;
     public string Name => cardData.Name;
     public string Description => cardData.Description;
     public Sprite Image => cardData.Image;

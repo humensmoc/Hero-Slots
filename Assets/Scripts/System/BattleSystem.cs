@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
+using Unity.VisualScripting;
 
 public class BattleSystem : Singleton<BattleSystem>
 {
+    public Action<CardView> OnCardAttack;
 
     void OnEnable()
     {
@@ -25,30 +28,13 @@ public class BattleSystem : Singleton<BattleSystem>
     }
 #region Performer
     private IEnumerator AllCardShotPerformer(AllCardShotGA allCardShotGA){
-        Debug.Log("AllCardShotPerformer");
+        // Debug.Log("AllCardShotPerformer");
         for(int x = 0; x < CardSystem.Instance.cardsInBattlefield.GetLength(0); x++){
             for(int y = 0; y < CardSystem.Instance.cardsInBattlefield.GetLength(1); y++){
                 if(CardSystem.Instance.cardsInBattlefield[x,y]==null)
                     continue;
-
-                Tween tw = CardSystem.Instance.battlefieldView.cardViews[x,y].transform.DOScale(1.1f,0.075f).OnComplete(()=>{
-                    CardSystem.Instance.battlefieldView.cardViews[x,y].transform.DOScale(1f,0.075f);
-                });
-                yield return tw.WaitForCompletion();
-
-                Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
-                bullet.Attack=CardSystem.Instance.battlefieldView.cardViews[x,y].attack;
-                Debug.Log("bullet.Attack:"+bullet.Attack);
-                BulletView bulletView = BulletSystem.Instance.CreateBullet(
-                    bullet,
-                    CardSystem.Instance.battlefieldView.cardViews[x,y].transform.position,
-                    CardSystem.Instance.battlefieldView.cardViews[x,y].transform.rotation);
-
-                BulletSystem.Instance.Shot(
-                    bulletView,
-                    CardSystem.Instance.battlefieldView.cardViews[x,y].transform.right*10);
-
-                yield return null;
+                
+                yield return CardSystem.Instance.battlefieldView.cardViews[x,y].Shot();
             }
         }
     }
@@ -56,30 +42,9 @@ public class BattleSystem : Singleton<BattleSystem>
     private IEnumerator AllHeroShotPerformer(AllHeroShotGA allHeroShotGA){
         for(int i=0;i<HeroSystem.Instance.heroViews.Count;i++){
             HeroView heroView = HeroSystem.Instance.heroViews[i];
-            Tween tw = heroView.transform.DOScale(1.1f,0.075f).OnComplete(()=>{
-                heroView.transform.DOScale(1f,0.075f);
-            });
-            yield return tw.WaitForCompletion();
-
-            Tween tw2 = HeroSystem.Instance.heroViews[i].transform.DOShakePosition(0.1f,0.1f,10,90,false,true);
-            yield return tw2.WaitForCompletion();
-            
-            Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
-            bullet.Attack=HeroSystem.Instance.heroViews[i].attack;
-
-            Debug.Log("bullet.Attack:"+bullet.Attack);
-
-            BulletView bulletView = BulletSystem.Instance.CreateBullet(
-                bullet,
-                HeroSystem.Instance.heroViews[i].transform.position,
-                HeroSystem.Instance.heroViews[i].transform.rotation);
-
-            BulletSystem.Instance.Shot(
-                bulletView,
-                HeroSystem.Instance.heroViews[i].transform.right*10);
+            yield return heroView.Shot();
 
         }
-        yield return null;
     }
 
     private IEnumerator BulletCollisionPerformer(BulletCollisionGA bulletCollisionGA){

@@ -27,7 +27,7 @@ public class HeroSystem : Singleton<HeroSystem>
 
         heroView.y = battlefieldView.heroSlotViews.IndexOf(heroSlotView);
 
-        TestHeroEffect(heroView);
+        // TestHeroEffect(heroView);
 
         //放大当前英雄槽位上的卡牌
         if(currentHeroSlotIndex==battlefieldView.heroSlotViews.IndexOf(heroSlotView)) return;
@@ -36,8 +36,12 @@ public class HeroSystem : Singleton<HeroSystem>
                 battlefieldView.cardViews[i,currentHeroSlotIndex].transform.DOScale(1f,0.15f);
             }
         }
+
+        Debug.Log("heroView.y: " + heroView.y+" , currentHeroSlotIndex: " + currentHeroSlotIndex);
         
         currentHeroSlotIndex=battlefieldView.heroSlotViews.IndexOf(heroSlotView);
+
+        Debug.Log("currentHeroSlotIndex: " + currentHeroSlotIndex);
         for(int i=0;i<5;i++){
             if(battlefieldView.cardViews[i,currentHeroSlotIndex]!=null){
                 battlefieldView.cardViews[i,currentHeroSlotIndex].transform.DOScale(1.1f,0.15f);
@@ -59,6 +63,7 @@ public class HeroSystem : Singleton<HeroSystem>
         heroes.Add(hero);
         HeroView heroView = HeroCreator.Instance.CreateHeroView(hero,Vector3.zero,Quaternion.identity,0);
         heroViews.Add(heroView);
+        BattleSystem.Instance.OnCardAttack += heroView.hero.heroData.HeroEffect.OnCardAttack;
     }
 
     public void RemoveHero(Hero hero){
@@ -66,5 +71,6 @@ public class HeroSystem : Singleton<HeroSystem>
         HeroView heroView = heroViews.Find(view => view.hero == hero);
         heroViews.Remove(heroView);
         Destroy(heroView.gameObject);
+        BattleSystem.Instance.OnCardAttack -= heroView.hero.heroData.HeroEffect.OnCardAttack;
     }
 }

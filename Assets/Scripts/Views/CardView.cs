@@ -27,6 +27,28 @@ public class CardView : MonoBehaviour
         this.y = y;
     }
 
+    public IEnumerator Shot(){
+        Tween tw =transform.DOScale(1.1f,0.075f).OnComplete(()=>{
+            transform.DOScale(1f,0.075f);
+        });
+        yield return tw.WaitForCompletion();
+
+        Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
+        bullet.Attack= attack;
+        // Debug.Log("bullet.Attack:"+bullet.Attack);
+        BulletView bulletView = BulletSystem.Instance.CreateBullet(
+            bullet,
+            transform.position,
+            transform.rotation);
+
+        BulletSystem.Instance.Shot(
+            bulletView,
+            transform.right*10);
+
+        BattleSystem.Instance.OnCardAttack?.Invoke(CardSystem.Instance.battlefieldView.cardViews[x,y]);
+        Debug.Log("on card attack triggered");
+    }
+
     public void UpdateUI(){
         attackText.text = attack.ToString();
     }
