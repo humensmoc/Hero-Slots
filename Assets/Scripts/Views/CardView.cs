@@ -31,7 +31,10 @@ public class CardView : MonoBehaviour
         Tween tw =transform.DOScale(1.1f,0.075f).OnComplete(()=>{
             transform.DOScale(1f,0.075f);
         });
-        yield return tw.WaitForCompletion();
+        // yield return tw.WaitForCompletion();
+        yield return new WaitForSeconds(0.3f);
+
+        yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
 
         Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
         bullet.Attack= attack;
@@ -46,7 +49,6 @@ public class CardView : MonoBehaviour
             transform.right*10);
 
         BattleSystem.Instance.OnCardAttack?.Invoke(CardSystem.Instance.battlefieldView.cardViews[x,y]);
-        Debug.Log("on card attack triggered");
     }
 
     public void UpdateUI(){

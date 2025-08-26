@@ -44,15 +44,22 @@ public class HeroEffect{
 
 public static class HeroLibrary
 {
+    // 辅助方法：返回空协程
+    private static System.Collections.IEnumerator EmptyCoroutine(){
+        yield return null;
+    }
+    
     public static List<HeroEffect> heroEffects = new List<HeroEffect>(){
             #region Hero_Alpha
             new HeroEffect(HeroType.Hero_Alpha)
                 .SetInitEvent((thisHeroView) => {
-                    BattleSystem.Instance.OnCardAttack+=((CardView)=>{
-                        if(CardView.y==thisHeroView.y){
-                           thisHeroView.StartCoroutine(thisHeroView.Shot());
+                    EventSystem.Instance.AddActionFunction((eventInfo) => {
+                        if(eventInfo.cardView.y == thisHeroView.y){
+                            return thisHeroView.Shot();
                         }
-                    });
+
+                        return EmptyCoroutine();
+                    },EventType.CardAttack);
                 }),
             #endregion
 
