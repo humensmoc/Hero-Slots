@@ -8,7 +8,7 @@ public class CardSystem : Singleton<CardSystem>
     public List<Card> cardsInDeck{get ; private set;}=new();
     public Card[,] cardsInBattlefield { get; private set; } = new Card[5, 5];
     public List<CardView> cardViews{get;private set;}=new();
-    [SerializeField] float cardPositionInterval = 0.15f;
+    [SerializeField] float cardPositionInterval;
     [SerializeField] Transform cardParent;  
     public BattlefieldView battlefieldView;
 
@@ -47,6 +47,8 @@ public class CardSystem : Singleton<CardSystem>
     /// <returns></returns>
     private IEnumerator DrawAllCardsPerformer(DrawAllCardsGA drawAllCardsGA)
     {
+        yield return HeroSystem.Instance.DrawAllHero();
+        
         // 检查cardsInDeck和cardsInBattlefield是否有效
         if (cardsInDeck == null || cardsInBattlefield == null)
             yield break;
@@ -73,6 +75,8 @@ public class CardSystem : Singleton<CardSystem>
         {
             yield return DrawCard(emptySlots);
         }
+
+        
     }
 
     /// <summary>
@@ -81,6 +85,9 @@ public class CardSystem : Singleton<CardSystem>
     /// <param name="nextTurnGA"></param>
     /// <returns></returns>
     private IEnumerator RemoveAllCardsPerformer(RemoveAllCardsGA removeAllCardsGA){
+
+        yield return HeroSystem.Instance.DiscardAllHero();
+
         for (int x = 0; x < cardsInBattlefield.GetLength(0); x++)
         {
             for (int y = 0; y < cardsInBattlefield.GetLength(1); y++)
@@ -89,10 +96,12 @@ public class CardSystem : Singleton<CardSystem>
                     continue;
                 cardsInDeck.Add(cardsInBattlefield[x,y]);
                 cardsInBattlefield[x,y] = null;
-                cardViews.Remove(battlefieldView.cardViews[x,y]);
+                cardViews.Remove(battlefieldView.cardViewsInBattlefield[x,y]);
                 yield return battlefieldView.RemoveCard(x,y);
             }
         }
+
+        
     }
 
 
@@ -168,7 +177,7 @@ public class CardSystem : Singleton<CardSystem>
 
         CardView cardView = CardCreator.Instance.CreateCardView(card, cardParent.position, cardParent.rotation,pos.x,pos.y);
         cardViews.Add(cardView);
-        battlefieldView.cardViews[pos.x, pos.y] = cardView; 
+        battlefieldView.cardViewsInBattlefield[pos.x, pos.y] = cardView; 
         Tween tween = cardView.transform.DOLocalMove(cardParent.position + new Vector3(pos.x * cardPositionInterval, pos.y * cardPositionInterval, 0), 0.15f);
         yield return tween.WaitForCompletion();
     }

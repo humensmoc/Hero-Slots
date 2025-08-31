@@ -19,7 +19,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
     }
 
     public bool PlayerCanHover(){
-        if(PlayerIsDragging)return false;
+        if(PlayerIsDragging||CardSelectSystem.Instance.cardSelectPanelView.body.activeSelf)return false;
         return true;
     }
 

@@ -2,17 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Unity.Burst.CompilerServices;
 
 public class HeroSystem : Singleton<HeroSystem>
 {
     public BattlefieldView battlefieldView;
-    public List<Hero> heroes{get;private set;}=new();
+    public List<Hero> heroesInDeck{get;private set;}=new();
+    public List<Hero> heroesInBattlefield{get;private set;}=new List<Hero>(){null, null, null, null, null};
     public List<HeroView> heroViews{get;private set;}=new();
     public int currentHeroSlotIndex{get;private set;}=0;
+    public float heroPositionInterval ;
+    public Transform heroParent;
 
-    public void Init(HeroData heroData){
-        AddHero(new Hero(heroData));
-        MoveToSlot(heroViews[0],battlefieldView.heroSlotViews[0]);
+    public void Init(List<HeroData> heroDatas){
+        // AddHero(new Hero(heroData));
+        // MoveToSlot(heroViews[0],battlefieldView.heroSlotViews[0]);
+
+        foreach(HeroData heroData in heroDatas){
+            heroesInDeck.Add(new Hero(heroData));
+        }
+
+        StartCoroutine(DrawAllHero());
+        
     }
 
     public void MoveToSlot(HeroView heroView,HeroSlotView heroSlotView){
@@ -32,8 +43,8 @@ public class HeroSystem : Singleton<HeroSystem>
         //放大当前英雄槽位上的卡牌
         if(currentHeroSlotIndex==battlefieldView.heroSlotViews.IndexOf(heroSlotView)) return;
         for(int i=0;i<5;i++){
-            if(battlefieldView.cardViews[i,currentHeroSlotIndex]!=null){
-                battlefieldView.cardViews[i,currentHeroSlotIndex].transform.DOScale(1f,0.15f);
+            if(battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex]!=null){
+                battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex].transform.DOScale(1f,0.15f);
             }
         }
 
@@ -43,34 +54,80 @@ public class HeroSystem : Singleton<HeroSystem>
 
         Debug.Log("currentHeroSlotIndex: " + currentHeroSlotIndex);
         for(int i=0;i<5;i++){
-            if(battlefieldView.cardViews[i,currentHeroSlotIndex]!=null){
-                battlefieldView.cardViews[i,currentHeroSlotIndex].transform.DOScale(1.1f,0.15f);
+            if(battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex]!=null){
+                battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex].transform.DOScale(1.1f,0.15f);
             }
         }
     }
-
-    public void TestHeroEffect(HeroView heroView){
-        List<CardView> cardViews = BattleSystem.Instance.GetCardViewByYIndex(heroView.y);
-        foreach(CardView cardView in cardViews){
-            cardView.attack += 1;
-            cardView.UpdateUI();
-            heroView.attack += 1;
-            heroView.UpdateUI();
-        }
-    }
-
     public void AddHero(Hero hero){
-        heroes.Add(hero);
+        heroesInDeck.Add(hero);
         HeroView heroView = HeroCreator.Instance.CreateHeroView(hero,Vector3.zero,Quaternion.identity,0);
         heroViews.Add(heroView);
-        BattleSystem.Instance.OnCardAttack += heroView.hero.heroData.HeroEffect.OnCardAttack;
     }
 
     public void RemoveHero(Hero hero){
-        heroes.Remove(hero);
+        heroesInDeck.Remove(hero);
         HeroView heroView = heroViews.Find(view => view.hero == hero);
         heroViews.Remove(heroView);
         Destroy(heroView.gameObject);
-        BattleSystem.Instance.OnCardAttack -= heroView.hero.heroData.HeroEffect.OnCardAttack;
+    }
+
+    public IEnumerator DrawHero(){
+        // 检查战场是否有空位
+        List<int> emptyIndexs = new List<int>();
+        for(int i = 0; i < heroesInBattlefield.Count; i++){
+            if(heroesInBattlefield[i] == null)
+                emptyIndexs.Add(i);
+        }
+        if(emptyIndexs.Count==0)
+            yield break;
+
+        // 获取空位的索引
+        int randomY=emptyIndexs[Random.Range(0, emptyIndexs.Count)];
+
+        Hero hero= heroesInDeck[Random.Range(0, heroesInDeck.Count)];
+        heroesInDeck.Remove(hero);
+        heroesInBattlefield[randomY] = hero;
+
+        // 创建英雄视图
+        HeroView heroView = HeroCreator.Instance.CreateHeroView(hero,Vector3.zero,Quaternion.identity,randomY);
+        heroViews.Add(heroView);
+
+        Tween tween = heroView.transform.DOLocalMove(heroParent.position + new Vector3(0, randomY * heroPositionInterval, 0), 0.15f);
+        yield return tween.WaitForCompletion();
+    }
+
+    public IEnumerator DiscardHero(Hero hero){
+
+        heroesInDeck.Add(hero);
+        // 找到英雄在战场中的索引并设置为null
+        int index = heroesInBattlefield.IndexOf(hero);
+        if(index >= 0){
+            heroesInBattlefield[index] = null;
+        }
+        HeroView heroView = heroViews.Find(view => view.hero == hero);
+        heroView.Remove();
+        
+        heroViews.Remove(heroView);
+        
+        Tween tween = heroView.transform.DOScale(Vector3.zero,0.15f).OnComplete(()=>{
+            Destroy(heroView.gameObject);
+        });
+        yield return tween.WaitForCompletion();
+    }
+
+    public IEnumerator DrawAllHero(){
+        while(heroesInDeck.Count > 0){
+            yield return DrawHero();
+        }
+    }
+
+    public IEnumerator DiscardAllHero(){
+        for(int i = 0; i < heroesInBattlefield.Count; i++){
+            if(heroesInBattlefield[i] != null){
+                yield return DiscardHero(heroesInBattlefield[i]);
+            }
+        }
+        yield return new WaitForSeconds(0.15f);
     }
 }

@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CardType{
+public enum CardName{
     Card_A,
     Card_B,
+    Card_C,
 }
 
 public class CardEffect{
-    public CardType cardType;
+    public CardName CardNameEnum;
     public Action<CardView> OnNearCardAttack;
     public Action OnGenerate;
     public Action OnDestroy;
@@ -18,8 +19,8 @@ public class CardEffect{
     public Action<CardView> OnOtherCardDestroy;
     public Action<CardView> OnOtherCardGenerate;
 
-    public CardEffect(CardType cardType){
-        this.cardType = cardType;
+    public CardEffect(CardName cardNameEnum){
+        this.CardNameEnum = cardNameEnum;
     }
 
     public CardEffect SetInitEvent(Action action){
@@ -47,10 +48,24 @@ public static class CardLibrary
 {
     public static List<CardEffect> cardEffects = new List<CardEffect>(){
     #region Card_A
-        new CardEffect(CardType.Card_A)
+        new CardEffect(CardName.Card_A)
             .SetInitEvent(() => {
                 Debug.Log("Card_A Init");
-            })
+            }),
+    #endregion
+
+    #region Card_B
+        new CardEffect(CardName.Card_B)
+            .SetInitEvent(() => {
+                Debug.Log("Card_B Init");
+            }),
+    #endregion
+
+    #region Card_C
+        new CardEffect(CardName.Card_C)
+            .SetInitEvent(() => {
+                Debug.Log("Card_C Init");
+            }),
     #endregion
     };
 }

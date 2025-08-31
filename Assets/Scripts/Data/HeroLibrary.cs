@@ -13,6 +13,8 @@ public class HeroEffect{
     public Action<HeroView> OnInit;
     public Action<HeroView> OnDead;
     public Action<int,int> OnMove;
+    public Action<CardView,HeroView> OnGetCharged;
+    public Action<HeroView> OnSkill;
     public Action<int,int> OnOtherHeroMove;
     public Action OnAttack;
     public Action<HeroView> OnOtherHeroAttack;
@@ -26,7 +28,9 @@ public class HeroEffect{
     public HeroEffect Clone(){
         HeroEffect clone = new HeroEffect(heroType);
         clone.OnInit=OnInit;
+        clone.OnSkill=OnSkill;
         clone.OnMove=OnMove;
+        clone.OnGetCharged=OnGetCharged;
         clone.OnOtherHeroMove=OnOtherHeroMove;
         clone.OnOtherHeroAttack=OnOtherHeroAttack;
         clone.OnCardGenerate=OnCardGenerate;
@@ -37,6 +41,11 @@ public class HeroEffect{
 
     public HeroEffect SetInitEvent(Action<HeroView> action){
         OnInit = action;
+        return this;
+    }
+
+    public HeroEffect SetSkillEvent(Action<HeroView> action){
+        OnSkill = action;
         return this;
     }
 
@@ -53,18 +62,28 @@ public static class HeroLibrary
             #region Hero_Alpha
             new HeroEffect(HeroType.Hero_Alpha)
                 .SetInitEvent((thisHeroView) => {
-                    EventSystem.Instance.AddActionFunction((eventInfo) => {
+
+                    Func<EventInfo, IEnumerator> cardAttackAction = (eventInfo) => {
                         if(eventInfo.cardView.y == thisHeroView.y){
                             return thisHeroView.Shot();
                         }
 
                         return EmptyCoroutine();
-                    },EventType.CardAttack);
+                    };
+                    
+                    EventSystem.Instance.AddAction(cardAttackAction,EventType.CardAttack);
+
+                    thisHeroView.hero.heroData.HeroEffect.OnDead = (heroView) => {
+                        EventSystem.Instance.RemoveAction(cardAttackAction,EventType.CardAttack);
+                    };  
                 }),
             #endregion
 
             #region Hero_Beta
             new HeroEffect(HeroType.Hero_Beta)
+                .SetSkillEvent((heroView) => {
+                    Debug.Log("Hero_Beta Skill");
+                })
             #endregion
         };
 }

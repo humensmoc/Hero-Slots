@@ -17,6 +17,7 @@ public class TurnSystem : Singleton<TurnSystem>
 #region Performer
     public IEnumerator NextTurnPerformer(NextTurnGA nextTurnGA){
         Debug.Log("Next Turn");
+
         yield return null;
     }
 #endregion

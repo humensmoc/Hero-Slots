@@ -11,20 +11,25 @@ public class CardView : MonoBehaviour
     public HoverInfoPanelData hoverInfoPanelData{get;private set;}
     public int x;
     public int y;
-    public int attack;
 
 
-    [SerializeField] private SpriteRenderer image;
+    [SerializeField] private SpriteRenderer CardImage;
+    [SerializeField] private SpriteRenderer ElementImage;
     [SerializeField] private TMP_Text attackText;
 
     public void Init(Card card,int x,int y){
         this.card = card;
-        image.sprite = card.Image;
-        attack = card.Attack;
-        attackText.text = attack.ToString();
-        hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Card, image.sprite, card.Name, card.Description);
+        CardImage.sprite = card.Image;
+        attackText.text = card.Attack.ToString();
+        hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Card, CardImage.sprite, card.Name, card.Description);
         this.x = x;
         this.y = y;
+        UpdateUI();
+    }
+
+    void Update()
+    {
+        UpdateUI();
     }
 
     public IEnumerator Shot(){
@@ -37,7 +42,7 @@ public class CardView : MonoBehaviour
         yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
 
         Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
-        bullet.Attack= attack;
+        bullet.Attack= card.Attack;
         // Debug.Log("bullet.Attack:"+bullet.Attack);
         BulletView bulletView = BulletSystem.Instance.CreateBullet(
             bullet,
@@ -48,11 +53,31 @@ public class CardView : MonoBehaviour
             bulletView,
             transform.right*10);
 
-        BattleSystem.Instance.OnCardAttack?.Invoke(CardSystem.Instance.battlefieldView.cardViews[x,y]);
+        yield return ChargeHero();
+    }
+
+    public IEnumerator ChargeHero(){
+        foreach(HeroView heroView in HeroSystem.Instance.heroViews){
+            if(heroView.y == y&&card.ElementType==heroView.hero.ElementType){
+                heroView.hero.heroData.HeroEffect.OnGetCharged?.Invoke(this,heroView);
+                yield return heroView.GetCharged();
+            }
+        }
+        yield return null;
     }
 
     public void UpdateUI(){
-        attackText.text = attack.ToString();
+        if(card == null) return;
+        attackText.text = card.Attack.ToString();
+        ElementImage.color = card.ElementType switch{
+            ElementType.Element_Fire => Color.red,
+            ElementType.Element_Water => Color.blue,
+            ElementType.Element_Earth => Color.green,   
+            ElementType.Element_Air => Color.yellow,
+            ElementType.Element_Light => Color.white,
+            ElementType.Element_Dark => Color.black,
+            _ => Color.white,
+        };
     }
 
     void OnMouseEnter()

@@ -7,7 +7,6 @@ using Unity.VisualScripting;
 
 public class BattleSystem : Singleton<BattleSystem>
 {
-    public Action<CardView> OnCardAttack;
 
     void OnEnable()
     {
@@ -34,7 +33,7 @@ public class BattleSystem : Singleton<BattleSystem>
                 if(CardSystem.Instance.cardsInBattlefield[x,y]==null)
                     continue;
                 
-                yield return CardSystem.Instance.battlefieldView.cardViews[x,y].Shot();
+                yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y].Shot();
             }
         }
     }
@@ -42,8 +41,10 @@ public class BattleSystem : Singleton<BattleSystem>
     private IEnumerator AllHeroShotPerformer(AllHeroShotGA allHeroShotGA){
         for(int i=0;i<HeroSystem.Instance.heroViews.Count;i++){
             HeroView heroView = HeroSystem.Instance.heroViews[i];
-            yield return heroView.Shot();
-
+            // 检查HeroView是否仍然有效
+            if(heroView != null && heroView.gameObject != null){
+                yield return heroView.Shot();
+            }
         }
     }
 

@@ -3,25 +3,48 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HeroView : MonoBehaviour
 {
+    public Hero hero{get;private set;}
+    
     public int y;
+
+    //interact
+    public Vector3 dragOffset;
     [SerializeField] private LayerMask dropLayerMask;
     [SerializeField] private Vector3 startPosition;
+    public HoverInfoPanelData hoverInfoPanelData{get;private set;}  
+    public bool isMouseIn = false;
+
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer elementImage;
     [SerializeField] private TMP_Text attackText;
-    public Hero hero{get;private set;}
-    public HoverInfoPanelData hoverInfoPanelData{get;private set;}
-    public int attack;
+    [SerializeField] private Image energyBar;
+    [SerializeField] private TMP_Text energyText;
+    [SerializeField] private Image energyBarOutLine;
+
+
+
+    
 
     public void Init(Hero hero,int y){
         this.hero = hero;
         spriteRenderer.sprite = hero.Image;
-        attack = hero.Attack;
-        attackText.text = attack.ToString();
+        attackText.text = hero.Attack.ToString();
         hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Hero, spriteRenderer.sprite, hero.Name, hero.Description);
         this.y = y;
+        UpdateUI();
+    }
+
+    void Update()
+    {
+        UpdateUI();
+
+        if(isMouseIn&&hero.isSkillCharged&&Input.GetMouseButtonDown(1)){
+            CastSkill();
+        }
     }
 
     public IEnumerator Shot(){
@@ -34,7 +57,7 @@ public class HeroView : MonoBehaviour
         yield return tw2.WaitForCompletion();
         
         Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
-        bullet.Attack=attack;
+        bullet.Attack=hero.Attack;
 
         // Debug.Log("bullet.Attack:"+bullet.Attack);
 
@@ -48,15 +71,66 @@ public class HeroView : MonoBehaviour
             transform.right*10);
     }
 
-    public void UpdateUI(){
-        attackText.text = attack.ToString();
+    public IEnumerator GetCharged(){
+        Tween tw =energyBar.transform.DOScale(1.1f,0.075f).OnComplete(()=>{
+            hero.Energy++;
+            if(hero.Energy >= hero.MaxEnergy){
+                
+            }
+            energyBar.transform.DOScale(1f,0.075f);
+        });
+        yield return tw.WaitForCompletion();
     }
 
+    public void CastSkill(){
+        hero.heroData.HeroEffect.OnSkill?.Invoke(this);
+        hero.Energy = 0;
+    }
+
+    public void UpdateUI(){
+        if(hero == null) return;
+        attackText.text = hero.Attack.ToString();
+        energyBar.fillAmount = (float)hero.Energy / hero.MaxEnergy;
+        energyText.text = hero.Energy.ToString() + "/" + hero.MaxEnergy.ToString();
+        energyBar.color = hero.ElementType switch{
+            ElementType.Element_Fire => Color.red,
+            ElementType.Element_Water => Color.blue,
+            ElementType.Element_Earth => Color.green,
+            ElementType.Element_Air => Color.yellow,
+            ElementType.Element_Light => Color.white,
+            ElementType.Element_Dark => Color.black,
+            _ => Color.white,
+        };
+        elementImage.color = hero.ElementType switch{
+            ElementType.Element_Fire => Color.red,
+            ElementType.Element_Water => Color.blue,
+            ElementType.Element_Earth => Color.green,
+            ElementType.Element_Air => Color.yellow,
+            ElementType.Element_Light => Color.white,
+            ElementType.Element_Dark => Color.black,
+            _ => Color.white,
+        };
+        if(hero.isSkillCharged  ){
+            energyBarOutLine.gameObject.SetActive(true);
+        }
+        else{
+            energyBarOutLine.gameObject.SetActive(false);
+        }
+    }
+
+    public void Remove(){
+        hero.heroData.HeroEffect.OnDead?.Invoke(this);
+    }
+
+
+
+#region 鼠标事件
     void OnMouseEnter()
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1.1f, 0.15f);
         HoverInfoController.Instance.MouseEnterTargetView(hoverInfoPanelData);
+        isMouseIn=true;
     }
 
     void OnMouseExit()
@@ -64,31 +138,48 @@ public class HeroView : MonoBehaviour
         if(!InteractionSystem.Instance.PlayerCanHover())return;
         transform.DOScale(1f, 0.15f);
         HoverInfoController.Instance.MouseExitTargetView(hoverInfoPanelData);
+        isMouseIn=true;
     }
 
     void OnMouseDown(){
+        
         if(!InteractionSystem.Instance.PlayerCanInteract())return;
-        transform.position=MouseUtil.GetMousePostionInWorldSpace(-1);
-        startPosition = transform.position;
+        if(!hero.isSkillCharged)return;
 
+        dragOffset = transform.position - MouseUtil.GetMousePostionInWorldSpace(-1);
+        transform.position=MouseUtil.GetMousePostionInWorldSpace(-1)+dragOffset;
+        startPosition = transform.position;
+        
         InteractionSystem.Instance.PlayerIsDragging = true;
+
+        if(isMouseIn)HoverInfoController.Instance.MouseExitTargetView(hoverInfoPanelData);
+
+        
     }
 
     void OnMouseDrag()
     {
         if(!InteractionSystem.Instance.PlayerCanInteract()) return;
-        transform.position=MouseUtil.GetMousePostionInWorldSpace(-1);
+        if(!hero.isSkillCharged)return;
+
+
+        transform.position = MouseUtil.GetMousePostionInWorldSpace(-1) + dragOffset;
     }
 
     void OnMouseUp()
     {
         if(!InteractionSystem.Instance.PlayerCanInteract()) return;
-        InteractionSystem.Instance.PlayerIsDragging = false;
-        transform.position=MouseUtil.GetMousePostionInWorldSpace(-1);
+        if(!hero.isSkillCharged)return;
 
-        if(Physics.Raycast(transform.position,Vector3.forward,out RaycastHit hit,10f,dropLayerMask))
+
+        InteractionSystem.Instance.PlayerIsDragging = false;
+        transform.position=MouseUtil.GetMousePostionInWorldSpace(-1)+dragOffset;
+        dragOffset = Vector3.zero;
+
+        Vector3 mousePosition = MouseUtil.GetMousePostionInWorldSpace(-1);
+        if(Physics.Raycast(mousePosition,Vector3.forward,out RaycastHit hit,10f,dropLayerMask))
         {
-            HeroSlotView heroSlotView =InteractionSystem.Instance.EndTargeting(MouseUtil.GetMousePostionInWorldSpace(-1));
+            HeroSlotView heroSlotView =InteractionSystem.Instance.EndTargeting(mousePosition);
 
             HeroSystem.Instance.MoveToSlot(this,heroSlotView);
         }
@@ -96,5 +187,10 @@ public class HeroView : MonoBehaviour
         {
             transform.position=startPosition;
         }
+
+        if(isMouseIn)HoverInfoController.Instance.MouseEnterTargetView(hoverInfoPanelData);
     }
+
+#endregion
+
 }

@@ -10,5 +10,7 @@ public class HeroData : ScriptableObject
     [field: SerializeField] public Sprite Image {get; private set;}
     [field: SerializeField] public int Attack {get; private set;}
     [field: SerializeField] public HeroType HeroType {get; private set;}
+    [field: SerializeField] public int MaxEnergy {get; private set;}
+    [field: SerializeField] public ElementType ElementType {get; private set;}
     [field: SerializeField] public HeroEffect HeroEffect ;
 }

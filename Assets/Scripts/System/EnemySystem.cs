@@ -36,6 +36,9 @@ public class EnemySystem : Singleton<EnemySystem>
             yield return new WaitForSeconds(0.15f);
         }
         yield return null;
+        
+        CardSelectSystem.Instance.ShowCardSelectView();
+        CardSelectSystem.Instance.Refresh();
     }
 
     private void DrawAllCardsPostReaction_MoveAllEnemy(DrawAllCardsGA drawAllCardsGA){

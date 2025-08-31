@@ -22,7 +22,7 @@ public class EventSystem : Singleton<EventSystem>
     List<Func<EventInfo, IEnumerator>> CardAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
     List<Func<EventInfo, IEnumerator>> HeroAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
     
-    public void AddActionFunction(Func<EventInfo, IEnumerator> actionFunction,EventType eventType){
+    public void AddAction(Func<EventInfo, IEnumerator> actionFunction,EventType eventType){
         switch(eventType){
             case EventType.CardAttack:
                 CardAttack_ActionFunctions.Add(actionFunction);
@@ -33,7 +33,7 @@ public class EventSystem : Singleton<EventSystem>
         }
     }
     
-    public void RemoveActionFunction(Func<EventInfo, IEnumerator> actionFunction,EventType eventType){
+    public void RemoveAction(Func<EventInfo, IEnumerator> actionFunction,EventType eventType){
         switch(eventType){
             case EventType.CardAttack:
                 CardAttack_ActionFunctions.Remove(actionFunction);
