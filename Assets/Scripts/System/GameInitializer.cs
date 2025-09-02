@@ -6,7 +6,7 @@ public class GameInitializer : Singleton<GameInitializer>
 {
     [SerializeField] public  List<CardData> testCardDatas;
     [SerializeField] public List<HeroData> testHeroDatas;
-    public BulletData testBulletData;
+    [SerializeField] public List<BulletData> testBulletDatas;
     public EnemyData testEnemyData;
     void Start()
     {

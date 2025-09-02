@@ -12,15 +12,11 @@ public class EnemyView : MonoBehaviour
     [SerializeField] private Color originalColor;
     public int x;
     public int y;
-    public int MaxHealth{get;private set;}
-    public int Health{get;private set;}
 
     public void Init(Enemy enemy,int x,int y){
         this.enemy = enemy;
         image.sprite = enemy.Image;
-        MaxHealth = enemy.Health;
-        Health = enemy.Health;
-        healthText.text = "HP:"+Health.ToString()+"/"+MaxHealth.ToString();
+        healthText.text = "HP:"+enemy.Health.ToString()+"/"+enemy.MaxHealth.ToString();
         originalColor = image.color;
         this.x = x;
         this.y = y;
@@ -32,10 +28,25 @@ public class EnemyView : MonoBehaviour
         });
         image.transform.DOShakePosition(0.1f,0.1f,10,90,false,true);
 
-        Health -= damage;
-        healthText.text = "HP:"+Health.ToString()+"/"+MaxHealth.ToString();
-        if(Health <= 0){
-            EnemySystem.Instance.RemoveEnemy(enemy);
+        enemy.Health -= damage;
+        ObjectPool.Instance.CreateJumpingText(damage.ToString(),transform.position,JumpingTextType.Normal);
+        healthText.text = "HP:"+enemy.Health.ToString()+"/"+enemy.MaxHealth.ToString();
+        
+        Debug.Log($"Enemy {enemy.Name} took {damage} damage, health now: {enemy.Health}");
+        
+        if(enemy.Health <= 0){
+            Debug.Log($"Enemy {enemy.Name} should be removed, calling RemoveEnemy");
+            // EnemySystem.Instance.RemoveEnemy(enemy);
+
+            if(EnemySystem.Instance.enemies.Contains(enemy)){
+                EnemySystem.Instance.RemoveEnemy(enemy);
+            }
+
+            if(EnemySystem.Instance.enemyViews.Contains(this)){
+                EnemySystem.Instance.enemyViews.Remove(this);
+            }
+
+            Destroy(this.gameObject);
         }
     }
 }

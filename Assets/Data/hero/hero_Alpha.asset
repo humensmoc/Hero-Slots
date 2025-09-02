@@ -18,5 +18,5 @@ MonoBehaviour:
   <Image>k__BackingField: {fileID: 329727683, guid: 75a5e5c8e7784af41887f621e36fdd7f, type: 3}
   <Attack>k__BackingField: 3
   <HeroType>k__BackingField: 0
-  <MaxEnergy>k__BackingField: 5
+  <MaxEnergy>k__BackingField: 3
   <ElementType>k__BackingField: 0

@@ -56,7 +56,30 @@ public class HeroView : MonoBehaviour
         Tween tw2 =transform.DOShakePosition(0.1f,0.1f,10,90,false,true);
         yield return tw2.WaitForCompletion();
         
-        Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
+        Bullet bullet=new Bullet(GameInitializer.Instance.testBulletDatas[0]);
+        bullet.Attack=hero.Attack;
+
+        // Debug.Log("bullet.Attack:"+bullet.Attack);
+
+        BulletView bulletView = BulletSystem.Instance.CreateBullet(
+            bullet,
+            transform.position,
+            transform.rotation);
+
+        BulletSystem.Instance.Shot(
+            bulletView,
+            transform.right*10);
+    }
+
+        public IEnumerator Shot(Bullet bullet){
+        Tween tw =transform.DOScale(1.1f,0.075f).OnComplete(()=>{
+            transform.DOScale(1f,0.075f);
+        });
+        yield return tw.WaitForCompletion();
+
+        Tween tw2 =transform.DOShakePosition(0.1f,0.1f,10,90,false,true);
+        yield return tw2.WaitForCompletion();
+
         bullet.Attack=hero.Attack;
 
         // Debug.Log("bullet.Attack:"+bullet.Attack);
@@ -75,7 +98,9 @@ public class HeroView : MonoBehaviour
         Tween tw =energyBar.transform.DOScale(1.1f,0.075f).OnComplete(()=>{
             hero.Energy++;
             if(hero.Energy >= hero.MaxEnergy){
-                
+                ObjectPool.Instance.CreateJumpingText("Skill Ready !",transform.position,JumpingTextType.Normal);
+            }else{
+                ObjectPool.Instance.CreateJumpingText("Energy:"+hero.Energy.ToString() + "/" + hero.MaxEnergy.ToString(),transform.position,JumpingTextType.Normal);
             }
             energyBar.transform.DOScale(1f,0.075f);
         });
@@ -144,7 +169,7 @@ public class HeroView : MonoBehaviour
     void OnMouseDown(){
         
         if(!InteractionSystem.Instance.PlayerCanInteract())return;
-        if(!hero.isSkillCharged)return;
+        // if(!hero.isSkillCharged)return;
 
         dragOffset = transform.position - MouseUtil.GetMousePostionInWorldSpace(-1);
         transform.position=MouseUtil.GetMousePostionInWorldSpace(-1)+dragOffset;
@@ -160,7 +185,7 @@ public class HeroView : MonoBehaviour
     void OnMouseDrag()
     {
         if(!InteractionSystem.Instance.PlayerCanInteract()) return;
-        if(!hero.isSkillCharged)return;
+        // if(!hero.isSkillCharged)return;
 
 
         transform.position = MouseUtil.GetMousePostionInWorldSpace(-1) + dragOffset;
@@ -169,7 +194,7 @@ public class HeroView : MonoBehaviour
     void OnMouseUp()
     {
         if(!InteractionSystem.Instance.PlayerCanInteract()) return;
-        if(!hero.isSkillCharged)return;
+        // if(!hero.isSkillCharged)return;
 
 
         InteractionSystem.Instance.PlayerIsDragging = false;
@@ -179,9 +204,21 @@ public class HeroView : MonoBehaviour
         Vector3 mousePosition = MouseUtil.GetMousePostionInWorldSpace(-1);
         if(Physics.Raycast(mousePosition,Vector3.forward,out RaycastHit hit,10f,dropLayerMask))
         {
+            //移动到heroSlotView
             HeroSlotView heroSlotView =InteractionSystem.Instance.EndTargeting(mousePosition);
+            // int fromIndex = HeroSystem.Instance.currentHeroSlotIndex;
 
             HeroSystem.Instance.MoveToSlot(this,heroSlotView);
+            // int toIndex = HeroSystem.Instance.currentHeroSlotIndex;
+
+            // //交换位置
+            // Hero exchangeHero =HeroSystem.Instance.heroesInBattlefield[toIndex];
+            // if(exchangeHero!=null){
+            //     HeroView exchangeHeroView = HeroSystem.Instance.GetHeroView(exchangeHero);
+            //     HeroSlotView exchangeHeroSlotView = HeroSystem.Instance.battlefieldView.heroSlotViews[fromIndex];
+
+            //     HeroSystem.Instance.MoveToSlot(exchangeHeroView,exchangeHeroSlotView);
+            // }
         }
         else
         {

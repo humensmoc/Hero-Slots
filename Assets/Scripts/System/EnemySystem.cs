@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using Unity.Mathematics;
 
 public class EnemySystem : Singleton<EnemySystem>
 {
     public List<Enemy> enemies{get;private set;}=new();
     public List<EnemyView> enemyViews{get;private set;}=new();
     [SerializeField] Transform enemyParent;
+    public int[] enemyPositionYs={0,1,2,3,4};
 
     void OnEnable()
     {
@@ -26,7 +29,7 @@ public class EnemySystem : Singleton<EnemySystem>
 
 
     public void Init(EnemyData enemyData){
-        AddEnemy(new Enemy(enemyData));
+        AddEnemy(enemyData,1);
     }
 
     public IEnumerator MoveAllEnemyPerformer(MoveAllEnemyGA moveAllEnemyGA){
@@ -52,23 +55,40 @@ public class EnemySystem : Singleton<EnemySystem>
     }
 
     private IEnumerator AddEnemyPerformer(AddEnemyGA addEnemyGA){
-        AddEnemy(new Enemy(addEnemyGA.enemyData));
+        AddEnemy(addEnemyGA.enemyData,Mathf.Min(TurnSystem.Instance.currentTurn/3+1,5));
         yield return new WaitForSeconds(0.15f);
     }
 
-    public void AddEnemy(Enemy enemy){
-        enemies.Add(enemy);
-        int yIndex = Random.Range(0,5);
-        EnemyView enemyView = EnemyCreator.Instance.CreateEnemyView(enemy,enemyParent.position+new Vector3(0,yIndex*1.2f,0),Quaternion.identity,0,yIndex);
-        enemyViews.Add(enemyView);
+    public void AddEnemy(EnemyData enemyData,int Count){
+
+        
+        int[] emptyYIndexs = enemyPositionYs;
+        for(int i=0;i<Count;i++){
+            Enemy enemy=new Enemy(enemyData);
+
+            enemy.Health+=math.max(2*TurnSystem.Instance.currentTurn,0);
+            
+            enemies.Add(enemy);
+
+            int yIndex = emptyYIndexs[UnityEngine.Random.Range(0,emptyYIndexs.Length)];
+            EnemyView enemyView = EnemyCreator.Instance.CreateEnemyView(enemy,enemyParent.position+new Vector3(0,yIndex*1.2f,0),Quaternion.identity,0,yIndex);
+            enemyViews.Add(enemyView);
+
+            emptyYIndexs = emptyYIndexs.Where(y => y != yIndex).ToArray();
+        }
     }
 
     public void RemoveEnemy(Enemy enemy){           
-        enemies.Remove(enemy);
+        Debug.Log($"RemoveEnemy called for {enemy.Name}");
+        
         EnemyView enemyView = enemyViews.Find(view => view.enemy == enemy);
         if(enemyView != null){
+            Debug.Log($"Found EnemyView for {enemy.Name}, removing and destroying");
             enemyViews.Remove(enemyView);
+            enemies.Remove(enemy);
             Destroy(enemyView.gameObject);
+        }else{
+            Debug.LogError($"Could not find EnemyView for enemy {enemy.Name}!");
         }
     }
 }

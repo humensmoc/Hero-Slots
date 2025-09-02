@@ -31,14 +31,17 @@ public class BulletView : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Enemy")){
-            // BulletCollisionGA bulletCollisionGA = new BulletCollisionGA(bullet,other.gameObject,this);
-            // ActionSystem.Instance.AddReaction(bulletCollisionGA);
             EnemyView enemyView = other.gameObject.GetComponent<EnemyView>();
                 if(enemyView != null){
                     enemyView.Damage(bullet.Attack);
+                    bullet.bulletData.BulletEffect.OnHitEnemy?.Invoke(this,enemyView);
                 }
             
-            Destroy(this.gameObject);
+            bullet.Life--;
+            if(bullet.Life <= 0){
+                Destroy(this.gameObject);
+            }
+            
         }
     }
 }

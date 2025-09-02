@@ -13,6 +13,14 @@ public class BulletCreator : Singleton<BulletCreator>
         bulletInstance.transform.DOScale(Vector3.one, 0.15f);
         BulletView bulletView = bulletInstance.GetComponent<BulletView>();
         bulletView.Init(bullet);
+
+        foreach(BulletEffect bulletEffect in BulletLibrary.bulletEffects){
+            if(bulletEffect.BulletNameEnum == bullet.bulletData.BulletNameEnum){
+                bullet.bulletData.BulletEffect = bulletEffect.Clone();
+            }
+        }
+
+        bullet.bulletData.BulletEffect.OnInit?.Invoke(bulletView);
         return bulletView;
     }
 }

@@ -8,9 +8,12 @@ public class Enemy
     public string Name => enemyData.Name;
     public string Description => enemyData.Description;
     public Sprite Image => enemyData.Image;
-    public int Health => enemyData.Health;
+    public int MaxHealth;
+    public int Health;
 
     public Enemy(EnemyData enemyData){
         this.enemyData = enemyData;
+        Health = enemyData.Health;
+        MaxHealth = enemyData.Health;
     }
 }

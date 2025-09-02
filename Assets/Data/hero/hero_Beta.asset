@@ -15,7 +15,7 @@ MonoBehaviour:
   <Name>k__BackingField: hero_Beta
   <Description>k__BackingField: hero_Beta description <link="keyword"><b>keyword</b></link>
   <Image>k__BackingField: {fileID: -745084330, guid: 75a5e5c8e7784af41887f621e36fdd7f, type: 3}
-  <Attack>k__BackingField: 4
+  <Attack>k__BackingField: 3
   <HeroType>k__BackingField: 1
-  <MaxEnergy>k__BackingField: 3
+  <MaxEnergy>k__BackingField: 1
   <ElementType>k__BackingField: 1

@@ -12,4 +12,5 @@ public class CardData : ScriptableObject
     [field: SerializeField] public int Attack {get; private set;}
     [field: SerializeField] public ElementType ElementType {get; private set;}
     [field: SerializeField] public CardName CardNameEnum {get; private set;}
+    [field: SerializeField] public CardEffect CardEffect;
 }

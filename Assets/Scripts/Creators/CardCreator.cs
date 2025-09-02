@@ -13,6 +13,14 @@ public class CardCreator : Singleton<CardCreator>
         cardInstance.transform.DOScale(Vector3.one, 0.15f);
         CardView cardView = cardInstance.GetComponent<CardView>();
         cardView.Init(card,x,y);
+
+        foreach(CardEffect cardEffect in CardLibrary.cardEffects){
+            if(cardEffect.CardNameEnum == card.cardData.CardNameEnum){
+                card.cardData.CardEffect = cardEffect.Clone();
+            }
+        }
+
+        card.cardData.CardEffect.OnInit?.Invoke(cardView);
         return cardView;
     }
 }

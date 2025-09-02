@@ -40,24 +40,24 @@ public class HeroSystem : Singleton<HeroSystem>
 
         // TestHeroEffect(heroView);
 
-        //放大当前英雄槽位上的卡牌
-        if(currentHeroSlotIndex==battlefieldView.heroSlotViews.IndexOf(heroSlotView)) return;
-        for(int i=0;i<5;i++){
-            if(battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex]!=null){
-                battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex].transform.DOScale(1f,0.15f);
-            }
-        }
+        // // 放大当前英雄槽位上的卡牌
+        // if(currentHeroSlotIndex==battlefieldView.heroSlotViews.IndexOf(heroSlotView)) return;
+        // for(int i=0;i<5;i++){
+        //     if(battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex]!=null){
+        //         battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex].transform.DOScale(1f,0.15f);
+        //     }
+        // }
 
         Debug.Log("heroView.y: " + heroView.y+" , currentHeroSlotIndex: " + currentHeroSlotIndex);
         
         currentHeroSlotIndex=battlefieldView.heroSlotViews.IndexOf(heroSlotView);
 
-        Debug.Log("currentHeroSlotIndex: " + currentHeroSlotIndex);
-        for(int i=0;i<5;i++){
-            if(battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex]!=null){
-                battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex].transform.DOScale(1.1f,0.15f);
-            }
-        }
+        // Debug.Log("currentHeroSlotIndex: " + currentHeroSlotIndex);
+        // for(int i=0;i<5;i++){
+        //     if(battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex]!=null){
+        //         battlefieldView.cardViewsInBattlefield[i,currentHeroSlotIndex].transform.DOScale(1.1f,0.15f);
+        //     }
+        // }
     }
     public void AddHero(Hero hero){
         heroesInDeck.Add(hero);
@@ -129,5 +129,9 @@ public class HeroSystem : Singleton<HeroSystem>
             }
         }
         yield return new WaitForSeconds(0.15f);
+    }
+
+    public HeroView GetHeroView(Hero hero){
+        return heroViews.Find(view => view.hero == hero);
     }
 }

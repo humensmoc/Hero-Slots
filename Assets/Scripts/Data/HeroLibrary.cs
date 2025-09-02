@@ -76,14 +76,25 @@ public static class HeroLibrary
                     thisHeroView.hero.heroData.HeroEffect.OnDead = (heroView) => {
                         EventSystem.Instance.RemoveAction(cardAttackAction,EventType.CardAttack);
                     };  
+                })
+                .SetSkillEvent((heroView) => {
+                    // Debug.Log("Hero_Alpha Skill");
+                    heroView.hero.Attack+=1;
                 }),
             #endregion
 
             #region Hero_Beta
             new HeroEffect(HeroType.Hero_Beta)
                 .SetSkillEvent((heroView) => {
-                    Debug.Log("Hero_Beta Skill");
-                })
+                    // Debug.Log("Hero_Beta Skill");
+                    heroView.hero.Attack+=TurnSystem.Instance.currentTurn;
+                    BulletData explodeBulletData = GameInitializer.Instance.testBulletDatas.Find(bulletData => bulletData.BulletNameEnum == BulletName.Bullet_Transparent);
+                    if(explodeBulletData != null){
+                        heroView.StartCoroutine(heroView.Shot(new Bullet(explodeBulletData)));
+                    }else{
+                        // Debug.LogError("Bullet_Explode not found in testBulletDatas!");
+                    }
+                }),
             #endregion
         };
 }

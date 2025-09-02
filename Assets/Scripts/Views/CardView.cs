@@ -41,7 +41,7 @@ public class CardView : MonoBehaviour
 
         yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
 
-        Bullet bullet=new Bullet(GameInitializer.Instance.testBulletData);
+        Bullet bullet=new Bullet(GameInitializer.Instance.testBulletDatas[0]);
         bullet.Attack= card.Attack;
         // Debug.Log("bullet.Attack:"+bullet.Attack);
         BulletView bulletView = BulletSystem.Instance.CreateBullet(
