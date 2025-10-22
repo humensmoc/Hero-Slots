@@ -14,7 +14,7 @@ public class BulletView : MonoBehaviour
 
     public void Init(Bullet bullet){
         this.bullet = bullet;
-        image.sprite = bullet.Image;
+        image.sprite = ResourcesLoader.LoadBulletSprite(bullet.bulletData.BulletNameEnum.ToString());
         attackText.text = bullet.Attack.ToString();
     }
 
@@ -34,7 +34,7 @@ public class BulletView : MonoBehaviour
             EnemyView enemyView = other.gameObject.GetComponent<EnemyView>();
                 if(enemyView != null){
                     enemyView.Damage(bullet.Attack);
-                    bullet.bulletData.BulletEffect.OnHitEnemy?.Invoke(this,enemyView);
+                    bullet.bulletData.OnHitEnemy?.Invoke(this,enemyView);
                 }
             
             bullet.Life--;

@@ -1,16 +1,78 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using System;
 
-[CreateAssetMenu(menuName ="Data/Card")]
-public class CardData : ScriptableObject
-{
-    [field: SerializeField] public string Name {get; private set;}
-    [field: SerializeField][field: TextArea(3,10)] public string Description {get; private set;}
-    [field: SerializeField] public Sprite Image {get; private set;}
-    [field: SerializeField] public int Attack {get; private set;}
-    [field: SerializeField] public ElementType ElementType {get; private set;}
-    [field: SerializeField] public CardName CardNameEnum {get; private set;}
-    [field: SerializeField] public CardEffect CardEffect;
+public class CardData{
+    public string Name;
+    public string Description;
+    public int Attack;
+    public ElementType ElementType;
+    public CardName CardNameEnum;
+
+    public Action OnEnter;
+    public Func<CardView, IEnumerator> OnTurnStart;
+    public Action OnLeave;
+    public Func<CardView, IEnumerator> OnAttack;
+    public Action<CardView> OnInit;
+
+    public CardData Clone(){
+        CardData clone = new CardData(CardNameEnum);
+        clone.Name = Name;
+        clone.Description = Description;
+        clone.Attack = Attack;
+        clone.ElementType = ElementType;
+        clone.CardNameEnum = CardNameEnum;
+        clone.OnInit = OnInit;
+        clone.OnEnter = OnEnter;
+        clone.OnLeave = OnLeave;
+        clone.OnAttack = OnAttack;
+        clone.OnTurnStart = OnTurnStart;
+        return clone;
+    }
+
+    public CardData(CardName cardNameEnum){
+        this.CardNameEnum = cardNameEnum;
+    }
+
+    public CardData SetDescription(string description){
+        Description = description;
+        return this;
+    }
+
+    public CardData SetAttack(int attack){
+        Attack = attack;
+        return this;
+    }
+
+    public CardData SetElementType(ElementType elementType){
+        ElementType = elementType;
+        return this;
+    }
+
+    public CardData SetOnInit(Action<CardView> action){
+        OnInit = action;
+        return this;
+    }
+
+    public CardData SetOnEnter(Action action){
+        OnEnter = action;
+        return this;
+    }
+
+    public CardData SetOnLeave(Action action){
+        OnLeave = action;
+        return this;
+    }
+
+    public CardData SetOnAttack(Func<CardView, IEnumerator> action){
+        OnAttack = action;
+        return this;
+    }
+
+    public CardData SetOnTurnStart(Func<CardView, IEnumerator> action){
+        OnTurnStart = action;
+        return this;
+    }
 }
+

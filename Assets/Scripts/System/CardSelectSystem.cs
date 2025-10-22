@@ -10,7 +10,7 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
     public CardSelectPanelView cardSelectPanelView;
     public GameObject cardSelectPanel;
     public GameObject cardSelectItemPrefab;
-    public List<CardData> cardDatas;
+    public List<CardData> cardDatas=new();
     public int optionCount;
 
     public Button refreshButton;
@@ -34,13 +34,12 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
     public void Refresh(){
         cardSelectPanelView.RemoveAllCardSelectItem();
         cardDatas.Clear();
-        List<CardData> allCard=new();
-        GameInitializer.Instance.testCardDatas.ForEach(cardData => allCard.Add(cardData));
+        CardLibrary.cardDatas.ForEach(cardData => cardDatas.Add(cardData.Clone()));
 
         for(int i=0;i<optionCount;i++){
-            if(allCard.Count == 0) break; // 防止从空列表抽取
+            if(cardDatas.Count == 0) break; // 防止从空列表抽取
             
-            CardData cardData=allCard.Draw();
+            CardData cardData=cardDatas.Draw();
             cardDatas.Add(cardData);
             cardSelectPanelView.AddCardSelectItem(cardData);
         }

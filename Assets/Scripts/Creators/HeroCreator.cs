@@ -13,14 +13,8 @@ public class HeroCreator : Singleton<HeroCreator>
         heroInstance.transform.DOScale(Vector3.one, 0.15f);
         HeroView heroView = heroInstance.GetComponent<HeroView>();
         heroView.Init(hero,y);
-
-        foreach(HeroEffect heroEffect in HeroLibrary.heroEffects){
-            if(heroEffect.heroType==heroView.hero.heroData.HeroType){
-                heroView.hero.heroData.HeroEffect=heroEffect.Clone();
-            }
-        }
-
-        heroView.hero.heroData.HeroEffect.OnInit?.Invoke(heroView);
+        
+        hero.heroData.OnInit?.Invoke(heroView);
 
         return heroView;
     }

@@ -50,7 +50,7 @@ public class EnemySystem : Singleton<EnemySystem>
     }
 
     private void MoveAllEnemyPostReaction_AddEnemy(MoveAllEnemyGA moveAllEnemyGA){
-        AddEnemyGA addEnemyGA = new AddEnemyGA(GameInitializer.Instance.testEnemyData);
+        AddEnemyGA addEnemyGA = new AddEnemyGA(EnemyLibrary.enemyDatas[0]);
         ActionSystem.Instance.AddReaction(addEnemyGA);
     }
 

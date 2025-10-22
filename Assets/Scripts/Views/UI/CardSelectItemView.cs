@@ -17,7 +17,7 @@ public class CardSelectItemView : MonoBehaviour,IPointerClickHandler,IPointerEnt
 
     public void Init(CardData cardData){
         this.cardData = cardData;
-        cardImage.sprite = cardData.Image;
+        cardImage.sprite = ResourcesLoader.LoadCardSprite(cardData.CardNameEnum.ToString());
         cardName.text = cardData.Name;
         cardDescription.text = cardData.Description;
         cardAttack.text = cardData.Attack.ToString();

@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class GameInitializer : Singleton<GameInitializer>
 {
-    [SerializeField] public  List<CardData> testCardDatas;
-    [SerializeField] public List<HeroData> testHeroDatas;
-    [SerializeField] public List<BulletData> testBulletDatas;
-    public EnemyData testEnemyData;
     void Start()
     {
-        CardSystem.Instance.Init(testCardDatas);  
-        HeroSystem.Instance.Init(testHeroDatas);
-        EnemySystem.Instance.Init(testEnemyData);
+        CardSystem.Instance.Init(CardLibrary.cardDatas);  
+        HeroSystem.Instance.Init(HeroLibrary.heroDatas);
+        EnemySystem.Instance.Init(EnemyLibrary.enemyDatas[0]);
         CardSelectSystem.Instance.Init();
     }
 

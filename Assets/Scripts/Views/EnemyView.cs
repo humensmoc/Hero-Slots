@@ -15,7 +15,7 @@ public class EnemyView : MonoBehaviour
 
     public void Init(Enemy enemy,int x,int y){
         this.enemy = enemy;
-        image.sprite = enemy.Image;
+        image.sprite = ResourcesLoader.LoadEnemySprite(enemy.Name);
         healthText.text = "HP:"+enemy.Health.ToString()+"/"+enemy.MaxHealth.ToString();
         originalColor = image.color;
         this.x = x;

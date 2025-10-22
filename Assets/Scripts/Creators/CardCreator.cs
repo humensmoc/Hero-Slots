@@ -14,13 +14,7 @@ public class CardCreator : Singleton<CardCreator>
         CardView cardView = cardInstance.GetComponent<CardView>();
         cardView.Init(card,x,y);
 
-        foreach(CardEffect cardEffect in CardLibrary.cardEffects){
-            if(cardEffect.CardNameEnum == card.cardData.CardNameEnum){
-                card.cardData.CardEffect = cardEffect.Clone();
-            }
-        }
-
-        card.cardData.CardEffect.OnInit?.Invoke(cardView);
+        card.CardData.OnInit?.Invoke(cardView);
         return cardView;
     }
 }

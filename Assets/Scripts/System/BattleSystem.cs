@@ -35,9 +35,9 @@ public class BattleSystem : Singleton<BattleSystem>
                 if(CardSystem.Instance.cardsInBattlefield[x,y]==null)
                     continue;
                 
-                if(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y].card.cardData.CardEffect.OnTurnStart!=null){
+                if(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y].card.CardData.OnTurnStart!=null){
                     yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y]
-                        .card.cardData.CardEffect.OnTurnStart(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y]);
+                        .card.CardData.OnTurnStart(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y]);
                 }
             }
         }

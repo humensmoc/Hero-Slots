@@ -31,7 +31,7 @@ public class HeroView : MonoBehaviour
 
     public void Init(Hero hero,int y){
         this.hero = hero;
-        spriteRenderer.sprite = hero.Image;
+        spriteRenderer.sprite = ResourcesLoader.LoadHeroSprite(hero.HeroType.ToString());
         attackText.text = hero.Attack.ToString();
         hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Hero, spriteRenderer.sprite, hero.Name, hero.Description);
         this.y = y;
@@ -56,7 +56,7 @@ public class HeroView : MonoBehaviour
         Tween tw2 =transform.DOShakePosition(0.1f,0.1f,10,90,false,true);
         yield return tw2.WaitForCompletion();
         
-        Bullet bullet=new Bullet(GameInitializer.Instance.testBulletDatas[0]);
+        Bullet bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
         bullet.Attack=hero.Attack;
 
         // Debug.Log("bullet.Attack:"+bullet.Attack);
@@ -108,7 +108,7 @@ public class HeroView : MonoBehaviour
     }
 
     public void CastSkill(){
-        hero.heroData.HeroEffect.OnSkill?.Invoke(this);
+        hero.heroData.OnSkill?.Invoke(this);
         hero.Energy = 0;
     }
 
@@ -144,7 +144,7 @@ public class HeroView : MonoBehaviour
     }
 
     public void Remove(){
-        hero.heroData.HeroEffect.OnDead?.Invoke(this);
+        hero.heroData.OnDead?.Invoke(this);
     }
 
 

@@ -22,7 +22,7 @@ public class CardView : MonoBehaviour
 
     public void Init(Card card,int x,int y){
         this.card = card;
-        CardImage.sprite = card.Image;
+        CardImage.sprite = ResourcesLoader.LoadCardSprite(card.CardData.CardNameEnum.ToString());
         attackText.text = card.Attack.ToString();
         hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Card, CardImage.sprite, card.Name, card.Description);
         this.x = x;
@@ -43,13 +43,13 @@ public class CardView : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         // 如果有OnAttack效果，则作为协程执行
-        if(card.cardData.CardEffect.OnAttack != null){
-            yield return card.cardData.CardEffect.OnAttack(this);
+        if(card.CardData.OnAttack != null){
+            yield return card.CardData.OnAttack(this);
         }
 
         yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
 
-        Bullet bullet=new Bullet(GameInitializer.Instance.testBulletDatas[0]);
+        Bullet bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
         bullet.Attack= card.Attack+tempAdditionalAttack;
         // Debug.Log("bullet.Attack:"+bullet.Attack);
         BulletView bulletView = BulletSystem.Instance.CreateBullet(
@@ -67,7 +67,7 @@ public class CardView : MonoBehaviour
     public IEnumerator ChargeHero(){
         foreach(HeroView heroView in HeroSystem.Instance.heroViews){
             if(heroView.y == y&&card.ElementType==heroView.hero.ElementType){
-                heroView.hero.heroData.HeroEffect.OnGetCharged?.Invoke(this,heroView);
+                heroView.hero.heroData.OnGetCharged?.Invoke(this,heroView);
                 yield return heroView.GetCharged();
             }
         }
