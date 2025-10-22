@@ -135,6 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   x: 0
   y: 0
+  tempAdditionalAttack: 0
   CardImage: {fileID: 1051925701827187257}
   ElementImage: {fileID: 1689887065065946711}
   attackText: {fileID: 4952198432440139773}
@@ -346,7 +347,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4495999251621830672
 Transform:
   m_ObjectHideFlags: 0

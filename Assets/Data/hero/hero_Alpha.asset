@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: hero_Alpha
   m_EditorClassIdentifier: 
   <Name>k__BackingField: hero_Alpha
-  <Description>k__BackingField: "\u540C\u6392\u5361\u724C\u653B\u51FB\u65F6\u6B64\u82F1\u96C4\u4E00\u540C\u653B\u51FB\n
-    <link=\"keyword\"><b>keyword</b></link>"
+  <Description>k__BackingField: "\u540C\u6392\u5361\u724C\u653B\u51FB\u65F6\u6B64\u82F1\u96C4\u4E00\u540C\u653B\u51FB\uFF1B\n\u83B7\u5F97+1\u653B\u51FB\u529B\uFF0C\u6BCF\u6B21\u4F7F\u7528\u989D\u5916+1\u3002\n"
   <Image>k__BackingField: {fileID: 329727683, guid: 75a5e5c8e7784af41887f621e36fdd7f, type: 3}
   <Attack>k__BackingField: 3
   <HeroType>k__BackingField: 0

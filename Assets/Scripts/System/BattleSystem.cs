@@ -28,6 +28,21 @@ public class BattleSystem : Singleton<BattleSystem>
 #region Performer
     private IEnumerator AllCardShotPerformer(AllCardShotGA allCardShotGA){
         // Debug.Log("AllCardShotPerformer");
+
+        //OnTurnStart
+        for(int x = 0; x < CardSystem.Instance.cardsInBattlefield.GetLength(0); x++){
+            for(int y = 0; y < CardSystem.Instance.cardsInBattlefield.GetLength(1); y++){
+                if(CardSystem.Instance.cardsInBattlefield[x,y]==null)
+                    continue;
+                
+                if(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y].card.cardData.CardEffect.OnTurnStart!=null){
+                    yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y]
+                        .card.cardData.CardEffect.OnTurnStart(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y]);
+                }
+            }
+        }
+    
+        //OnAttack
         for(int x = 0; x < CardSystem.Instance.cardsInBattlefield.GetLength(0); x++){
             for(int y = 0; y < CardSystem.Instance.cardsInBattlefield.GetLength(1); y++){
                 if(CardSystem.Instance.cardsInBattlefield[x,y]==null)

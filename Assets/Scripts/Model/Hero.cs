@@ -16,6 +16,7 @@ public class Hero
     public int MaxEnergy;
     public int Energy;
     public bool isSkillCharged=> Energy>=MaxEnergy;
+    public int value_1;
     public ElementType ElementType;
     public Hero(HeroData heroData){
         this.heroData = heroData;
@@ -26,6 +27,7 @@ public class Hero
         MaxEnergy = heroData.MaxEnergy;
         Energy = 0;
         ElementType = heroData.ElementType;
+        value_1 = 0;
     }
 
     

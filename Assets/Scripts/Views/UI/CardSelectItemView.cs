@@ -21,6 +21,15 @@ public class CardSelectItemView : MonoBehaviour,IPointerClickHandler,IPointerEnt
         cardName.text = cardData.Name;
         cardDescription.text = cardData.Description;
         cardAttack.text = cardData.Attack.ToString();
+        elementImage.color = cardData.ElementType switch{
+            ElementType.Element_Fire => Color.red,
+            ElementType.Element_Water => Color.blue,
+            ElementType.Element_Earth => Color.green,   
+            ElementType.Element_Air => Color.yellow,
+            ElementType.Element_Light => Color.white,
+            ElementType.Element_Dark => Color.black,
+            _ => Color.white,
+        };
     }
 
     public void OnPointerClick(PointerEventData eventData){

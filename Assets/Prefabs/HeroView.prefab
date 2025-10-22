@@ -833,10 +833,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   y: 0
+  dragOffset: {x: 0, y: 0, z: 0}
   dropLayerMask:
     serializedVersion: 2
     m_Bits: 64
   startPosition: {x: 0, y: 0, z: 0}
+  isMouseIn: 0
   spriteRenderer: {fileID: 201457353699698743}
   elementImage: {fileID: 30397465720468590}
   attackText: {fileID: 5310374271254141835}
@@ -880,7 +882,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1399690783578769808
 Transform:
   m_ObjectHideFlags: 0

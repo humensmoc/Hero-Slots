@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: hero_Beta
   m_EditorClassIdentifier: 
   <Name>k__BackingField: hero_Beta
-  <Description>k__BackingField: hero_Beta description <link="keyword"><b>keyword</b></link>
+  <Description>k__BackingField: "\u83B7\u5F97\u7B49\u540C\u4E8E\u4E00\u4E9B\u653B\u51FB\u529B\uFF0C\u6570\u503C\u968F\u56DE\u5408\u6570\u589E\u52A0\uFF1B\n\u53D1\u5C04\u4E00\u9897\u80FD\u7A7F\u900F3\u4E2A\u654C\u4EBA\u7684\u5B50\u5F39\u3002"
   <Image>k__BackingField: {fileID: -745084330, guid: 75a5e5c8e7784af41887f621e36fdd7f, type: 3}
   <Attack>k__BackingField: 3
   <HeroType>k__BackingField: 1
-  <MaxEnergy>k__BackingField: 1
+  <MaxEnergy>k__BackingField: 3
   <ElementType>k__BackingField: 1

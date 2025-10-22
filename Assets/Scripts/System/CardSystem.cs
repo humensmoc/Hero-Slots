@@ -182,4 +182,22 @@ public class CardSystem : Singleton<CardSystem>
         yield return tween.WaitForCompletion();
     }
 
+    public CardView GetCardView(int x,int y){
+        return battlefieldView.cardViewsInBattlefield[x,y];
+    }
+
+    public CardView GetRandomCardView(){
+        return cardViews[Random.Range(0, cardViews.Count)];
+    }
+
+    public CardView GetRandomCardViewNotSelf(CardView cardView){
+        List<CardView> cardViews = new List<CardView>();
+        for(int i=0;i<this.cardViews.Count;i++){
+            if(this.cardViews[i]!=cardView){
+                cardViews.Add(this.cardViews[i]);
+            }
+        }
+        return cardViews[Random.Range(0, cardViews.Count)];
+    }
+
 }

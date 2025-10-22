@@ -6,8 +6,8 @@ using DG.Tweening;
 using System;
 
 public enum FlyingTextType{
-    Coin,
-    Gem
+    AddElectricity,
+    BloodGem
 }
 
 public class FlyingText : ObjectPoolItem
@@ -41,13 +41,13 @@ public class FlyingText : ObjectPoolItem
         this.text.color = color;
 
         switch(type){
-            case FlyingTextType.Coin:
+            case FlyingTextType.AddElectricity:
                 this.text.color = VFXConfig.Instance.coinColor;
                 this.text.fontSize=fontSize*2f;
                 // 初始化运动参数
                 currentHorizontalSpeed = UnityEngine.Random.Range(VFXConfig.Instance.horizontalSpeedMin, VFXConfig.Instance.horizontalSpeedMax);
                 break;
-            case FlyingTextType.Gem:
+            case FlyingTextType.BloodGem:
                 this.text.color=VFXConfig.Instance.gemColor;
                 this.text.fontSize=fontSize*2f;
                 // 初始化运动参数

@@ -12,6 +12,9 @@ public class CardView : MonoBehaviour
     public int x;
     public int y;
 
+    public int tempAdditionalAttack;
+    public int bloodGemCount;
+
 
     [SerializeField] private SpriteRenderer CardImage;
     [SerializeField] private SpriteRenderer ElementImage;
@@ -39,10 +42,15 @@ public class CardView : MonoBehaviour
         // yield return tw.WaitForCompletion();
         yield return new WaitForSeconds(0.3f);
 
+        // 如果有OnAttack效果，则作为协程执行
+        if(card.cardData.CardEffect.OnAttack != null){
+            yield return card.cardData.CardEffect.OnAttack(this);
+        }
+
         yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
 
         Bullet bullet=new Bullet(GameInitializer.Instance.testBulletDatas[0]);
-        bullet.Attack= card.Attack;
+        bullet.Attack= card.Attack+tempAdditionalAttack;
         // Debug.Log("bullet.Attack:"+bullet.Attack);
         BulletView bulletView = BulletSystem.Instance.CreateBullet(
             bullet,
@@ -66,9 +74,98 @@ public class CardView : MonoBehaviour
         yield return null;
     }
 
+#region Card Effect Methods 
+    /// <summary>
+    /// temporary buff
+    /// </summary>
+    /// <param name="attack"></param>
+    /// <param name="targetCardView"></param>
+    /// <returns></returns>
+    public IEnumerator AddTempAttack(int attack,CardView targetCardView){
+        bool flyingTextCompleted = false;
+        
+        ObjectPool.Instance.CreateFlyingTextToTarget("+"+attack,FlyingTextType.BloodGem,transform.position,targetCardView.transform.position,()=>{
+            targetCardView.tempAdditionalAttack+=attack;
+            targetCardView.UpdateUI();
+
+            flyingTextCompleted = true;
+        });
+        
+        // 等待飞行文本完成
+        yield return new WaitUntil(() => flyingTextCompleted);
+
+    }
+
+    /// <summary>
+    /// permanent buff
+    /// </summary>
+    /// <param name="attack"></param>
+    /// <param name="targetCardView"></param>
+    /// <returns></returns>
+    public IEnumerator AddPermentAttack(int attack,CardView targetCardView){
+        bool flyingTextCompleted = false;
+        
+        ObjectPool.Instance.CreateFlyingTextToTarget("+"+attack,FlyingTextType.BloodGem,transform.position,targetCardView.transform.position,()=>{
+            targetCardView.card.Attack+=attack;
+            targetCardView.UpdateUI();
+
+            flyingTextCompleted = true;
+        });
+        
+        // 等待飞行文本完成
+        yield return new WaitUntil(() => flyingTextCompleted);
+    }
+
+    public IEnumerator PowerUpBloodGem(int bloodGem){
+        bool flyingTextCompleted = false;
+        RuntimeEffectData.bloodGemValue+=bloodGem;
+        ObjectPool.Instance.CreateFlyingTextToTarget(
+            "+"+bloodGem,
+            FlyingTextType.BloodGem,
+            transform.position,
+            CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.bloodGemValueText.transform.position),
+            ()=>{
+                flyingTextCompleted = true;
+            }
+        );
+        yield return new WaitUntil(() => flyingTextCompleted);
+    }
+
+    public IEnumerator AddBloodGem(int count ,CardView targetCardView){
+        bool flyingTextCompleted = false;
+        targetCardView.bloodGemCount+=count;
+        ObjectPool.Instance.CreateFlyingTextToTarget(
+            "+"+count,
+            FlyingTextType.BloodGem,
+            transform.position,
+            targetCardView.transform.position,
+            ()=>{
+                flyingTextCompleted = true;
+            }
+        );
+        yield return new WaitUntil(() => flyingTextCompleted);
+    }
+
+    public IEnumerator AddElectricity(int electricity){
+        bool flyingTextCompleted = false;
+        RuntimeEffectData.electricity+=electricity;
+        ObjectPool.Instance.CreateFlyingTextToTarget(
+            "+"+electricity,
+            FlyingTextType.AddElectricity,
+            transform.position,
+            CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.electricityText.transform.position),
+            ()=>{
+                flyingTextCompleted = true;
+            }
+        );
+        yield return new WaitUntil(() => flyingTextCompleted);
+    }
+
+#endregion
+
     public void UpdateUI(){
         if(card == null) return;
-        attackText.text = card.Attack.ToString();
+        attackText.text = (card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue).ToString();
         ElementImage.color = card.ElementType switch{
             ElementType.Element_Fire => Color.red,
             ElementType.Element_Water => Color.blue,

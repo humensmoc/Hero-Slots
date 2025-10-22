@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: card_B
   m_EditorClassIdentifier: 
   <Name>k__BackingField: card_B
-  <Description>k__BackingField: card_B description <link="keyword"><b>keyword</b></link>
+  <Description>k__BackingField: "\u6CA1\u5565\u7528\uFF0C\u4F46\u662F\u662F\u84DD\u7684\u3002"
   <Image>k__BackingField: {fileID: 503966114, guid: 75a5e5c8e7784af41887f621e36fdd7f, type: 3}
   <Attack>k__BackingField: 1
   <ElementType>k__BackingField: 1
-  <CardNameEnum>k__BackingField: 0
+  <CardNameEnum>k__BackingField: 1
