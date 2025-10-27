@@ -91,4 +91,13 @@ public class EnemySystem : Singleton<EnemySystem>
             Debug.LogError($"Could not find EnemyView for enemy {enemy.Name}!");
         }
     }
+
+    public EnemyView GetNearestEnemyView(EnemyView enemyView){
+        List<EnemyView> othersEnemyViews=enemyViews.Where(view => view != enemyView).ToList();
+        if(othersEnemyViews.Count > 0){
+            return othersEnemyViews.OrderBy(view => Vector3.Distance(view.transform.position, enemyView.transform.position)).FirstOrDefault();
+        }else{
+            return null;
+        }
+    }
 }

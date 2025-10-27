@@ -6,7 +6,9 @@ using System;
 
 public enum ObjectPoolType{
     JumpingText,
-    FlyingText
+    FlyingText,
+    FlyingImage,
+    Line
 }
 
 public class ObjectPool : Singleton<ObjectPool>
@@ -97,6 +99,25 @@ public class ObjectPool : Singleton<ObjectPool>
             flyingText.Init(text, type, startPos, targetPos, onComplete);
         }else{
             Debug.LogError("FlyingText component not found on FlyingText prefab!");
+        }
+    }
+
+    public void CreateFlyingImageToTarget(Vector3 startPos, Vector3 targetPos, Action onComplete=null){
+        GameObject objectItem=GetObject(ObjectPoolType.FlyingImage);
+        FlyingImage flyingImage = objectItem.GetComponent<FlyingImage>();
+        if(flyingImage != null){
+            flyingImage.Init(startPos, targetPos, onComplete);
+        }else{
+            Debug.LogError("FlyingImage component not found on FlyingImage prefab!");
+        }
+    }
+    public void CreateLine(Vector3 startPos, Vector3 endPos){
+        GameObject objectItem=GetObject(ObjectPoolType.Line);
+        Line line = objectItem.GetComponent<Line>();
+        if(line != null){
+            line.Init(startPos, endPos);
+        }else{
+            Debug.LogError("Line component not found on Line prefab!");
         }
     }
 

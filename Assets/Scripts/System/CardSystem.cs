@@ -30,10 +30,9 @@ public class CardSystem : Singleton<CardSystem>
 
     public void Init(List<CardData> cardDatas)
     {
-        foreach (CardData cardData in cardDatas)
-        {
-            cardsInDeck.Add(new Card(cardData));
-        }
+        cardsInDeck.Add(new Card(cardDatas[Random.Range(0, cardDatas.Count)]));
+        cardsInDeck.Add(new Card(cardDatas[Random.Range(0, cardDatas.Count)]));
+        cardsInDeck.Add(new Card(cardDatas[Random.Range(0, cardDatas.Count)]));
 
         StartCoroutine(DrawAllCardsPerformer(new DrawAllCardsGA()));
     }
@@ -184,6 +183,35 @@ public class CardSystem : Singleton<CardSystem>
 
     public CardView GetCardView(int x,int y){
         return battlefieldView.cardViewsInBattlefield[x,y];
+    }
+
+    public List<CardView> GetAllNeighborCardView(CardView cardView){
+        List<CardView> cardViews = new List<CardView>();
+        // 获取cardView相邻的四个方向(x-1,y), (x+1,y), (x,y-1), (x,y+1)的CardView，排除越界情况
+        int x = cardView.x;
+        int y = cardView.y;
+        int[,] directions = new int[,] { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+        for (int i = 0; i < directions.GetLength(0); i++)
+        {
+            int nx = x + directions[i, 0];
+            int ny = y + directions[i, 1];
+            if (nx >= 0 && nx < 5 && ny >= 0 && ny < 5)
+            {
+                CardView neighbor = battlefieldView.cardViewsInBattlefield[nx, ny];
+                if (neighbor != null)
+                {
+                    cardViews.Add(neighbor);
+                }
+            }
+        }
+        return cardViews;
+    }
+
+    public CardView GetRandomOneNeighborCardView(CardView cardView){
+        List<CardView> cardViews = GetAllNeighborCardView(cardView);
+        if(cardViews.Count == 0)
+            return null;
+        return cardViews[Random.Range(0, cardViews.Count)];
     }
 
     public CardView GetRandomCardView(){

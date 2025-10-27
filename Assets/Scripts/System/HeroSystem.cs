@@ -15,12 +15,8 @@ public class HeroSystem : Singleton<HeroSystem>
     public Transform heroParent;
 
     public void Init(List<HeroData> heroDatas){
-        // AddHero(new Hero(heroData));
-        // MoveToSlot(heroViews[0],battlefieldView.heroSlotViews[0]);
 
-        foreach(HeroData heroData in heroDatas){
-            heroesInDeck.Add(new Hero(heroData));
-        }
+        heroesInDeck.Add(new Hero(heroDatas[Random.Range(0, heroDatas.Count)]));
 
         StartCoroutine(DrawAllHero());
         

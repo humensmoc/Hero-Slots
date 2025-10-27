@@ -48,7 +48,7 @@ public class BattleSystem : Singleton<BattleSystem>
                 if(CardSystem.Instance.cardsInBattlefield[x,y]==null)
                     continue;
                 
-                yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y].Shot();
+                yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y].Shot(null);
             }
         }
     }

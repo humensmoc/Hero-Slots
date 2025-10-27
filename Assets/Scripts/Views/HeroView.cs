@@ -122,7 +122,7 @@ public class HeroView : MonoBehaviour
             ElementType.Element_Water => Color.blue,
             ElementType.Element_Earth => Color.green,
             ElementType.Element_Air => Color.yellow,
-            ElementType.Element_Light => Color.white,
+            ElementType.Element_Electricity => Color.white,
             ElementType.Element_Dark => Color.black,
             _ => Color.white,
         };
@@ -131,7 +131,7 @@ public class HeroView : MonoBehaviour
             ElementType.Element_Water => Color.blue,
             ElementType.Element_Earth => Color.green,
             ElementType.Element_Air => Color.yellow,
-            ElementType.Element_Light => Color.white,
+            ElementType.Element_Electricity => Color.white,
             ElementType.Element_Dark => Color.black,
             _ => Color.white,
         };

@@ -35,22 +35,58 @@ public class CardView : MonoBehaviour
         UpdateUI();
     }
 
-    public IEnumerator Shot(){
+    public IEnumerator Shot(Bullet bullet){
         Tween tw =transform.DOScale(1.1f,0.075f).OnComplete(()=>{
             transform.DOScale(1f,0.075f);
         });
         // yield return tw.WaitForCompletion();
         yield return new WaitForSeconds(0.3f);
 
-        // 如果有OnAttack效果，则作为协程执行
+        yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
+
+        //如果攻击力小于等于0，不发射子弹
+        // if(card.Attack > 0){
+            // 先执行主射击
+            if(bullet == null){
+                bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
+                bullet.Attack= card.Attack+tempAdditionalAttack;
+            }else{
+                bullet.Attack= card.Attack+tempAdditionalAttack;
+            }
+
+            // Debug.Log("bullet.Attack:"+bullet.Attack);
+            BulletView bulletView = BulletSystem.Instance.CreateBullet(
+                bullet,
+                transform.position,
+                transform.rotation);
+
+            BulletSystem.Instance.Shot(
+                bulletView,
+                transform.right*10);
+        // }
+
+        // 主射击之后再执行OnAttack效果（比如附加射击）
         if(card.CardData.OnAttack != null){
             yield return card.CardData.OnAttack(this);
         }
 
-        yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
+        yield return ChargeHero();
+    }
 
-        Bullet bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
-        bullet.Attack= card.Attack+tempAdditionalAttack;
+    public IEnumerator AdditionalShot(Bullet bullet){
+        Tween tw =transform.DOScale(1.1f,0.075f).OnComplete(()=>{
+            transform.DOScale(1f,0.075f);
+        });
+        // yield return tw.WaitForCompletion();
+        yield return new WaitForSeconds(0.3f);
+
+        if(bullet == null){
+            bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
+            bullet.Attack= card.Attack+tempAdditionalAttack;
+        }else{
+            bullet.Attack= card.Attack+tempAdditionalAttack;
+        }
+
         // Debug.Log("bullet.Attack:"+bullet.Attack);
         BulletView bulletView = BulletSystem.Instance.CreateBullet(
             bullet,
@@ -60,8 +96,6 @@ public class CardView : MonoBehaviour
         BulletSystem.Instance.Shot(
             bulletView,
             transform.right*10);
-
-        yield return ChargeHero();
     }
 
     public IEnumerator ChargeHero(){
@@ -170,8 +204,8 @@ public class CardView : MonoBehaviour
             ElementType.Element_Fire => Color.red,
             ElementType.Element_Water => Color.blue,
             ElementType.Element_Earth => Color.green,   
-            ElementType.Element_Air => Color.yellow,
-            ElementType.Element_Light => Color.white,
+            ElementType.Element_Air => Color.white,
+            ElementType.Element_Electricity => Color.yellow,
             ElementType.Element_Dark => Color.black,
             _ => Color.white,
         };

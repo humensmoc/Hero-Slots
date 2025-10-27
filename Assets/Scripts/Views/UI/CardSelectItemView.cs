@@ -25,8 +25,8 @@ public class CardSelectItemView : MonoBehaviour,IPointerClickHandler,IPointerEnt
             ElementType.Element_Fire => Color.red,
             ElementType.Element_Water => Color.blue,
             ElementType.Element_Earth => Color.green,   
-            ElementType.Element_Air => Color.yellow,
-            ElementType.Element_Light => Color.white,
+            ElementType.Element_Air => Color.white,
+            ElementType.Element_Electricity => Color.yellow,
             ElementType.Element_Dark => Color.black,
             _ => Color.white,
         };
