@@ -68,7 +68,7 @@ public static class CardLibrary
 
     public static List<CardData> cardDatas = new List<CardData>(){
         new CardData(CardName.Battery)
-            .SetDescription("+1电能，处在角落时+3电能")
+            .SetDescription("回合开始时：+1电能，处在角落时+3电能")
             .SetAttack(1)
             .SetElementType(ElementType.Element_Electricity)
             .SetOnInit((cardView) => {
@@ -88,7 +88,7 @@ public static class CardLibrary
             }),
 
         new CardData(CardName.Electric_Current)
-            .SetDescription("消耗1点电能,攻击后发射一道电流")
+            .SetDescription("攻击时：消耗1点电能,攻击后发射一颗弹射子弹，弹射次数等同于剩余电能数")
             .SetAttack(3)
             .SetElementType(ElementType.Element_Electricity)
             .SetOnInit((cardView) => {
@@ -98,41 +98,73 @@ public static class CardLibrary
                 if(RuntimeEffectData.electricity <= 0)
                     return null;
 
-                RuntimeEffectData.electricity--;
-                return EffectComposer.Delayed(0.2f, cardView.AdditionalShot(
-                    new Bullet(BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == BulletName.Bullet_Bounce).Clone())));
+                return EffectComposer.Delayed(0.2f, 
+                    EffectComposer.Sequential(
+                        cardView.SpendElectricity(1),
+                        cardView.AdditionalShot(
+                            new Bullet(BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == BulletName.Bullet_Bounce).Clone())
+                        )
+                    )
+                );
             }),
 
         new CardData(CardName.Blood_Giver)
-            .SetDescription("回合开始时：随机单位获得1鲜血宝石")
+            .SetDescription("回合开始时：如果相邻单位中有红色单位，随机单位获得1鲜血宝石")
             .SetAttack(1)
             .SetElementType(ElementType.Element_Fire)
             .SetOnInit((cardView) => {
                 // Debug.Log("Card_Blood_Giver Init");
             })
             .SetOnTurnStart((cardView) => {
-                CardView targetCardView = CardSystem.Instance.GetRandomCardViewNotSelf(cardView);
-                if(targetCardView == null)
+                
+                bool hasFireNeighbor = false;
+                List<CardView> neighborCardViews = CardSystem.Instance.GetAllNeighborCardView(cardView);
+
+                if(neighborCardViews.Count == 0)
                     return null;
-                return cardView.AddBloodGem(3,targetCardView);
+
+                foreach(CardView neighborCardView in neighborCardViews){
+                    if(neighborCardView.card.ElementType == ElementType.Element_Fire){
+                        hasFireNeighbor = true;
+                        break;
+                    }
+                }
+                
+                if(hasFireNeighbor){
+                    CardView targetCardView = CardSystem.Instance.GetRandomCardViewNotSelf(cardView);
+                    if(targetCardView == null)
+                        return null;
+                    
+                    bool isHasFireBoyInSameRow = false;
+                    foreach(HeroView heroView in HeroSystem.Instance.heroViews){
+                        if(heroView.y == targetCardView.y&&heroView.hero.HeroType==HeroType.Fire_Boy){
+                            isHasFireBoyInSameRow = true;
+                            break;
+                        }
+                    }
+                    
+                    if(isHasFireBoyInSameRow){
+                        return cardView.AddBloodGem(1,targetCardView,true);
+                    }else{
+                        return cardView.AddBloodGem(1,targetCardView);
+                    }
+                }
+                return null;
             }),
 
         new CardData(CardName.Big_Blood_Giver)
-            .SetDescription("回合开始时：随机单位永久+1攻击")
+            .SetDescription("倒计时3回合：本局内的鲜血宝石额外+1攻击力")
             .SetAttack(1)
             .SetElementType(ElementType.Element_Fire)
             .SetOnInit((cardView) => {
                 // Debug.Log("Card_Big_Blood_Giver Init");
             })
-            .SetOnTurnStart((cardView) => {
-                CardView targetCardView = CardSystem.Instance.GetRandomCardViewNotSelf(cardView);
-                if(targetCardView == null)
-                    return null;
-                return cardView.AddPermentAttack(1,targetCardView);
+            .SetOnCountdownEnd(3, (cardView) => {
+                return cardView.PowerUpBloodGem(1);
             }),
 
         new CardData(CardName.Water_Droplets)
-            .SetDescription("发射穿透3个敌人的子弹")
+            .SetDescription("攻击时：发射穿透3个敌人的子弹")
             .SetAttack(2)
             .SetElementType(ElementType.Element_Water)
             .SetOnAttack((cardView) => {

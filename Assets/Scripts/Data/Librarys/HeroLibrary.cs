@@ -97,7 +97,7 @@ public static class HeroLibrary
         //     }),
 
         new HeroData(HeroType.Water_Core)
-            .SetDescription("获得同等攻击力，数值随回合数增加. 发射能穿透3个敌人的子弹")
+            .SetDescription("技能：获得等同于回合数的攻击力，之后发射1颗能穿透3个敌人的子弹")
             .SetAttack(3)
             .SetMaxEnergy(3)
             .SetElementType(ElementType.Element_Water)
@@ -110,7 +110,7 @@ public static class HeroLibrary
             }),
 
         new HeroData(HeroType.Electric_Man)
-            .SetDescription("同排电属性单位攻击时：+1电能。技能：+5电能")
+            .SetDescription("同排黄色单位攻击时：+1电能。技能：+5电能")
             .SetAttack(3)
             .SetMaxEnergy(3)
             .SetElementType(ElementType.Element_Electricity)
@@ -137,33 +137,15 @@ public static class HeroLibrary
             }),
 
         new HeroData(HeroType.Fire_Boy)
-            .SetDescription("同排火属性单位攻击时：随机单位临时攻击+5，另一个随机单位永久攻击+1")
+            .SetDescription("同排单位接收的鲜血宝石带来的增益永久保留。")
             .SetAttack(3)
             .SetMaxEnergy(3)
             .SetElementType(ElementType.Element_Fire)
-            .SetInitEvent((thisHeroView) => {
-                Func<EventInfo, IEnumerator> cardAttackAction = (eventInfo) => {
-                    if(eventInfo.cardView.y == thisHeroView.y&&eventInfo.cardView.card.ElementType==thisHeroView.hero.ElementType){
-
-                        return EffectComposer.Sequential(
-                            eventInfo.cardView.AddTempAttack(5, CardSystem.Instance.GetRandomCardViewNotSelf(eventInfo.cardView)),
-                            eventInfo.cardView.AddPermentAttack(1, CardSystem.Instance.GetRandomCardViewNotSelf(eventInfo.cardView))
-                        );
-
-                    }else{
-                        return EmptyCoroutine();
-                    }
-                };
-                
-                EventSystem.Instance.AddAction(cardAttackAction,EventType.CardAttack);
-
-                thisHeroView.hero.heroData.OnDead = (heroView) => {
-                    EventSystem.Instance.RemoveAction(cardAttackAction,EventType.CardAttack);
-                };  
-            }),
+            //在卡牌中实现
+            ,
 
         new HeroData(HeroType.Fire_Diarrhea)
-            .SetDescription("同排火属性单位攻击时：发射1颗子弹。技能：此英雄永久+1攻击力")
+            .SetDescription("同排红色单位攻击时：发射1颗子弹。技能：此英雄永久+1攻击力")
             .SetAttack(3)
             .SetMaxEnergy(3)
             .SetElementType(ElementType.Element_Fire)

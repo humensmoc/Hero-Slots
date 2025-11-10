@@ -19,6 +19,7 @@ public class CardView : MonoBehaviour
     [SerializeField] private SpriteRenderer CardImage;
     [SerializeField] private SpriteRenderer ElementImage;
     [SerializeField] private TMP_Text attackText;
+    [SerializeField] private TMP_Text countdownText;
 
     public void Init(Card card,int x,int y){
         this.card = card;
@@ -49,9 +50,9 @@ public class CardView : MonoBehaviour
             // 先执行主射击
             if(bullet == null){
                 bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
-                bullet.Attack= card.Attack+tempAdditionalAttack;
+                bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
             }else{
-                bullet.Attack= card.Attack+tempAdditionalAttack;
+                bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
             }
 
             // Debug.Log("bullet.Attack:"+bullet.Attack);
@@ -70,6 +71,14 @@ public class CardView : MonoBehaviour
             yield return card.CardData.OnAttack(this);
         }
 
+        if(card.CardData.OnCountdownEnd != null){
+            card.CardData.CurrentCountdown++;
+            if(card.CardData.CurrentCountdown >= card.CardData.MaxCountdown){
+                yield return card.CardData.OnCountdownEnd(this);
+                card.CardData.CurrentCountdown = 0;
+            }
+        }
+
         yield return ChargeHero();
     }
 
@@ -82,9 +91,9 @@ public class CardView : MonoBehaviour
 
         if(bullet == null){
             bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
-            bullet.Attack= card.Attack+tempAdditionalAttack;
+            bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
         }else{
-            bullet.Attack= card.Attack+tempAdditionalAttack;
+            bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
         }
 
         // Debug.Log("bullet.Attack:"+bullet.Attack);
@@ -118,7 +127,7 @@ public class CardView : MonoBehaviour
     public IEnumerator AddTempAttack(int attack,CardView targetCardView){
         bool flyingTextCompleted = false;
         
-        ObjectPool.Instance.CreateFlyingTextToTarget("+"+attack,FlyingTextType.BloodGem,transform.position,targetCardView.transform.position,()=>{
+        ObjectPool.Instance.CreateFlyingTextToTarget("+"+attack,FlyingTextType.AddBloodGem,transform.position,targetCardView.transform.position,()=>{
             targetCardView.tempAdditionalAttack+=attack;
             targetCardView.UpdateUI();
 
@@ -139,7 +148,7 @@ public class CardView : MonoBehaviour
     public IEnumerator AddPermentAttack(int attack,CardView targetCardView){
         bool flyingTextCompleted = false;
         
-        ObjectPool.Instance.CreateFlyingTextToTarget("+"+attack,FlyingTextType.BloodGem,transform.position,targetCardView.transform.position,()=>{
+        ObjectPool.Instance.CreateFlyingTextToTarget("+"+attack,FlyingTextType.AddBloodGem,transform.position,targetCardView.transform.position,()=>{
             targetCardView.card.Attack+=attack;
             targetCardView.UpdateUI();
 
@@ -152,28 +161,36 @@ public class CardView : MonoBehaviour
 
     public IEnumerator PowerUpBloodGem(int bloodGem){
         bool flyingTextCompleted = false;
-        RuntimeEffectData.bloodGemValue+=bloodGem;
+        
         ObjectPool.Instance.CreateFlyingTextToTarget(
             "+"+bloodGem,
-            FlyingTextType.BloodGem,
+            FlyingTextType.PowerUpBloodGem,
             transform.position,
             CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.bloodGemValueText.transform.position),
             ()=>{
+                RuntimeEffectData.bloodGemValue+=bloodGem;
                 flyingTextCompleted = true;
             }
         );
         yield return new WaitUntil(() => flyingTextCompleted);
     }
 
-    public IEnumerator AddBloodGem(int count ,CardView targetCardView){
+    public IEnumerator AddBloodGem(int count ,CardView targetCardView,bool isPermanent=false){
         bool flyingTextCompleted = false;
-        targetCardView.bloodGemCount+=count;
+        
         ObjectPool.Instance.CreateFlyingTextToTarget(
             "+"+count,
-            FlyingTextType.BloodGem,
+            FlyingTextType.AddBloodGem,
             transform.position,
             targetCardView.transform.position,
             ()=>{
+                if(isPermanent){
+                    targetCardView.card.Attack+=count*RuntimeEffectData.bloodGemValue;
+                    targetCardView.UpdateUI();
+                }else{
+                    targetCardView.bloodGemCount+=count;
+                    targetCardView.UpdateUI();
+                }
                 flyingTextCompleted = true;
             }
         );
@@ -182,13 +199,28 @@ public class CardView : MonoBehaviour
 
     public IEnumerator AddElectricity(int electricity){
         bool flyingTextCompleted = false;
-        RuntimeEffectData.electricity+=electricity;
         ObjectPool.Instance.CreateFlyingTextToTarget(
             "+"+electricity,
             FlyingTextType.AddElectricity,
             transform.position,
             CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.electricityText.transform.position),
             ()=>{
+                RuntimeEffectData.electricity+=electricity;
+                flyingTextCompleted = true;
+            }
+        );
+        yield return new WaitUntil(() => flyingTextCompleted);
+    }
+
+    public IEnumerator SpendElectricity(int electricity){
+        bool flyingTextCompleted = false;
+        ObjectPool.Instance.CreateFlyingTextToTarget(
+            "-"+electricity,
+            FlyingTextType.AddElectricity,
+            CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.electricityText.transform.position),
+            transform.position,
+            ()=>{
+                RuntimeEffectData.electricity-=electricity;
                 flyingTextCompleted = true;
             }
         );
@@ -200,6 +232,11 @@ public class CardView : MonoBehaviour
     public void UpdateUI(){
         if(card == null) return;
         attackText.text = (card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue).ToString();
+        if(card.CardData.MaxCountdown > 0){
+            countdownText.text = card.CardData.CurrentCountdown.ToString() + "/" + card.CardData.MaxCountdown.ToString();
+        }else{
+            countdownText.text = "";
+        }
         ElementImage.color = card.ElementType switch{
             ElementType.Element_Fire => Color.red,
             ElementType.Element_Water => Color.blue,

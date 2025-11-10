@@ -7,12 +7,14 @@ using System;
 
 public enum FlyingTextType{
     AddElectricity,
-    BloodGem
+    AddBloodGem,
+    PowerUpBloodGem,
 }
 
 public class FlyingText : ObjectPoolItem
 {
     public TMP_Text text;
+    public SpriteRenderer spriteRenderer;
 
     private float currentHorizontalSpeed;
     private float fontSize;
@@ -42,14 +44,23 @@ public class FlyingText : ObjectPoolItem
 
         switch(type){
             case FlyingTextType.AddElectricity:
-                this.text.color = VFXConfig.Instance.coinColor;
-                this.text.fontSize=fontSize*2f;
+                this.text.enabled=false;
+                this.spriteRenderer.enabled=true;
+                this.spriteRenderer.sprite=ResourcesLoader.LoadEffectSprite("AddElectricity");
                 // 初始化运动参数
                 currentHorizontalSpeed = UnityEngine.Random.Range(VFXConfig.Instance.horizontalSpeedMin, VFXConfig.Instance.horizontalSpeedMax);
                 break;
-            case FlyingTextType.BloodGem:
-                this.text.color=VFXConfig.Instance.gemColor;
-                this.text.fontSize=fontSize*2f;
+            case FlyingTextType.AddBloodGem:
+                this.text.enabled=false;
+                this.spriteRenderer.enabled=true;
+                this.spriteRenderer.sprite=ResourcesLoader.LoadEffectSprite("AddBloodGem");
+                // 初始化运动参数
+                currentHorizontalSpeed = UnityEngine.Random.Range(VFXConfig.Instance.horizontalSpeedMin, VFXConfig.Instance.horizontalSpeedMax);
+                break;
+            case FlyingTextType.PowerUpBloodGem:
+                this.text.enabled=false;
+                this.spriteRenderer.enabled=true;
+                this.spriteRenderer.sprite=ResourcesLoader.LoadEffectSprite("PowerUpBloodGem");
                 // 初始化运动参数
                 currentHorizontalSpeed = UnityEngine.Random.Range(VFXConfig.Instance.horizontalSpeedMin, VFXConfig.Instance.horizontalSpeedMax);
                 break;

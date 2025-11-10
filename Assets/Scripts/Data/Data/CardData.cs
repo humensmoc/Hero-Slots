@@ -9,18 +9,23 @@ public class CardData{
     public int Attack;
     public ElementType ElementType;
     public CardName CardNameEnum;
+    public int CurrentCountdown;
+    public int MaxCountdown;
 
     public Action OnEnter;
     public Func<CardView, IEnumerator> OnTurnStart;
     public Action OnLeave;
     public Func<CardView, IEnumerator> OnAttack;
     public Action<CardView> OnInit;
+    public Func<CardView, IEnumerator> OnCountdownEnd;
 
     public CardData Clone(){
         CardData clone = new CardData(CardNameEnum);
         clone.Name = Name;
         clone.Description = Description;
         clone.Attack = Attack;
+        clone.CurrentCountdown = CurrentCountdown;
+        clone.MaxCountdown = MaxCountdown;
         clone.ElementType = ElementType;
         clone.CardNameEnum = CardNameEnum;
         clone.OnInit = OnInit;
@@ -28,6 +33,7 @@ public class CardData{
         clone.OnLeave = OnLeave;
         clone.OnAttack = OnAttack;
         clone.OnTurnStart = OnTurnStart;
+        clone.OnCountdownEnd = OnCountdownEnd;
         return clone;
     }
 
@@ -72,6 +78,13 @@ public class CardData{
 
     public CardData SetOnTurnStart(Func<CardView, IEnumerator> action){
         OnTurnStart = action;
+        return this;
+    }
+
+    public CardData SetOnCountdownEnd(int maxCountdown,Func<CardView, IEnumerator> action){
+        MaxCountdown = maxCountdown;
+        CurrentCountdown = 0;
+        OnCountdownEnd = action;
         return this;
     }
 }

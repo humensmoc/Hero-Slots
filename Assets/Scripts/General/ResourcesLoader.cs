@@ -45,4 +45,13 @@ public static class ResourcesLoader
         }
         return null;
     }
+
+    public static Sprite LoadEffectSprite(string path)
+    {
+        if(Load<Sprite>("Sprite/Effect/"+path, out Sprite sprite))
+        {
+            return sprite;
+        }
+        return null;
+    }
 }
