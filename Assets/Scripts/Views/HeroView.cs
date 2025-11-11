@@ -47,7 +47,7 @@ public class HeroView : MonoBehaviour
         }
     }
 
-    public IEnumerator Shot(){
+    public IEnumerator Shot(bool isAdditionalShot=false,Bullet bullet=null){
         Tween tw =transform.DOScale(1.1f,0.075f).OnComplete(()=>{
             transform.DOScale(1f,0.075f);
         });
@@ -55,10 +55,14 @@ public class HeroView : MonoBehaviour
 
         Tween tw2 =transform.DOShakePosition(0.1f,0.1f,10,90,false,true);
         yield return tw2.WaitForCompletion();
-        
-        Bullet bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
-        bullet.Attack=hero.Attack;
 
+        //是否是默认子弹类型
+        if(bullet==null){
+            bullet=new Bullet(BulletLibrary.bulletDatas.Find(bulletData=>bulletData.BulletNameEnum==hero.BulletNameEnum).Clone());
+            bullet.Attack=hero.Attack;
+
+        }
+        
         // Debug.Log("bullet.Attack:"+bullet.Attack);
 
         BulletView bulletView = BulletSystem.Instance.CreateBullet(
@@ -69,6 +73,11 @@ public class HeroView : MonoBehaviour
         BulletSystem.Instance.Shot(
             bulletView,
             transform.right*10);
+
+        //是否是额外攻击
+        if(!isAdditionalShot){
+            //触发各种事件
+        }
     }
 
         public IEnumerator Shot(Bullet bullet){

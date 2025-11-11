@@ -18,6 +18,7 @@ public class Hero
     public int value_1;
     public HeroType HeroType;
     public ElementType ElementType;
+    public BulletName BulletNameEnum;
     public Hero(HeroData heroData){
         this.heroData = heroData.Clone();
         Name = this.heroData.Name;
@@ -27,6 +28,7 @@ public class Hero
         Energy = 0;
         ElementType = this.heroData.ElementType;
         HeroType = this.heroData.HeroType;
+        BulletNameEnum=this.heroData.BulletNameEnum;
     }
 
     

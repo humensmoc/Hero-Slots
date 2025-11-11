@@ -15,53 +15,7 @@ public enum CardName{
     Water_Droplets,
 }
 
-public class CardEffect{
-    public CardName CardNameEnum;
-    public Action OnEnter;
-    public Func<CardView, IEnumerator> OnTurnStart;
-    public Action OnLeave;
-    public Func<CardView, IEnumerator> OnAttack;
-    public Action<CardView> OnInit;
 
-    public CardEffect Clone(){
-        CardEffect clone = new CardEffect(CardNameEnum);
-        clone.OnInit = OnInit;
-        clone.OnEnter = OnEnter;
-        clone.OnLeave = OnLeave;
-        clone.OnAttack = OnAttack;
-        clone.OnTurnStart = OnTurnStart;
-        return clone;
-    }
-
-    public CardEffect(CardName cardNameEnum){
-        this.CardNameEnum = cardNameEnum;
-    }
-
-    public CardEffect SetOnInit(Action<CardView> action){
-        OnInit = action;
-        return this;
-    }
-
-    public CardEffect SetOnEnter(Action action){
-        OnEnter = action;
-        return this;
-    }
-
-    public CardEffect SetOnLeave(Action action){
-        OnLeave = action;
-        return this;
-    }
-
-    public CardEffect SetOnAttack(Func<CardView, IEnumerator> action){
-        OnAttack = action;
-        return this;
-    }
-
-    public CardEffect SetOnTurnStart(Func<CardView, IEnumerator> action){
-        OnTurnStart = action;
-        return this;
-    }
-}
 
 public static class CardLibrary
 {
@@ -94,19 +48,14 @@ public static class CardLibrary
             .SetOnInit((cardView) => {
                 Debug.Log("Card_Electric_Current Init");
             })
+            .SetBullet(BulletName.Bullet_Bounce)
             .SetOnAttack((cardView) => {
                 if(RuntimeEffectData.electricity <= 0)
                     return null;
-
-                return EffectComposer.Delayed(0.2f, 
-                    EffectComposer.Sequential(
-                        cardView.SpendElectricity(1),
-                        cardView.AdditionalShot(
-                            new Bullet(BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == BulletName.Bullet_Bounce).Clone())
-                        )
-                    )
-                );
-            }),
+                
+                return cardView.SpendElectricity(1);
+            })
+            ,
 
         new CardData(CardName.Blood_Giver)
             .SetDescription("回合开始时：如果相邻单位中有红色单位，随机单位获得1鲜血宝石")
@@ -167,8 +116,7 @@ public static class CardLibrary
             .SetDescription("攻击时：发射穿透3个敌人的子弹")
             .SetAttack(2)
             .SetElementType(ElementType.Element_Water)
-            .SetOnAttack((cardView) => {
-                return cardView.AdditionalShot(new Bullet(BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == BulletName.Bullet_Transparent).Clone()));
-            }),
+            .SetBullet(BulletName.Bullet_Transparent)
+            ,
     };
 }

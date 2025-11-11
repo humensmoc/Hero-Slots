@@ -9,6 +9,7 @@ public class CardData{
     public int Attack;
     public ElementType ElementType;
     public CardName CardNameEnum;
+    public BulletName BulletNameEnum;
     public int CurrentCountdown;
     public int MaxCountdown;
 
@@ -28,6 +29,7 @@ public class CardData{
         clone.MaxCountdown = MaxCountdown;
         clone.ElementType = ElementType;
         clone.CardNameEnum = CardNameEnum;
+        clone.BulletNameEnum = BulletNameEnum;
         clone.OnInit = OnInit;
         clone.OnEnter = OnEnter;
         clone.OnLeave = OnLeave;
@@ -48,6 +50,11 @@ public class CardData{
 
     public CardData SetAttack(int attack){
         Attack = attack;
+        return this;
+    }
+
+    public CardData SetBullet(BulletName bulletName){
+        BulletNameEnum=bulletName;
         return this;
     }
 

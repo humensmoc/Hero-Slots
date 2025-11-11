@@ -101,6 +101,7 @@ public static class HeroLibrary
             .SetAttack(3)
             .SetMaxEnergy(3)
             .SetElementType(ElementType.Element_Water)
+            .SetBullet(BulletName.Bullet_Transparent)
             .SetSkillEvent((heroView) => {
                 heroView.hero.Attack+=TurnSystem.Instance.currentTurn/3+1;
                 BulletData transparentBulletData = BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == BulletName.Bullet_Transparent);
@@ -153,7 +154,7 @@ public static class HeroLibrary
                 Func<EventInfo, IEnumerator> cardAttackAction = (eventInfo) => {
                     if(eventInfo.cardView.y == thisHeroView.y&&eventInfo.cardView.card.ElementType==thisHeroView.hero.ElementType){
 
-                        return thisHeroView.Shot();
+                        return thisHeroView.Shot(true);
 
                     }else{
                         return EmptyCoroutine();

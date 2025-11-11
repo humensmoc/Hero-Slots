@@ -13,6 +13,7 @@ public class Card
     public int Attack;
 
     public ElementType ElementType;
+    public BulletName BulletNameEnum;
     public CardName CardNameEnum;
 
     public Card(CardData cardData){
@@ -23,5 +24,6 @@ public class Card
 
         ElementType = this.CardData.ElementType;
         CardNameEnum = this.CardData.CardNameEnum;
+        BulletNameEnum = this.CardData.BulletNameEnum;
     }
 }

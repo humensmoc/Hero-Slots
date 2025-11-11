@@ -36,26 +36,24 @@ public class CardView : MonoBehaviour
         UpdateUI();
     }
 
-    public IEnumerator Shot(Bullet bullet){
+    public IEnumerator Shot(bool isAdditionalShot = false,Bullet bullet = null){
         Tween tw =transform.DOScale(1.1f,0.075f).OnComplete(()=>{
             transform.DOScale(1f,0.075f);
         });
         // yield return tw.WaitForCompletion();
         yield return new WaitForSeconds(0.3f);
-
-        yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
-
-        //如果攻击力小于等于0，不发射子弹
-        // if(card.Attack > 0){
-            // 先执行主射击
+#region shot
+        //如果攻击力小于等于0，不发射子弹       
+        if(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue>0){
+            
+            //子弹是否是特定类型
             if(bullet == null){
-                bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
+
+                bullet=new Bullet(BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == card.BulletNameEnum).Clone());
                 bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
-            }else{
-                bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
+                
             }
 
-            // Debug.Log("bullet.Attack:"+bullet.Attack);
             BulletView bulletView = BulletSystem.Instance.CreateBullet(
                 bullet,
                 transform.position,
@@ -64,22 +62,31 @@ public class CardView : MonoBehaviour
             BulletSystem.Instance.Shot(
                 bulletView,
                 transform.right*10);
-        // }
-
-        // 主射击之后再执行OnAttack效果（比如附加射击）
-        if(card.CardData.OnAttack != null){
-            yield return card.CardData.OnAttack(this);
         }
+        
+#endregion
 
-        if(card.CardData.OnCountdownEnd != null){
-            card.CardData.CurrentCountdown++;
-            if(card.CardData.CurrentCountdown >= card.CardData.MaxCountdown){
-                yield return card.CardData.OnCountdownEnd(this);
-                card.CardData.CurrentCountdown = 0;
+#region trigger event
+        //是否是额外攻击
+        if(!isAdditionalShot){
+            yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
+
+            // 主射击之后再执行OnAttack效果（比如附加射击）
+            if(card.CardData.OnAttack != null){
+                yield return card.CardData.OnAttack(this);
             }
-        }
 
-        yield return ChargeHero();
+            if(card.CardData.OnCountdownEnd != null){
+                card.CardData.CurrentCountdown++;
+                if(card.CardData.CurrentCountdown >= card.CardData.MaxCountdown){
+                    yield return card.CardData.OnCountdownEnd(this);
+                    card.CardData.CurrentCountdown = 0;
+                }
+            }
+
+            yield return ChargeHero();
+        }
+#endregion
     }
 
     public IEnumerator AdditionalShot(Bullet bullet){
