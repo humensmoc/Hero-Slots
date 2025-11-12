@@ -17,7 +17,6 @@ public class HeroSystem : Singleton<HeroSystem>
     public void Init(List<HeroData> heroDatas){
 
         heroesInDeck.Add(new Hero(heroDatas[Random.Range(0, heroDatas.Count)]));
-        heroesInDeck.Add(new Hero(heroDatas[Random.Range(0, heroDatas.Count)]));
 
         StartCoroutine(DrawAllHero());
         

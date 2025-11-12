@@ -20,6 +20,10 @@ public class TurnSystem : Singleton<TurnSystem>
     public IEnumerator NextTurnPerformer(NextTurnGA nextTurnGA){
         Debug.Log("Next Turn");
         currentTurn++;
+        if(currentTurn==3||currentTurn==6){
+            HeroSelectSystem.Instance.ShowHeroSelectView();
+            HeroSelectSystem.Instance.Refresh();
+        }
         yield return null;
     }
 #endregion

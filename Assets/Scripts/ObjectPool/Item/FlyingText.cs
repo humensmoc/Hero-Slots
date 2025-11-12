@@ -18,6 +18,7 @@ public class FlyingText : ObjectPoolItem
 
     private float currentHorizontalSpeed;
     private float fontSize;
+    private bool hasStartedFlying = false; // 标记是否已经开始飞行
     
     // 飞行到目标的参数
     private Vector3 startPosition;
@@ -27,7 +28,10 @@ public class FlyingText : ObjectPoolItem
     public Action onComplete;
 
     public void Update(){
-        DoEffect();
+        // 只在还没开始飞行时才调用DoEffect
+        if(!hasStartedFlying){
+            DoEffect();
+        }
     }
 
     public void Init(string text, FlyingTextType type, Vector3 startPos, Vector3 targetPos, Action onComplete){
@@ -36,6 +40,7 @@ public class FlyingText : ObjectPoolItem
         startPosition=startPos;
         targetPosition=targetPos;
         flyDuration=Vector3.Distance(startPosition,targetPosition)/VFXConfig.Instance.flySpeed;
+        hasStartedFlying = false; // 重置飞行标记
 
         // 重置文本透明度
         Color color = this.text.color;
@@ -71,7 +76,9 @@ public class FlyingText : ObjectPoolItem
 
     public void DoEffect(){
         // 检查是否已经在飞行中
-        if(!DOTween.IsTweening(transform)){
+        if(!DOTween.IsTweening(transform) && !hasStartedFlying){
+            hasStartedFlying = true; // 标记为已开始飞行
+            
             // 设置起始位置
             transform.position = startPosition;
             

@@ -27,8 +27,12 @@ public static class BulletLibrary
             fromEnemyView.transform.position, 
             nearestEnemyView.transform.position,
             ()=>{
-                nearestEnemyView.Damage(bulletView.bullet.Attack);
-                ElectricBounce(bulletView, nearestEnemyView, remainingBounces - 1);
+                // 在回调执行时再次检查目标是否仍然存在（可能在飞行过程中被其他攻击击杀）
+                if(nearestEnemyView != null && nearestEnemyView.gameObject != null && nearestEnemyView.gameObject.activeInHierarchy){
+                    nearestEnemyView.Damage(bulletView.bullet.Attack);
+                    ElectricBounce(bulletView, nearestEnemyView, remainingBounces - 1);
+                }
+                // 如果目标已经消失，则终止弹跳链
             }
         );
     }

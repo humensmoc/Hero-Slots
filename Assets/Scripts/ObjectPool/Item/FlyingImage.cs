@@ -13,11 +13,15 @@ public class FlyingImage : ObjectPoolItem
     private Vector3 startPosition;
     private Vector3 targetPosition;
     private float flyDuration;
+    private bool hasStartedFlying = false; // 标记是否已经开始飞行
 
     public Action onComplete;
 
     public void Update(){
-        DoEffect();
+        // 只在还没开始飞行时才调用DoEffect
+        if(!hasStartedFlying){
+            DoEffect();
+        }
     }
 
     public void Init(Vector3 startPos, Vector3 targetPos, Action onComplete){
@@ -25,11 +29,14 @@ public class FlyingImage : ObjectPoolItem
         targetPosition=targetPos;
         flyDuration=Vector3.Distance(startPosition,targetPosition)/VFXConfig.Instance.flySpeed;
         this.onComplete=onComplete;
+        hasStartedFlying = false; // 重置飞行标记
     }
 
     public void DoEffect(){
         // 检查是否已经在飞行中
-        if(!DOTween.IsTweening(transform)){
+        if(!DOTween.IsTweening(transform) && !hasStartedFlying){
+            hasStartedFlying = true; // 标记为已开始飞行
+            
             // 设置起始位置
             transform.position = startPosition;
             

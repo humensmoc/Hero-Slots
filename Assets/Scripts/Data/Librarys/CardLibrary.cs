@@ -23,7 +23,7 @@ public static class CardLibrary
     public static List<CardData> cardDatas = new List<CardData>(){
         new CardData(CardName.Battery)
             .SetDescription("回合开始时：+1电能，处在角落时+3电能")
-            .SetAttack(1)
+            .SetAttack(0)
             .SetElementType(ElementType.Element_Electricity)
             .SetOnInit((cardView) => {
                 // Debug.Log("Card_A Init");

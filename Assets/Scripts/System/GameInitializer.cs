@@ -10,6 +10,7 @@ public class GameInitializer : Singleton<GameInitializer>
         HeroSystem.Instance.Init(HeroLibrary.heroDatas);
         EnemySystem.Instance.Init(EnemyLibrary.enemyDatas[0]);
         CardSelectSystem.Instance.Init();
+        HeroSelectSystem.Instance.Init();
     }
 
     
