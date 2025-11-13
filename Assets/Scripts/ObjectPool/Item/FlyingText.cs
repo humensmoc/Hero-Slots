@@ -9,6 +9,8 @@ public enum FlyingTextType{
     AddElectricity,
     AddBloodGem,
     PowerUpBloodGem,
+
+    ChargeRed,ChargeBlue,ChargeYellow,
 }
 
 public class FlyingText : ObjectPoolItem
@@ -19,6 +21,7 @@ public class FlyingText : ObjectPoolItem
     private float currentHorizontalSpeed;
     private float fontSize;
     private bool hasStartedFlying = false; // 标记是否已经开始飞行
+    private bool isCurve = false;
     
     // 飞行到目标的参数
     private Vector3 startPosition;
@@ -34,42 +37,25 @@ public class FlyingText : ObjectPoolItem
         }
     }
 
-    public void Init(string text, FlyingTextType type, Vector3 startPos, Vector3 targetPos, Action onComplete){
+    public void Init(string text, FlyingTextType type, Vector3 startPos, Vector3 targetPos,bool isCurve=false, Action onComplete=null){
         fontSize=this.text.fontSize;
         this.text.text = text;
         startPosition=startPos;
         targetPosition=targetPos;
         flyDuration=Vector3.Distance(startPosition,targetPosition)/VFXConfig.Instance.flySpeed;
         hasStartedFlying = false; // 重置飞行标记
-
+        this.isCurve = isCurve;
         // 重置文本透明度
         Color color = this.text.color;
         color.a = 1f;
         this.text.color = color;
 
-        switch(type){
-            case FlyingTextType.AddElectricity:
-                this.text.enabled=false;
-                this.spriteRenderer.enabled=true;
-                this.spriteRenderer.sprite=ResourcesLoader.LoadEffectSprite("AddElectricity");
-                // 初始化运动参数
-                currentHorizontalSpeed = UnityEngine.Random.Range(VFXConfig.Instance.horizontalSpeedMin, VFXConfig.Instance.horizontalSpeedMax);
-                break;
-            case FlyingTextType.AddBloodGem:
-                this.text.enabled=false;
-                this.spriteRenderer.enabled=true;
-                this.spriteRenderer.sprite=ResourcesLoader.LoadEffectSprite("AddBloodGem");
-                // 初始化运动参数
-                currentHorizontalSpeed = UnityEngine.Random.Range(VFXConfig.Instance.horizontalSpeedMin, VFXConfig.Instance.horizontalSpeedMax);
-                break;
-            case FlyingTextType.PowerUpBloodGem:
-                this.text.enabled=false;
-                this.spriteRenderer.enabled=true;
-                this.spriteRenderer.sprite=ResourcesLoader.LoadEffectSprite("PowerUpBloodGem");
-                // 初始化运动参数
-                currentHorizontalSpeed = UnityEngine.Random.Range(VFXConfig.Instance.horizontalSpeedMin, VFXConfig.Instance.horizontalSpeedMax);
-                break;
-        }
+        this.text.enabled=false;
+        this.spriteRenderer.enabled=true;
+
+        this.spriteRenderer.sprite=ResourcesLoader.LoadEffectSprite(type.ToString());
+
+        currentHorizontalSpeed = UnityEngine.Random.Range(VFXConfig.Instance.horizontalSpeedMin, VFXConfig.Instance.horizontalSpeedMax);
 
         this.onComplete=onComplete;
     }
@@ -81,18 +67,33 @@ public class FlyingText : ObjectPoolItem
             
             // 设置起始位置
             transform.position = startPosition;
-            
-            // 开始飞行动画
-            transform.DOMove(targetPosition, flyDuration)
-                .SetEase(Ease.OutQuad)
-                .OnComplete(() => {
-                    // 飞行完成后淡出
-                    
-                    ObjectPool.Instance.ReturnObject(this,(()=>{
-                        this.text.fontSize = fontSize;
-                        onComplete?.Invoke();   
-                    }));
-                });
+
+            if(isCurve){
+                flyDuration=1f;
+                transform.DOPath(new Vector3[]{startPosition,(startPosition+targetPosition)/2+new Vector3(0,1,0), targetPosition},
+                    flyDuration, PathType.CatmullRom)
+                    .SetEase(Ease.OutQuad)
+                    .OnComplete(() => {
+                        // 飞行完成后淡出
+                        ObjectPool.Instance.ReturnObject(this,(()=>{
+                            this.text.fontSize = fontSize;
+                            onComplete?.Invoke();   
+                        }));
+                    });
+
+            }else{
+                // 开始飞行动画
+                transform.DOMove(targetPosition, flyDuration)
+                    .SetEase(Ease.OutQuad)
+                    .OnComplete(() => {
+                        // 飞行完成后淡出
+                        
+                        ObjectPool.Instance.ReturnObject(this,(()=>{
+                            this.text.fontSize = fontSize;
+                            onComplete?.Invoke();   
+                        }));
+                    });
+            }
         }
     }
     

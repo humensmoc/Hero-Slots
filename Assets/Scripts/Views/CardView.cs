@@ -115,13 +115,46 @@ public class CardView : MonoBehaviour
     }
 
     public IEnumerator ChargeHero(){
+        HeroView targetHeroView = null;
         foreach(HeroView heroView in HeroSystem.Instance.heroViews){
             if(heroView.y == y&&card.ElementType==heroView.hero.ElementType){
-                heroView.hero.heroData.OnGetCharged?.Invoke(this,heroView);
-                yield return heroView.GetCharged();
+                targetHeroView = heroView;
             }
         }
-        yield return null;
+
+        // 如果没有找到匹配的英雄，直接返回
+        if(targetHeroView == null){
+            yield break;
+        }
+
+        bool flyingTextCompleted = false;
+
+        // 根据卡牌元素类型设置飞行文本类型
+        FlyingTextType flyingTextType = FlyingTextType.AddBloodGem;
+        switch(card.ElementType){
+            case ElementType.Element_Fire:
+                flyingTextType = FlyingTextType.ChargeRed;
+                break;
+            case ElementType.Element_Water:
+                flyingTextType = FlyingTextType.ChargeBlue;
+                break;
+            case ElementType.Element_Electricity:
+                flyingTextType = FlyingTextType.ChargeYellow;
+                break;
+        }
+        
+
+        // 创建飞行文本
+        ObjectPool.Instance.CreateFlyingTextToTarget("ChargeHero",flyingTextType,transform.position,targetHeroView.transform.position,()=>{
+
+            targetHeroView.hero.heroData.OnGetCharged?.Invoke(this,targetHeroView);
+            targetHeroView.StartCoroutine(targetHeroView.GetCharged());
+            flyingTextCompleted = true;
+        },true);
+        
+        // 等待飞行文本完成
+        yield return new WaitUntil(() => flyingTextCompleted);
+        // yield return null;
     }
 
 #region Card Effect Methods 

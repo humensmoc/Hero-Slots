@@ -88,7 +88,7 @@ public class ObjectPool : Singleton<ObjectPool>
         objectItem.transform.position=position;
         objectItem.GetComponent<JumpingText>().Init(text,type);
     }
-    public void CreateFlyingTextToTarget(string text, FlyingTextType type, Vector3 startPos, Vector3 targetPos, Action onComplete=null){
+    public void CreateFlyingTextToTarget(string text, FlyingTextType type, Vector3 startPos, Vector3 targetPos, Action onComplete=null,bool isCurve=false){
         GameObject objectItem=GetObject(ObjectPoolType.FlyingText);
         
         // 确保清理之前的DOTween动画
@@ -96,7 +96,7 @@ public class ObjectPool : Singleton<ObjectPool>
         
         FlyingText flyingText = objectItem.GetComponent<FlyingText>();
         if(flyingText != null){
-            flyingText.Init(text, type, startPos, targetPos, onComplete);
+            flyingText.Init(text, type, startPos, targetPos, isCurve, onComplete);
         }else{
             Debug.LogError("FlyingText component not found on FlyingText prefab!");
         }

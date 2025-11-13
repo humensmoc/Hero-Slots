@@ -18,7 +18,7 @@ public class HeroSelectItemView : MonoBehaviour,IPointerClickHandler,IPointerEnt
     public void Init(HeroData data){
         this.data = data;
         image.sprite = ResourcesLoader.LoadHeroSprite(data.HeroType.ToString());
-        nameText.text = data.Name;
+        nameText.text = data.HeroType.ToString();
         descriptionText.text = data.Description;
         attackText.text = data.Attack.ToString();
         elementImage.color = data.ElementType switch{

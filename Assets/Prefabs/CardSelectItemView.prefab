@@ -213,7 +213,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d82362c21f9f6e42a5ce46233fd6ed2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardData: {fileID: 0}
   cardImage: {fileID: 403445987703773572}
   cardName: {fileID: 3985303764125254769}
   cardDescription: {fileID: 8473443456714426107}
@@ -807,8 +806,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36.2
-  m_fontSizeBase: 36.2
+  m_fontSize: 22.46
+  m_fontSizeBase: 22.46
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
