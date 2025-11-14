@@ -15,6 +15,13 @@ public enum CardName{
     Water_Droplets,
 }
 
+public enum CardRarity{
+    Common,
+    Rare,
+    Epic,
+    Legendary,
+}
+
 
 
 public static class CardLibrary
@@ -25,6 +32,7 @@ public static class CardLibrary
             .SetDescription("回合开始时：+1电能，处在角落时+3电能")
             .SetAttack(0)
             .SetElementType(ElementType.Element_Electricity)
+            .SetCardRarity(CardRarity.Common)
             .SetOnInit((cardView) => {
                 // Debug.Log("Card_A Init");
             })
@@ -45,6 +53,7 @@ public static class CardLibrary
             .SetDescription("攻击时：消耗1点电能,攻击后发射一颗弹射子弹，弹射次数等同于剩余电能数")
             .SetAttack(3)
             .SetElementType(ElementType.Element_Electricity)
+            .SetCardRarity(CardRarity.Legendary)
             .SetOnInit((cardView) => {
                 Debug.Log("Card_Electric_Current Init");
             })
@@ -61,6 +70,7 @@ public static class CardLibrary
             .SetDescription("回合开始时：如果相邻单位中有红色单位，随机单位获得1鲜血宝石")
             .SetAttack(1)
             .SetElementType(ElementType.Element_Fire)
+            .SetCardRarity(CardRarity.Epic)
             .SetOnInit((cardView) => {
                 // Debug.Log("Card_Blood_Giver Init");
             })
@@ -105,6 +115,7 @@ public static class CardLibrary
             .SetDescription("倒计时3回合：本局内的鲜血宝石额外+1攻击力")
             .SetAttack(1)
             .SetElementType(ElementType.Element_Fire)
+            .SetCardRarity(CardRarity.Rare)
             .SetOnInit((cardView) => {
                 // Debug.Log("Card_Big_Blood_Giver Init");
             })

@@ -15,7 +15,7 @@ public class Card
     public ElementType ElementType;
     public BulletName BulletNameEnum;
     public CardName CardNameEnum;
-
+    public CardRarity CardRarity;
     public Card(CardData cardData){
         this.CardData = cardData.Clone();
         Name = this.CardData.Name;
@@ -25,5 +25,6 @@ public class Card
         ElementType = this.CardData.ElementType;
         CardNameEnum = this.CardData.CardNameEnum;
         BulletNameEnum = this.CardData.BulletNameEnum;
+        CardRarity = this.CardData.CardRarity;
     }
 }
