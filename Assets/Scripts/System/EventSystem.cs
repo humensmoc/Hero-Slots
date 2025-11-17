@@ -19,6 +19,8 @@ public enum EventType{
 
 public class EventSystem : Singleton<EventSystem>
 {
+    public Action OnGameStart;
+    public Action OnGameOver;
     List<Func<EventInfo, IEnumerator>> CardAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
     List<Func<EventInfo, IEnumerator>> HeroAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
     
