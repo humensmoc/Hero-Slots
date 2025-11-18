@@ -22,12 +22,12 @@ public class GameInitializer : Singleton<GameInitializer>
     }
 
     public void ResetGame(){
-        CardSystem.Instance.cardsInDeck.Clear();
-        HeroSystem.Instance.heroesInDeck.Clear();
-        EnemySystem.Instance.enemies.Clear();
-        CardSelectSystem.Instance.cardDatas.Clear();
-        HeroSelectSystem.Instance.heroDatas.Clear();
+        CardSystem.Instance.Reset();
+        HeroSystem.Instance.Reset();
+        EnemySystem.Instance.Reset();
         EventSystem.Instance.ClearActions();
+        RuntimeEffectData.Reset();
+        TurnSystem.Instance.Reset();
 
         Init();
     }

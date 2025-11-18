@@ -14,4 +14,11 @@ public class RunTimeDataSystem : Singleton<RunTimeDataSystem>
     public void NextTurn(){
         runtimeData.currentTurn++;
     }
+
+    public void Reset()
+    {
+        runtimeData.currentTurn = 0;
+        runtimeData.electricity = 0;
+    }
+    
 }

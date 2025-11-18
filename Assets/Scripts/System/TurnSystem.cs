@@ -27,4 +27,9 @@ public class TurnSystem : Singleton<TurnSystem>
 #region Reaction
 
 #endregion
+
+    public void Reset()
+    {
+        currentTurn = 0;
+    }
 }

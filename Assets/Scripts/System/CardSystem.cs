@@ -228,4 +228,20 @@ public class CardSystem : Singleton<CardSystem>
         return cardViews[Random.Range(0, cardViews.Count)];
     }
 
+    public void Reset()
+    {
+        cardsInDeck.Clear();
+        cardsInBattlefield = new Card[5, 5];
+        battlefieldView.cardViewsInBattlefield = new CardView[5, 5];
+        for(int i=0;i<5;i++){
+            for(int j=0;j<5;j++){
+                battlefieldView.cardViewsInBattlefield[i,j] = null;
+            }
+        }
+
+        foreach(var cardView in cardViews){
+            Destroy(cardView.gameObject);
+        }
+        cardViews.Clear();
+    }
 }

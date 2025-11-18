@@ -130,4 +130,19 @@ public class HeroSystem : Singleton<HeroSystem>
     public HeroView GetHeroView(Hero hero){
         return heroViews.Find(view => view.hero == hero);
     }
+
+    public void Reset()
+    {
+        StopAllCoroutines();
+        heroesInDeck.Clear();
+        heroesInBattlefield = new List<Hero>(){null, null, null, null, null};
+        foreach(var heroView in heroViews){
+            if(heroView != null){
+                Destroy(heroView.gameObject);
+            }
+        }
+        heroViews.Clear();
+        currentHeroSlotIndex = 0;
+        battlefieldView.currentHeroSlotView = null;
+    }
 }

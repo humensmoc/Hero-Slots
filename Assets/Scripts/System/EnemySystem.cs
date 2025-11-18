@@ -100,4 +100,13 @@ public class EnemySystem : Singleton<EnemySystem>
             return null;
         }
     }
+
+    public void Reset()
+    {
+        enemies.Clear();
+        foreach(var enemyView in enemyViews){
+            Destroy(enemyView.gameObject);
+        }
+        enemyViews.Clear();
+    }
 }
