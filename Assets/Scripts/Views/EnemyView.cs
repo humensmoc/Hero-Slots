@@ -9,11 +9,13 @@ public class EnemyView : MonoBehaviour
     public Enemy enemy;
     [SerializeField] private SpriteRenderer image;  
     [SerializeField] private TMP_Text healthText;
+    [SerializeField] private TMP_Text damageCountdown;
     [SerializeField] private Color originalColor;
     public int x;
     public int y;
 
     public void Init(Enemy enemy,int x,int y){
+        damageCountdown.text=" ";
         this.enemy = enemy;
         image.sprite = ResourcesLoader.LoadEnemySprite(enemy.Name);
         healthText.text = "HP:"+enemy.Health.ToString()+"/"+enemy.MaxHealth.ToString();
@@ -32,21 +34,34 @@ public class EnemyView : MonoBehaviour
         ObjectPool.Instance.CreateJumpingText(damage.ToString(),transform.position,JumpingTextType.Normal);
         healthText.text = "HP:"+enemy.Health.ToString()+"/"+enemy.MaxHealth.ToString();
         
-        Debug.Log($"Enemy {enemy.Name} took {damage} damage, health now: {enemy.Health}");
-        
         if(enemy.Health <= 0){
             Debug.Log($"Enemy {enemy.Name} should be removed, calling RemoveEnemy");
-            // EnemySystem.Instance.RemoveEnemy(enemy);
 
-            if(EnemySystem.Instance.enemies.Contains(enemy)){
-                EnemySystem.Instance.RemoveEnemy(enemy);
+            Dead();
+        }
+    }
+
+    public void Move()
+    {
+        transform.Translate(Vector3.left);
+        x++;
+
+        damageCountdown.text=x+"/"+Model.enemyDamageX;
+
+        if(x>=Model.enemyDamageX){
+            Model.currentHealth--;
+            if(Model.currentHealth<=0){
+                Debug.Log("Game Over");
+                EventSystem.Instance.OnGameLose?.Invoke();
             }
+            Dead();
+        }
+    }
 
-            if(EnemySystem.Instance.enemyViews.Contains(this)){
-                EnemySystem.Instance.enemyViews.Remove(this);
-            }
-
-            Destroy(this.gameObject);
+    public void Dead()
+    {
+        if(EnemySystem.Instance.enemyViews.Contains(this)){
+            EnemySystem.Instance.RemoveEnemy(enemy);
         }
     }
 }

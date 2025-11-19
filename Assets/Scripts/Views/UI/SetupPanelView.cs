@@ -13,8 +13,6 @@ public class SetupPanelView : MonoBehaviour
             EventSystem.Instance.OnGameStart?.Invoke();
 
             Hide();
-
-            GameInitializer.Instance.ResetGame();
         });
     }
 

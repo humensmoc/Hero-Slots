@@ -13,11 +13,21 @@ public class CardSelectPanelView : MonoBehaviour
     bool isShow =true;
 
     public void Init(){
-        hideButton.onClick.AddListener(Hide);
-        body.SetActive(false);
+        hideButton.onClick.AddListener(SwitchVisibility);
+        // body.SetActive(false);
+        Hide();
+    }
+
+    public void Show(){
+        gameObject.SetActive(true);
+        body.SetActive(true);
     }
 
     public void Hide(){
+        gameObject.SetActive(false);
+    }
+
+    public void SwitchVisibility(){
         if(isShow){
             body.SetActive(false);
             isShow = false;

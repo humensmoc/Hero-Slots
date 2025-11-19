@@ -6,13 +6,21 @@ public class GameInitializer : Singleton<GameInitializer>
 {
     void Start()
     {
-
-        Init();
+        
+        OutGameInit();
     }
 
-    public void Init(){
+    public void OutGameInit(){
         UISystem.Instance.Init();
 
+        EventSystem.Instance.OnGameStart+=()=>{
+            UISystem.Instance.Init();
+            ResetInGame();
+        };
+    }
+
+    public void InGameInit(){
+        Model.Init();
         DevToolSystem.Instance.Init();
         CardSystem.Instance.Init(CardLibrary.cardDatas);  
         HeroSystem.Instance.Init(HeroLibrary.heroDatas);
@@ -21,7 +29,7 @@ public class GameInitializer : Singleton<GameInitializer>
         HeroSelectSystem.Instance.Init();
     }
 
-    public void ResetGame(){
+    public void ResetInGame(){
         CardSystem.Instance.Reset();
         HeroSystem.Instance.Reset();
         EnemySystem.Instance.Reset();
@@ -29,6 +37,6 @@ public class GameInitializer : Singleton<GameInitializer>
         RuntimeEffectData.Reset();
         TurnSystem.Instance.Reset();
 
-        Init();
+        InGameInit();
     }
 }

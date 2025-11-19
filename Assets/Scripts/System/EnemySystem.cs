@@ -33,15 +33,17 @@ public class EnemySystem : Singleton<EnemySystem>
     }
 
     public IEnumerator MoveAllEnemyPerformer(MoveAllEnemyGA moveAllEnemyGA){
-        for(int i = 0; i < enemyViews.Count; i++){
-            enemyViews[i].transform.Translate(Vector3.left);
-            enemyViews[i].x++;
+        if(!CardSelectSystem.Instance.gameObject.activeSelf)CardSelectSystem.Instance.gameObject.SetActive(true);
+        CardSelectSystem.Instance.ShowCardSelectView();
+        CardSelectSystem.Instance.Refresh();
+
+        for(int i = enemyViews.Count-1; i >= 0; i--){
+            enemyViews[i].Move();
             yield return new WaitForSeconds(0.15f);
         }
         yield return null;
         
-        CardSelectSystem.Instance.ShowCardSelectView();
-        CardSelectSystem.Instance.Refresh();
+        
     }
 
     private void DrawAllCardsPostReaction_MoveAllEnemy(DrawAllCardsGA drawAllCardsGA){
@@ -78,6 +80,7 @@ public class EnemySystem : Singleton<EnemySystem>
         }
     }
 
+    //如果一个回合两个enemyview的x>=3，会只死1个
     public void RemoveEnemy(Enemy enemy){           
         Debug.Log($"RemoveEnemy called for {enemy.Name}");
         

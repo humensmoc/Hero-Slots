@@ -23,12 +23,11 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
 
     public void ShowCardSelectView(){
         cardSelectPanel.SetActive(true);
-        cardSelectPanelView.body.SetActive(true);
+        cardSelectPanelView.Show();
     }
 
     public void HideCardSelectView(){
-        cardSelectPanel.SetActive(false);
-        cardSelectPanelView.body.SetActive(false);
+        cardSelectPanelView.Hide();
 
         if(TurnSystem.Instance.currentTurn==3||TurnSystem.Instance.currentTurn==6){
             HeroSelectSystem.Instance.ShowHeroSelectView();
