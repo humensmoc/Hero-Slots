@@ -10759,6 +10759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hideButton: {fileID: 183686046}
   DeleteCardButton: {fileID: 1397610615}
+  deleteCardButtonImage: {fileID: 1397610616}
   isDeleteCardMode: 0
   body: {fileID: 2001970065}
   deleteCardItemViews: []
