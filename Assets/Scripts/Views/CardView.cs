@@ -287,7 +287,16 @@ public class CardView : MonoBehaviour
             _ => Color.white,
         };
     }
+    
+    void OnMouseDown()
+    {
+        if(!DeleteCardPanelView.Instance.isDeleteCardMode)return;
 
+        CardSystem.Instance.DeleteCardInBattleField(this);
+
+        DeleteCardPanelView.Instance.isDeleteCardMode = false;
+        DeleteCardPanelView.Instance.RefreshUI();
+    }
     void OnMouseEnter()
     {
         if(!InteractionSystem.Instance.PlayerCanHover())return;

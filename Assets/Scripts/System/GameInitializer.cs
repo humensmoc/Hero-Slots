@@ -27,6 +27,7 @@ public class GameInitializer : Singleton<GameInitializer>
         EnemySystem.Instance.Init(EnemyLibrary.enemyDatas[0]);
         CardSelectSystem.Instance.Init();
         HeroSelectSystem.Instance.Init();
+        DeleteCardPanelView.Instance.Init();
     }
 
     public void ResetInGame(){

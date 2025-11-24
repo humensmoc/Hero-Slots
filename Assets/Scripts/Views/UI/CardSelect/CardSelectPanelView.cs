@@ -9,30 +9,35 @@ public class CardSelectPanelView : MonoBehaviour
     public List<CardSelectItemView> cardSelectItemViews;
     public Transform cardSelectItemParent;
     public Button hideButton;
+    public GameObject panel;
     public GameObject body;
     bool isShow =true;
 
     public void Init(){
         hideButton.onClick.AddListener(SwitchVisibility);
         // body.SetActive(false);
-        Hide();
+        HidePanel();
     }
 
-    public void Show(){
-        gameObject.SetActive(true);
+    public void ShowPanel(){
+        panel.SetActive(true);
         body.SetActive(true);
+        CardSelectSystem.Instance.isShow = true;
     }
 
-    public void Hide(){
-        gameObject.SetActive(false);
+    public void HidePanel(){
+        panel.SetActive(false);
+        CardSelectSystem.Instance.isShow = false;
     }
 
     public void SwitchVisibility(){
         if(isShow){
             body.SetActive(false);
+            CardSelectSystem.Instance.isShow = false;
             isShow = false;
         }else{
             body.SetActive(true);
+            CardSelectSystem.Instance.isShow = true;
             isShow = true;
         }
     }

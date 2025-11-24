@@ -15,6 +15,12 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
 
     public Button refreshButton;
     public Button skipButton;
+
+    /// <summary>
+    /// 是否显示卡牌选择面板的body
+    /// </summary>
+    public bool isShow = false;
+    
     public void Init(){
         cardSelectPanelView.Init();
         refreshButton.onClick.AddListener(Refresh);
@@ -23,11 +29,11 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
 
     public void ShowCardSelectView(){
         cardSelectPanel.SetActive(true);
-        cardSelectPanelView.Show();
+        cardSelectPanelView.ShowPanel();
     }
 
     public void HideCardSelectView(){
-        cardSelectPanelView.Hide();
+        cardSelectPanelView.HidePanel();
 
         if(TurnSystem.Instance.currentTurn==3||TurnSystem.Instance.currentTurn==6){
             HeroSelectSystem.Instance.ShowHeroSelectView();

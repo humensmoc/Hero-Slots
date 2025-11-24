@@ -69,10 +69,16 @@ public class CardSystem : Singleton<CardSystem>
         if (emptySlots.Count == 0)
             yield break;
 
+        List<Card> cardsToAdd = new List<Card>();
+        if(cardsInDeck.Count > 0){
+            foreach(Card card in cardsInDeck){
+                cardsToAdd.Add(card);
+            }
+        }
         // 一直抽卡直到牌堆为空或战场满
-        while (cardsInDeck.Count > 0 && emptySlots.Count > 0)
+        while (cardsToAdd.Count > 0 && emptySlots.Count > 0)
         {
-            yield return DrawCard(emptySlots);
+            yield return DrawCard(emptySlots,cardsToAdd);
         }
 
         
@@ -93,7 +99,7 @@ public class CardSystem : Singleton<CardSystem>
             {
                 if(cardsInBattlefield[x,y]==null)
                     continue;
-                cardsInDeck.Add(cardsInBattlefield[x,y]);
+                // cardsInDeck.Add(cardsInBattlefield[x,y]);
                 cardsInBattlefield[x,y] = null;
                 cardViews.Remove(battlefieldView.cardViewsInBattlefield[x,y]);
                 yield return battlefieldView.RemoveCard(x,y);
@@ -127,14 +133,41 @@ public class CardSystem : Singleton<CardSystem>
     
 #endregion
 
+    public void DeleteCardInBattleField(CardView cardView){
+        cardsInDeck.Remove(cardView.card);
+        cardsInBattlefield[cardView.x,cardView.y] = null;
+        cardViews.Remove(cardView);
+        Destroy(cardView.gameObject);
+        battlefieldView.cardViewsInBattlefield[cardView.x,cardView.y] = null;
+    }
+
+    public void DeleteCardInDeck(Card card){
+        bool isCardInBattlefield = false;
+        CardView cardViewInBattlefield = null;
+        
+        foreach(CardView cardView in cardViews){
+            if(cardView.card == card){
+                isCardInBattlefield = true;
+                cardViewInBattlefield = cardView;
+                break;
+            }
+        }
+
+        if(isCardInBattlefield){
+            DeleteCardInBattleField(cardViewInBattlefield);
+        }else{
+            cardsInDeck.Remove(card);
+        }
+    }
+
     /// <summary>
     /// 单次抽卡，将一张牌放到一个空位上
     /// </summary>
     /// <param name="emptySlots">可用空位列表（会被移除已用空位）</param>
-    private IEnumerator DrawCard(List<Vector2Int> emptySlots = null)
+    private IEnumerator DrawCard(List<Vector2Int> emptySlots = null,List<Card> cardsToAdd = null)
     {
         // 检查cardsInDeck和cardsInBattlefield是否有效
-        if (cardsInDeck == null || cardsInBattlefield == null)
+        if (cardsToAdd == null || cardsInBattlefield == null)
             yield break;
 
         // 如果没有传入空位列表，则重新统计
@@ -160,13 +193,13 @@ public class CardSystem : Singleton<CardSystem>
         }
 
         // 如果没有空位或没有牌可抽，直接结束
-        if (emptySlots.Count == 0 || cardsInDeck.Count == 0)
+        if (emptySlots.Count == 0 || cardsToAdd.Count == 0)
             yield break;
 
         // 随机从牌堆抽一张
-        int cardIndex = Random.Range(0, cardsInDeck.Count);
-        Card card = cardsInDeck[cardIndex];
-        cardsInDeck.RemoveAt(cardIndex);
+        int cardIndex = Random.Range(0, cardsToAdd.Count);
+        Card card = cardsToAdd[cardIndex];
+        cardsToAdd.RemoveAt(cardIndex);
 
         // 随机选择一个空位
         int slotIndex = Random.Range(0, emptySlots.Count);
