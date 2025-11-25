@@ -426,6 +426,7 @@ MonoBehaviour:
   optionCount: 3
   refreshButton: {fileID: 883051695}
   skipButton: {fileID: 1451213229}
+  isSelectingCard: 0
   isShow: 0
 --- !u!1 &43702584
 GameObject:
@@ -5745,6 +5746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6286387614955419d04f5ff6ed2483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outGameUI: {fileID: 1798574156}
   runtimeEffectDataView: {fileID: 1818885014}
   gameOverPanelView: {fileID: 1575786497}
   setupPanelView: {fileID: 1162964062}
@@ -9180,7 +9182,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1798574157
 RectTransform:
   m_ObjectHideFlags: 0

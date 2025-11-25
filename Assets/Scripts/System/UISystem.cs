@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class UISystem : Singleton<UISystem>
 {
+    public GameObject outGameUI;
+    
     public RuntimeEffectDataView runtimeEffectDataView;
 
     public GameOverPanelView gameOverPanelView;

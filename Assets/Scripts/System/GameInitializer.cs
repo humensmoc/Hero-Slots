@@ -11,6 +11,8 @@ public class GameInitializer : Singleton<GameInitializer>
     }
 
     public void OutGameInit(){
+        UISystem.Instance.outGameUI.SetActive(true);
+
         UISystem.Instance.Init();
 
         EventSystem.Instance.OnGameStart+=()=>{

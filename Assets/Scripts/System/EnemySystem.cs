@@ -33,9 +33,7 @@ public class EnemySystem : Singleton<EnemySystem>
     }
 
     public IEnumerator MoveAllEnemyPerformer(MoveAllEnemyGA moveAllEnemyGA){
-        if(!CardSelectSystem.Instance.gameObject.activeSelf)CardSelectSystem.Instance.gameObject.SetActive(true);
-        CardSelectSystem.Instance.ShowCardSelectView();
-        CardSelectSystem.Instance.Refresh();
+        
 
         for(int i = enemyViews.Count-1; i >= 0; i--){
             enemyViews[i].Move();

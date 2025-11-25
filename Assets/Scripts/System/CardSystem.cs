@@ -106,6 +106,12 @@ public class CardSystem : Singleton<CardSystem>
             }
         }
 
+        if(!CardSelectSystem.Instance.gameObject.activeSelf)CardSelectSystem.Instance.gameObject.SetActive(true);
+        CardSelectSystem.Instance.ShowCardSelectView();
+        CardSelectSystem.Instance.Refresh();
+        
+        yield return new WaitUntil(()=>!CardSelectSystem.Instance.isSelectingCard);
+        yield return new WaitUntil(()=>!HeroSelectSystem.Instance.isSelectingHero);
         
     }
 
@@ -144,7 +150,7 @@ public class CardSystem : Singleton<CardSystem>
     public void DeleteCardInDeck(Card card){
         bool isCardInBattlefield = false;
         CardView cardViewInBattlefield = null;
-        
+
         foreach(CardView cardView in cardViews){
             if(cardView.card == card){
                 isCardInBattlefield = true;

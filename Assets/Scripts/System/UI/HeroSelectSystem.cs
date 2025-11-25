@@ -15,6 +15,8 @@ public class HeroSelectSystem : Singleton<HeroSelectSystem>
 
     public Button refreshButton;
     public Button skipButton;
+
+    public bool isSelectingHero = false;
     public void Init(){
         heroSelectPanelView.Init();
         refreshButton.onClick.AddListener(Refresh);
@@ -24,11 +26,13 @@ public class HeroSelectSystem : Singleton<HeroSelectSystem>
     public void ShowHeroSelectView(){
         heroSelectPanel.SetActive(true);
         heroSelectPanelView.body.SetActive(true);
+        isSelectingHero = true;
     }
 
     public void HideHeroSelectView(){
         heroSelectPanel.SetActive(false);
         heroSelectPanelView.body.SetActive(false);
+        isSelectingHero = false;
     }
 
     public void Refresh(){
@@ -48,6 +52,7 @@ public class HeroSelectSystem : Singleton<HeroSelectSystem>
 
     public void SelectHero(HeroData heroData){
         HeroSystem.Instance.heroesInDeck.Add(new Hero(heroData));
+        isSelectingHero = false;
         HideHeroSelectView();
     }
 }

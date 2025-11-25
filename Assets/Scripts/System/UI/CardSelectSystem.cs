@@ -16,6 +16,8 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
     public Button refreshButton;
     public Button skipButton;
 
+    public bool isSelectingCard = false;
+
     /// <summary>
     /// 是否显示卡牌选择面板的body
     /// </summary>
@@ -28,12 +30,14 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
     }
 
     public void ShowCardSelectView(){
+        isSelectingCard = true;
         cardSelectPanel.SetActive(true);
         cardSelectPanelView.ShowPanel();
     }
 
     public void HideCardSelectView(){
         cardSelectPanelView.HidePanel();
+        isSelectingCard = false;
 
         if(TurnSystem.Instance.currentTurn==3||TurnSystem.Instance.currentTurn==6){
             HeroSelectSystem.Instance.ShowHeroSelectView();
@@ -58,6 +62,7 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
 
     public void SelectCard(CardData cardData){
         CardSystem.Instance.cardsInDeck.Add(new Card(cardData));
+        isSelectingCard = false;
         HideCardSelectView();
     }
 }
