@@ -10,7 +10,15 @@ public static class Model
     public static int currentHealth=0;
 
     //敌人移动几次之后对我方造成伤害
-    public const int enemyDamageX=3;
+    public const int enemyDamageTrun=8;
+
+    public static int coinPerEnemy=3;
+
+    public static int deleteCardCost=2;
+    public static int refreshCardCost=1;
+    public static int refreshHeroCost=2;
+
+    
 
     public static void Init(){
         currentHealth=maxHealth;

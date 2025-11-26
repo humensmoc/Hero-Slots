@@ -292,6 +292,13 @@ public class CardView : MonoBehaviour
     {
         if(!DeleteCardPanelView.Instance.isDeleteCardMode)return;
 
+        if(RuntimeEffectData.coin<Model.deleteCardCost){
+            TipsController.Instance.ShowTips("Not enough coin");
+            return;
+        }
+
+        InGameEconomySystem.Instance.SpendCoin(transform.position,Model.deleteCardCost);
+
         CardSystem.Instance.DeleteCardInBattleField(this);
 
         DeleteCardPanelView.Instance.isDeleteCardMode = false;

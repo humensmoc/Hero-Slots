@@ -78,7 +78,6 @@ public class EnemySystem : Singleton<EnemySystem>
         }
     }
 
-    //如果一个回合两个enemyview的x>=3，会只死1个
     public void RemoveEnemy(Enemy enemy){           
         Debug.Log($"RemoveEnemy called for {enemy.Name}");
         
@@ -91,6 +90,8 @@ public class EnemySystem : Singleton<EnemySystem>
         }else{
             Debug.LogError($"Could not find EnemyView for enemy {enemy.Name}!");
         }
+
+        InGameEconomySystem.Instance.AddCoin(enemyView.transform.position,Model.coinPerEnemy);
     }
 
     public EnemyView GetNearestEnemyView(EnemyView enemyView){

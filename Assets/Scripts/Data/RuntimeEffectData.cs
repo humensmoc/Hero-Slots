@@ -7,8 +7,11 @@ public static class RuntimeEffectData{
 
     public static int electricity=0;
 
+    public static int coin=0;
+
     public static void Reset(){
         bloodGemValue=1;
         electricity=0;
+        coin=0;
     }
 }

@@ -25,7 +25,7 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
     
     public void Init(){
         cardSelectPanelView.Init();
-        refreshButton.onClick.AddListener(Refresh);
+        refreshButton.onClick.AddListener(ManualRefresh);
         skipButton.onClick.AddListener(HideCardSelectView);
     }
 
@@ -46,6 +46,9 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
     }
 
     public void Refresh(){
+
+        
+
         cardSelectPanelView.RemoveAllCardSelectItem();
         cardDatas.Clear();
         CardLibrary.cardDatas.ForEach(cardData => cardDatas.Add(cardData.Clone()));
@@ -58,6 +61,19 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
             cardSelectPanelView.AddCardSelectItem(cardData);
         }
 
+    }
+
+    public void ManualRefresh(){
+        if(RuntimeEffectData.coin<Model.refreshCardCost){
+            TipsController.Instance.ShowTips("Not enough coin");
+            return;
+        }
+
+        InGameEconomySystem.Instance.SpendCoin(
+            CoordinateConverter.UIToWorld(refreshButton.transform.position),
+            Model.refreshCardCost);
+
+        Refresh();
     }
 
     public void SelectCard(CardData cardData){

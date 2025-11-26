@@ -6,6 +6,7 @@ using DG.Tweening;
 using System;
 
 public enum FlyingTextType{
+    AddCoin,
     AddElectricity,
     AddBloodGem,
     PowerUpBloodGem,

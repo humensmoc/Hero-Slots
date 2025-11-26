@@ -46,9 +46,9 @@ public class EnemyView : MonoBehaviour
         transform.Translate(Vector3.left);
         x++;
 
-        damageCountdown.text=x+"/"+Model.enemyDamageX;
+        damageCountdown.text=x+"/"+Model.enemyDamageTrun;
 
-        if(x>=Model.enemyDamageX){
+        if(x>=Model.enemyDamageTrun){
             Model.currentHealth--;
             if(Model.currentHealth<=0){
                 Debug.Log("Game Over");
@@ -64,4 +64,11 @@ public class EnemyView : MonoBehaviour
             EnemySystem.Instance.RemoveEnemy(enemy);
         }
     }
+
+    void OnMouseDown()
+    {
+        Dead();
+    }
+
+
 }
