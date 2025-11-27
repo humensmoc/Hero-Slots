@@ -10,6 +10,7 @@ public enum FlyingTextType{
     AddElectricity,
     AddBloodGem,
     PowerUpBloodGem,
+    Dart,
 
     ChargeRed,ChargeBlue,ChargeYellow,
 }

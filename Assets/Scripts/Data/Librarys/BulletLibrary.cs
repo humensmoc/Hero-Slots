@@ -8,6 +8,7 @@ public enum BulletName{
     Bullet_Explode,
     Bullet_Transparent,
     Bullet_Bounce,
+    Bullet_Martial,
 }
 
 
@@ -122,6 +123,17 @@ public static class BulletLibrary
                 // 递归执行弹跳逻辑，避免while循环死循环问题
                 ElectricBounce(bulletView, enemyView, bounceCount);
                 
+            }),
+
+        new BulletData(BulletName.Bullet_Martial)
+            .SetAttack(1)
+            .SetLife(1)
+            .SetElementType(ElementType.Element_Fire)
+            .SetInitEvent((bulletView) => {
+                // Debug.Log("Bullet_Martial Init");
+            })
+            .SetHitEnemyEvent((bulletView,enemyView) => {
+                // Debug.Log("Bullet_Martial Hit Enemy");
             }),
     };
 }

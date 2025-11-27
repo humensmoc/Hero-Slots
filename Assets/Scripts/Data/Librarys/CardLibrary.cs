@@ -13,6 +13,8 @@ public enum CardName{
     Blood_Giver,
     Big_Blood_Giver,
     Water_Droplets,
+    Martial,
+    Dart_Shooter,
 }
 
 public enum CardRarity{
@@ -128,6 +130,32 @@ public static class CardLibrary
             .SetAttack(2)
             .SetElementType(ElementType.Element_Water)
             .SetBullet(BulletName.Bullet_Transparent)
+            ,
+
+        new CardData(CardName.Martial)
+            .SetDescription("攻击时：攻击最近的敌人")
+            .SetAttack(2)
+            .SetElementType(ElementType.Element_Fire)
+            .SetCardRarity(CardRarity.Common)
+            .SetBullet(BulletName.Bullet_Martial)
+            ,
+        new CardData(CardName.Dart_Shooter)
+            .SetDescription("攻击时：发射1颗子弹，攻击最近的敌人")
+            .SetAttack(1)
+            .SetElementType(ElementType.Element_Fire)
+            .SetCardRarity(CardRarity.Common)
+            .SetBullet(BulletName.Bullet_Normal)
+            .SetOnInit((cardView) => {
+                Func<EventInfo, IEnumerator> martialAttackHitEnemyAction = (eventInfo) => {
+                    return cardView.ShotDart(cardView,eventInfo.enemyView);
+                };
+                
+                EventSystem.Instance.AddAction(martialAttackHitEnemyAction,EventType.MartialAttackHitEnemy);
+
+                cardView.card.CardData.OnLeave += () => {
+                    EventSystem.Instance.RemoveAction(martialAttackHitEnemyAction,EventType.MartialAttackHitEnemy);
+                };  
+            })
             ,
     };
 }

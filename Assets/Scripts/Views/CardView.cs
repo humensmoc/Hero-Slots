@@ -46,22 +46,30 @@ public class CardView : MonoBehaviour
         //如果攻击力小于等于0，不发射子弹       
         if(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue>0){
             
-            //子弹是否是特定类型
-            if(bullet == null){
+            switch(card.BulletNameEnum){
+                case BulletName.Bullet_Martial:
+                    yield return MartialAttack(this);
+                    break;
+                default:
+                     //子弹是否是特定类型
+                    if(bullet == null){
 
-                bullet=new Bullet(BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == card.BulletNameEnum).Clone());
-                bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
-                
+                        bullet=new Bullet(BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == card.BulletNameEnum).Clone());
+                        bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
+                        
+                    }
+
+                    BulletView bulletView = BulletSystem.Instance.CreateBullet(
+                        bullet,
+                        transform.position,
+                        transform.rotation);
+
+                    BulletSystem.Instance.Shot(
+                        bulletView,
+                        transform.right*10);
+                    break;
             }
-
-            BulletView bulletView = BulletSystem.Instance.CreateBullet(
-                bullet,
-                transform.position,
-                transform.rotation);
-
-            BulletSystem.Instance.Shot(
-                bulletView,
-                transform.right*10);
+           
         }
         
 #endregion
@@ -265,6 +273,79 @@ public class CardView : MonoBehaviour
             }
         );
         yield return new WaitUntil(() => flyingTextCompleted);
+    }
+    
+    public IEnumerator MartialAttack(CardView cardView){
+
+        //获取当前行所有敌人
+        List<EnemyView> enemyviews=new List<EnemyView>();
+        foreach(EnemyView enemyView in EnemySystem.Instance.enemyViews){
+            if(enemyView.y == y){
+                enemyviews.Add(enemyView);
+            }
+        }
+
+        //如果没有敌人，直接返回
+        if(enemyviews.Count == 0){
+            yield break;
+        }
+
+        //获取最近的敌人
+        EnemyView nearestEnemyView = null;
+        foreach(EnemyView enemyView in enemyviews){
+            if(nearestEnemyView == null){
+                nearestEnemyView = enemyView;
+            }else{
+                if(Vector3.Distance(transform.position,enemyView.transform.position)<Vector3.Distance(transform.position,nearestEnemyView.transform.position)){
+                    nearestEnemyView = enemyView;
+                }
+            }
+        }
+
+        //获取原始位置
+        Vector3 originalPosition = transform.position;
+
+        Sequence sequence = DOTween.Sequence();
+        
+        //移动到最近的敌人
+        sequence.Append(transform.DOMove(nearestEnemyView.transform.position,0.5f)).OnComplete(()=>{
+            //攻击最近的敌人
+            nearestEnemyView.Damage(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue);
+
+            //判断敌人是否还存活（检查对象是否被销毁以及血量）
+            if(nearestEnemyView != null && nearestEnemyView.enemy != null && nearestEnemyView.enemy.Health > 0){
+                StartCoroutine(EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.MartialAttackHitEnemy,nearestEnemyView)));
+            }
+
+            //移动到原始位置
+            transform.DOMove(originalPosition,0.5f);
+        });
+
+        yield return sequence.WaitForCompletion();
+    }
+
+    public IEnumerator ShotDart(CardView cardView,EnemyView enemyView){
+        // 检查 cardView 和 enemyView 是否还存在，避免访问已销毁的对象
+        if(cardView == null || enemyView == null){
+            yield break;
+        }
+
+        Vector3 targetPosition = enemyView.transform.position;
+        Vector3 startPosition = cardView.transform.position;
+        ObjectPool.Instance.CreateFlyingTextToTarget(
+            "ShotDart",
+            FlyingTextType.Dart,
+            startPosition,
+            targetPosition,
+            ()=>{
+                if(enemyView != null){
+                    enemyView.Damage(1);
+                }
+            }
+        );
+
+        yield return null;
+
     }
 
 #endregion

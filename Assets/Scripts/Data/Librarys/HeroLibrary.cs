@@ -58,7 +58,7 @@ public class HeroEffect{
 public static class HeroLibrary
 {
     // 辅助方法：返回空协程
-    private static System.Collections.IEnumerator EmptyCoroutine(){
+    public static System.Collections.IEnumerator EmptyCoroutine(){
         yield return null;
     }
     
