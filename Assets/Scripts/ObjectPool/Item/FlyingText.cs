@@ -13,6 +13,7 @@ public enum FlyingTextType{
     Dart,
 
     ChargeRed,ChargeBlue,ChargeYellow,
+    Shine,
 }
 
 public class FlyingText : ObjectPoolItem

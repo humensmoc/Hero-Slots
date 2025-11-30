@@ -15,9 +15,10 @@ public class EventInfo{
 }
 
 public enum EventType{
-    CardAttack,
-    HeroAttack,
-    MartialAttackHitEnemy,
+    OnCardAttack,
+    OnHeroAttack,
+    OnMartialAttackHitEnemy,
+    OnDartShot
 }
 
 public class EventSystem : Singleton<EventSystem>
@@ -25,69 +26,86 @@ public class EventSystem : Singleton<EventSystem>
     public Action OnGameStart;
     public Action OnGameLose;
     public Action OnGameWin;
-    List<Func<EventInfo, IEnumerator>> CardAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
-    List<Func<EventInfo, IEnumerator>> HeroAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
-    List<Func<EventInfo, IEnumerator>> MartialAttackHitEnemy_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
+    List<Func<EventInfo, IEnumerator>> OnCardAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
+    List<Func<EventInfo, IEnumerator>> OnHeroAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
+    List<Func<EventInfo, IEnumerator>> OnMartialAttackHitEnemy_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
+    List<Func<EventInfo, IEnumerator>> OnDartShot_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
     
     public void AddAction(Func<EventInfo, IEnumerator> actionFunction,EventType eventType){
         switch(eventType){
-            case EventType.CardAttack:
-                CardAttack_ActionFunctions.Add(actionFunction);
+            case EventType.OnCardAttack:
+                OnCardAttack_ActionFunctions.Add(actionFunction);
                 break;
-            case EventType.HeroAttack:
-                HeroAttack_ActionFunctions.Add(actionFunction);
+            case EventType.OnHeroAttack:
+                OnHeroAttack_ActionFunctions.Add(actionFunction);
                 break;
-            case EventType.MartialAttackHitEnemy:
-                MartialAttackHitEnemy_ActionFunctions.Add(actionFunction);
+            case EventType.OnMartialAttackHitEnemy:
+                OnMartialAttackHitEnemy_ActionFunctions.Add(actionFunction);
+                break;
+            case EventType.OnDartShot:
+                OnDartShot_ActionFunctions.Add(actionFunction);
                 break;
         }
     }
     
     public void RemoveAction(Func<EventInfo, IEnumerator> actionFunction,EventType eventType){
         switch(eventType){
-            case EventType.CardAttack:
-                CardAttack_ActionFunctions.Remove(actionFunction);
+            case EventType.OnCardAttack:
+                OnCardAttack_ActionFunctions.Remove(actionFunction);
                 break;
-            case EventType.HeroAttack:
-                HeroAttack_ActionFunctions.Remove(actionFunction);
+            case EventType.OnHeroAttack:
+                OnHeroAttack_ActionFunctions.Remove(actionFunction);
                 break;
-            case EventType.MartialAttackHitEnemy:
-                MartialAttackHitEnemy_ActionFunctions.Remove(actionFunction);
+            case EventType.OnMartialAttackHitEnemy:
+                OnMartialAttackHitEnemy_ActionFunctions.Remove(actionFunction);
+                break;
+            case EventType.OnDartShot:
+                OnDartShot_ActionFunctions.Remove(actionFunction);
                 break;
         }
     }
     
     public void ClearActions(){
-        CardAttack_ActionFunctions.Clear();
-        HeroAttack_ActionFunctions.Clear();
-        MartialAttackHitEnemy_ActionFunctions.Clear();
+        OnCardAttack_ActionFunctions.Clear();
+        OnHeroAttack_ActionFunctions.Clear();
+        OnMartialAttackHitEnemy_ActionFunctions.Clear();
+        OnDartShot_ActionFunctions.Clear();
     }
 
     public IEnumerator CheckEvent(EventInfo eventInfo){
         switch(eventInfo.eventType){
 
-            case EventType.CardAttack:
+            case EventType.OnCardAttack:
 
-                if(CardAttack_ActionFunctions.Count>0){
-                    foreach(var actionFunction in CardAttack_ActionFunctions){
+                if(OnCardAttack_ActionFunctions.Count>0){
+                    foreach(var actionFunction in OnCardAttack_ActionFunctions){
                         yield return actionFunction(eventInfo); // 传递eventInfo参数
                     }
                 }
                 break;
 
-            case EventType.HeroAttack:
+            case EventType.OnHeroAttack:
             
-                if(HeroAttack_ActionFunctions.Count>0){
-                    foreach(var actionFunction in HeroAttack_ActionFunctions){
+                if(OnHeroAttack_ActionFunctions.Count>0){
+                    foreach(var actionFunction in OnHeroAttack_ActionFunctions){
                         yield return actionFunction(eventInfo); // 传递eventInfo参数
                     }
                 }
                 break;
                 
-            case EventType.MartialAttackHitEnemy:
+            case EventType.OnMartialAttackHitEnemy:
 
-                if(MartialAttackHitEnemy_ActionFunctions.Count>0){
-                    foreach(var actionFunction in MartialAttackHitEnemy_ActionFunctions){
+                if(OnMartialAttackHitEnemy_ActionFunctions.Count>0){
+                    foreach(var actionFunction in OnMartialAttackHitEnemy_ActionFunctions){
+                        yield return actionFunction(eventInfo); // 传递eventInfo参数
+                    }
+                }
+                break;
+
+            case EventType.OnDartShot:
+
+                if(OnDartShot_ActionFunctions.Count>0){
+                    foreach(var actionFunction in OnDartShot_ActionFunctions){
                         yield return actionFunction(eventInfo); // 传递eventInfo参数
                     }
                 }

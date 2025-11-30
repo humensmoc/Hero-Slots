@@ -37,7 +37,7 @@ public class EnemySystem : Singleton<EnemySystem>
 
         for(int i = enemyViews.Count-1; i >= 0; i--){
             enemyViews[i].Move();
-            yield return new WaitForSeconds(0.15f);
+            yield return new WaitForSeconds(0.05f);
         }
         yield return null;
         

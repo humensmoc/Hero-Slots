@@ -62,7 +62,8 @@ public class CardView : MonoBehaviour
                     BulletView bulletView = BulletSystem.Instance.CreateBullet(
                         bullet,
                         transform.position,
-                        transform.rotation);
+                        transform.rotation,
+                        this);
 
                     BulletSystem.Instance.Shot(
                         bulletView,
@@ -77,7 +78,7 @@ public class CardView : MonoBehaviour
 #region trigger event
         //是否是额外攻击
         if(!isAdditionalShot){
-            yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.CardAttack));
+            yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.OnCardAttack));
 
             // 主射击之后再执行OnAttack效果（比如附加射击）
             if(card.CardData.OnAttack != null){
@@ -115,7 +116,8 @@ public class CardView : MonoBehaviour
         BulletView bulletView = BulletSystem.Instance.CreateBullet(
             bullet,
             transform.position,
-            transform.rotation);
+            transform.rotation,
+            this);
 
         BulletSystem.Instance.Shot(
             bulletView,
@@ -166,6 +168,11 @@ public class CardView : MonoBehaviour
     }
 
 #region Card Effect Methods 
+
+    public void Shine(){
+        ObjectPool.Instance.CreateFlyingTextToTarget("Shine",FlyingTextType.Shine,transform.position,transform.position+new Vector3(0,1,0));
+    }
+
     /// <summary>
     /// temporary buff
     /// </summary>
@@ -310,11 +317,11 @@ public class CardView : MonoBehaviour
         //移动到最近的敌人
         sequence.Append(transform.DOMove(nearestEnemyView.transform.position,0.5f)).OnComplete(()=>{
             //攻击最近的敌人
-            nearestEnemyView.Damage(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue);
+            nearestEnemyView.Damage(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue,this);
 
             //判断敌人是否还存活（检查对象是否被销毁以及血量）
             if(nearestEnemyView != null && nearestEnemyView.enemy != null && nearestEnemyView.enemy.Health > 0){
-                StartCoroutine(EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.MartialAttackHitEnemy,nearestEnemyView)));
+                StartCoroutine(EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.OnMartialAttackHitEnemy,nearestEnemyView)));
             }
 
             //移动到原始位置
@@ -332,6 +339,9 @@ public class CardView : MonoBehaviour
 
         Vector3 targetPosition = enemyView.transform.position;
         Vector3 startPosition = cardView.transform.position;
+        
+        yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.OnDartShot));
+
         ObjectPool.Instance.CreateFlyingTextToTarget(
             "ShotDart",
             FlyingTextType.Dart,
@@ -339,7 +349,7 @@ public class CardView : MonoBehaviour
             targetPosition,
             ()=>{
                 if(enemyView != null){
-                    enemyView.Damage(1);
+                    enemyView.Damage(1,cardView);
                 }
             }
         );

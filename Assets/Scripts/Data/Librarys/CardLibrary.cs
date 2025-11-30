@@ -15,6 +15,7 @@ public enum CardName{
     Water_Droplets,
     Martial,
     Dart_Shooter,
+    Dart_Wingman,
 }
 
 public enum CardRarity{
@@ -133,28 +134,53 @@ public static class CardLibrary
             ,
 
         new CardData(CardName.Martial)
-            .SetDescription("攻击时：攻击最近的敌人")
+            .SetDescription("物理攻击")
             .SetAttack(2)
             .SetElementType(ElementType.Element_Fire)
             .SetCardRarity(CardRarity.Common)
             .SetBullet(BulletName.Bullet_Martial)
             ,
         new CardData(CardName.Dart_Shooter)
-            .SetDescription("攻击时：发射1颗子弹，攻击最近的敌人")
+            .SetDescription("物理攻击命中时，发射一个飞镖")
             .SetAttack(1)
             .SetElementType(ElementType.Element_Fire)
             .SetCardRarity(CardRarity.Common)
             .SetBullet(BulletName.Bullet_Normal)
             .SetOnInit((cardView) => {
                 Func<EventInfo, IEnumerator> martialAttackHitEnemyAction = (eventInfo) => {
+                    // cardView.StartCoroutine(cardView.AddElectricity(1));
                     return cardView.ShotDart(cardView,eventInfo.enemyView);
                 };
                 
-                EventSystem.Instance.AddAction(martialAttackHitEnemyAction,EventType.MartialAttackHitEnemy);
+                EventSystem.Instance.AddAction(martialAttackHitEnemyAction,EventType.OnMartialAttackHitEnemy);
 
                 cardView.card.CardData.OnLeave += () => {
-                    EventSystem.Instance.RemoveAction(martialAttackHitEnemyAction,EventType.MartialAttackHitEnemy);
+                    EventSystem.Instance.RemoveAction(martialAttackHitEnemyAction,EventType.OnMartialAttackHitEnemy);
                 };  
+            })
+            ,
+        
+        new CardData(CardName.Dart_Wingman)
+            .SetDescription("相邻单位发射飞镖时，发射1个子弹")
+            .SetAttack(1)
+            .SetElementType(ElementType.Element_Fire)
+            .SetCardRarity(CardRarity.Rare)
+            .SetBullet(BulletName.Bullet_Normal)
+            .SetOnInit((cardView) => {
+                Func<EventInfo, IEnumerator> dartShotAction = (eventInfo) => {
+
+                    if(eventInfo.cardView.x <=cardView.x+1 && eventInfo.cardView.x >=cardView.x-1 && eventInfo.cardView.y <=cardView.y+1 && eventInfo.cardView.y >=cardView.y-1){
+                        return cardView.Shot(true);
+                    }else{
+                        return null;
+                    }
+                };
+                
+                EventSystem.Instance.AddAction(dartShotAction,EventType.OnDartShot);
+
+                cardView.card.CardData.OnLeave += () => {
+                    EventSystem.Instance.RemoveAction(dartShotAction,EventType.OnDartShot);
+                };
             })
             ,
     };

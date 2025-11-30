@@ -8,12 +8,14 @@ using UnityEngine.UI;
 public class BulletView : MonoBehaviour
 {
     public Bullet bullet;
+    public CardView sourceCardView;
     [SerializeField] private SpriteRenderer image;
     [SerializeField] private TMP_Text attackText;
     public Vector3 dir;
 
-    public void Init(Bullet bullet){
+    public void Init(Bullet bullet,CardView sourceCardView){
         this.bullet = bullet;
+        this.sourceCardView = sourceCardView;
         image.sprite = ResourcesLoader.LoadBulletSprite(bullet.bulletData.BulletNameEnum.ToString());
         attackText.text = bullet.Attack.ToString();
     }
@@ -33,7 +35,7 @@ public class BulletView : MonoBehaviour
         if(other.gameObject.CompareTag("Enemy")){
             EnemyView enemyView = other.gameObject.GetComponent<EnemyView>();
                 if(enemyView != null){
-                    enemyView.Damage(bullet.Attack);
+                    enemyView.Damage(bullet.Attack,sourceCardView);
                     bullet.bulletData.OnHitEnemy?.Invoke(this,enemyView);
                 }
             

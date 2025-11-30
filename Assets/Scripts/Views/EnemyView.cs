@@ -24,7 +24,7 @@ public class EnemyView : MonoBehaviour
         this.y = y;
     }
 
-    public void Damage(int damage){
+    public void Damage(int damage,CardView cardView=null){
         image.DOColor(Color.white,0.1f).OnComplete(()=>{
             image.DOColor(originalColor,0.1f);
         });
@@ -33,6 +33,10 @@ public class EnemyView : MonoBehaviour
         enemy.Health -= damage;
         ObjectPool.Instance.CreateJumpingText(damage.ToString(),transform.position,JumpingTextType.Normal);
         healthText.text = "HP:"+enemy.Health.ToString()+"/"+enemy.MaxHealth.ToString();
+
+        if(cardView != null){
+            DamageRankSystem.Instance.damageRankPanelView.AddDamageRankData(cardView,damage);
+        }
         
         if(enemy.Health <= 0){
             Debug.Log($"Enemy {enemy.Name} should be removed, calling RemoveEnemy");

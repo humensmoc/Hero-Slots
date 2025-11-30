@@ -130,10 +130,10 @@ public static class HeroLibrary
                     }
                 };
                 
-                EventSystem.Instance.AddAction(cardAttackAction,EventType.CardAttack);
+                EventSystem.Instance.AddAction(cardAttackAction,EventType.OnCardAttack);
 
                 thisHeroView.hero.heroData.OnDead = (heroView) => {
-                    EventSystem.Instance.RemoveAction(cardAttackAction,EventType.CardAttack);
+                    EventSystem.Instance.RemoveAction(cardAttackAction,EventType.OnCardAttack);
                 };  
             }),
 
@@ -161,10 +161,10 @@ public static class HeroLibrary
                     }
                 };
                 
-                EventSystem.Instance.AddAction(cardAttackAction,EventType.CardAttack);
+                EventSystem.Instance.AddAction(cardAttackAction,EventType.OnCardAttack);
 
                 thisHeroView.hero.heroData.OnDead = (heroView) => {
-                    EventSystem.Instance.RemoveAction(cardAttackAction,EventType.CardAttack);
+                    EventSystem.Instance.RemoveAction(cardAttackAction,EventType.OnCardAttack);
                 };  
             })
             .SetSkillEvent((heroView) => {

@@ -100,7 +100,11 @@ public class CardSystem : Singleton<CardSystem>
                 if(cardsInBattlefield[x,y]==null)
                     continue;
                 // cardsInDeck.Add(cardsInBattlefield[x,y]);
+                cardsInBattlefield[x,y].CardData.OnLeave?.Invoke();
                 cardsInBattlefield[x,y] = null;
+
+                
+
                 cardViews.Remove(battlefieldView.cardViewsInBattlefield[x,y]);
                 yield return battlefieldView.RemoveCard(x,y);
             }
@@ -216,7 +220,7 @@ public class CardSystem : Singleton<CardSystem>
         CardView cardView = CardCreator.Instance.CreateCardView(card, cardParent.position, cardParent.rotation,pos.x,pos.y);
         cardViews.Add(cardView);
         battlefieldView.cardViewsInBattlefield[pos.x, pos.y] = cardView; 
-        Tween tween = cardView.transform.DOLocalMove(cardParent.position + new Vector3(pos.x * cardPositionInterval, pos.y * cardPositionInterval, 0), 0.15f);
+        Tween tween = cardView.transform.DOLocalMove(cardParent.position + new Vector3(pos.x * cardPositionInterval, pos.y * cardPositionInterval, 0), 0.05f);
         yield return tween.WaitForCompletion();
     }
 

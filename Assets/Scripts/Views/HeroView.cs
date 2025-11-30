@@ -68,7 +68,8 @@ public class HeroView : MonoBehaviour
         BulletView bulletView = BulletSystem.Instance.CreateBullet(
             bullet,
             transform.position,
-            transform.rotation);
+            transform.rotation,
+            null);
 
         BulletSystem.Instance.Shot(
             bulletView,
@@ -96,7 +97,8 @@ public class HeroView : MonoBehaviour
         BulletView bulletView = BulletSystem.Instance.CreateBullet(
             bullet,
             transform.position,
-            transform.rotation);
+            transform.rotation,
+            null);
 
         BulletSystem.Instance.Shot(
             bulletView,

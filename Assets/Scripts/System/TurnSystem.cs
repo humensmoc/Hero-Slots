@@ -19,6 +19,7 @@ public class TurnSystem : Singleton<TurnSystem>
 #region Performer
     public IEnumerator NextTurnPerformer(NextTurnGA nextTurnGA){
         currentTurn++;
+        DamageRankSystem.Instance.damageRankPanelView.ClearDamageRankData();
         yield return null;
     }
 #endregion

@@ -11,8 +11,8 @@ public class BulletSystem : Singleton<BulletSystem>
     {
         bulletView.dir = dir;
     }
-    public BulletView CreateBullet(Bullet bullet,Vector3 position,Quaternion rotation)
+    public BulletView CreateBullet(Bullet bullet,Vector3 position,Quaternion rotation,CardView sourceCardView)
     {
-        return BulletCreator.Instance.CreateBulletView(bullet,position,rotation);
+        return BulletCreator.Instance.CreateBulletView(bullet,position,rotation,sourceCardView);
     }
 }
