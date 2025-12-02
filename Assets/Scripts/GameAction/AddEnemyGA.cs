@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class AddEnemyGA : GameAction
 {
-    public EnemyData enemyData;
+    public List<EnemyData> enemyDatas;
 
-    public AddEnemyGA(EnemyData enemyData){
-        this.enemyData = enemyData;
+    public AddEnemyGA(List<EnemyData> enemyDatas){
+        this.enemyDatas = enemyDatas;
     }
 }

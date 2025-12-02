@@ -26,7 +26,7 @@ public class GameInitializer : Singleton<GameInitializer>
         DevToolSystem.Instance.Init();
         CardSystem.Instance.Init(CardLibrary.cardDatas);  
         HeroSystem.Instance.Init(HeroLibrary.heroDatas);
-        EnemySystem.Instance.Init(EnemyLibrary.enemyDatas[0]);
+        EnemySystem.Instance.Init(EnemyLibrary.testLevelData);
         CardSelectSystem.Instance.Init();
         HeroSelectSystem.Instance.Init();
         DeleteCardPanelView.Instance.Init();

@@ -12,6 +12,8 @@ public class UISystem : Singleton<UISystem>
 
     public SetupPanelView setupPanelView;
 
+    public GameObject inGameShopPanelView;
+
 
     public void Init(){
         setupPanelView.Init();
