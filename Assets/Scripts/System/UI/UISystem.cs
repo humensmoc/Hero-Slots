@@ -11,12 +11,12 @@ public class UISystem : Singleton<UISystem>
     public GameOverPanelView gameOverPanelView;
 
     public SetupPanelView setupPanelView;
-
-    public GameObject inGameShopPanelView;
+    public InGameShopPanelView inGameShopPanelView;
 
 
     public void Init(){
         setupPanelView.Init();
         gameOverPanelView.Init();
+        inGameShopPanelView.Init();
     }
 }

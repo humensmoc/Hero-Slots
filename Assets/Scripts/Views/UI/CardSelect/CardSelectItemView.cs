@@ -91,14 +91,14 @@ public class CardSelectItemView : MonoBehaviour,IPointerClickHandler,IPointerEnt
             Tween colorTween = veilImage.DOColor(toColor, 0.15f);
 
             Tween scaleTween = veilImage.transform.DOScale(1.1f, 0.15f).OnComplete(()=>{
-                veilImage.transform.DOScale(1f, 0.15f);
+                veilImage.transform.DOScale(1f, 0.05f);
                 
             });
             // 等待动画完成
             yield return scaleTween.WaitForCompletion();
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.15f);
 
         Tween fadeTween = veilImage.DOFade(0f, 0.15f).OnComplete(()=>{
             veilImage.gameObject.SetActive(false);

@@ -27,7 +27,7 @@ public class BulletView : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(dir * Time.deltaTime,Space.World);
+        transform.Translate(dir * Time.deltaTime*3,Space.World);
     }
 
     void OnTriggerEnter(Collider other)

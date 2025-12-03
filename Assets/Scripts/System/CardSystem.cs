@@ -115,7 +115,7 @@ public class CardSystem : Singleton<CardSystem>
         CardSelectSystem.Instance.Refresh();
         
         yield return new WaitUntil(()=>!CardSelectSystem.Instance.isSelectingCard);
-        yield return new WaitUntil(()=>!HeroSelectSystem.Instance.isSelectingHero);
+        // yield return new WaitUntil(()=>!HeroSelectSystem.Instance.isSelectingHero);
         
     }
 

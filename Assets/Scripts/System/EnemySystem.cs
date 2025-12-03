@@ -159,7 +159,7 @@ public class EnemySystem : Singleton<EnemySystem>
                 // 进入下一个stage
                 if(currentStageIndex < currentLevelData.enemyStageDatas.Count - 1){
                     Debug.Log("Opening shop and advancing to next stage...");
-                    UISystem.Instance.inGameShopPanelView.SetActive(true);
+                    UISystem.Instance.inGameShopPanelView.OpenPanel();
                     currentStageIndex++;
                     currentWaveIndex = 0;
                 }else{

@@ -38,11 +38,6 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
     public void HideCardSelectView(){
         cardSelectPanelView.HidePanel();
         isSelectingCard = false;
-
-        if(TurnSystem.Instance.currentTurn==3||TurnSystem.Instance.currentTurn==6){
-            HeroSelectSystem.Instance.ShowHeroSelectView();
-            HeroSelectSystem.Instance.Refresh();
-        }
     }
 
     public void Refresh(){

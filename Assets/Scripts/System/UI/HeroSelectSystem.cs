@@ -19,6 +19,8 @@ public class HeroSelectSystem : Singleton<HeroSelectSystem>
     public bool isSelectingHero = false;
     public void Init(){
         heroSelectPanelView.Init();
+        refreshButton.onClick.RemoveAllListeners();
+        skipButton.onClick.RemoveAllListeners();
         refreshButton.onClick.AddListener(ManualRefresh);
         skipButton.onClick.AddListener(HideHeroSelectView);
     }
@@ -36,7 +38,7 @@ public class HeroSelectSystem : Singleton<HeroSelectSystem>
     }
 
     public void Refresh(){
-
+        Debug.Log("hero select system refresh");
         
 
         heroSelectPanelView.RemoveAllHeroSelectItem();
@@ -59,6 +61,7 @@ public class HeroSelectSystem : Singleton<HeroSelectSystem>
             return;
         }
         InGameEconomySystem.Instance.SpendCoin(CoordinateConverter.UIToWorld(refreshButton.transform.position),Model.refreshHeroCost);
+        Refresh();
     }
 
     public void SelectHero(HeroData heroData){

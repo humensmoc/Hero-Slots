@@ -9,6 +9,7 @@ public class SetupPanelView : MonoBehaviour
     public GameObject body;
     public Button startButton;
     public void Init(){
+        startButton.onClick.RemoveAllListeners();
         startButton.onClick.AddListener(()=>{
             EventSystem.Instance.OnGameStart?.Invoke();
 
