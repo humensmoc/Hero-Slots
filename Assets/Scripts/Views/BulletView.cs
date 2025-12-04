@@ -41,9 +41,15 @@ public class BulletView : MonoBehaviour
             
             bullet.Life--;
             if(bullet.Life <= 0){
+                BulletSystem.Instance.bulletInBattlefield.Remove(this);
                 Destroy(this.gameObject);
             }
             
+        }
+
+        if(other.gameObject.CompareTag("Void")){
+            BulletSystem.Instance.bulletInBattlefield.Remove(this);
+            Destroy(this.gameObject);
         }
     }
 }

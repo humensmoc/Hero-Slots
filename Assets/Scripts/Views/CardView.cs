@@ -254,6 +254,7 @@ public class CardView : MonoBehaviour
 
     public IEnumerator AddElectricity(int electricity){
         bool flyingTextCompleted = false;
+        BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.Electricity);
         ObjectPool.Instance.CreateFlyingTextToTarget(
             "+"+electricity,
             FlyingTextType.AddElectricity,
@@ -262,6 +263,8 @@ public class CardView : MonoBehaviour
             ()=>{
                 RuntimeEffectData.electricity+=electricity;
                 flyingTextCompleted = true;
+
+                BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.Electricity);
             }
         );
         yield return new WaitUntil(() => flyingTextCompleted);
@@ -269,6 +272,7 @@ public class CardView : MonoBehaviour
 
     public IEnumerator SpendElectricity(int electricity){
         bool flyingTextCompleted = false;
+        BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.Electricity);
         ObjectPool.Instance.CreateFlyingTextToTarget(
             "-"+electricity,
             FlyingTextType.AddElectricity,
@@ -277,6 +281,8 @@ public class CardView : MonoBehaviour
             ()=>{
                 RuntimeEffectData.electricity-=electricity;
                 flyingTextCompleted = true;
+
+                BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.Electricity);
             }
         );
         yield return new WaitUntil(() => flyingTextCompleted);
@@ -309,6 +315,8 @@ public class CardView : MonoBehaviour
             }
         }
 
+        
+
         //获取原始位置
         Vector3 originalPosition = transform.position;
 
@@ -316,6 +324,7 @@ public class CardView : MonoBehaviour
         
         //移动到最近的敌人
         sequence.Append(transform.DOMove(nearestEnemyView.transform.position,0.5f)).OnComplete(()=>{
+            BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.MartialAttack);
             //攻击最近的敌人
             nearestEnemyView.Damage(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue,this);
 
@@ -325,10 +334,13 @@ public class CardView : MonoBehaviour
             }
 
             //移动到原始位置
-            transform.DOMove(originalPosition,0.5f);
+            transform.DOMove(originalPosition,0.5f).OnComplete(()=>{
+                BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.MartialAttack);
+            });
         });
 
         yield return sequence.WaitForCompletion();
+        
     }
 
     public IEnumerator ShotDart(CardView cardView,EnemyView enemyView){
@@ -341,7 +353,9 @@ public class CardView : MonoBehaviour
         Vector3 startPosition = cardView.transform.position;
         
         yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.OnDartShot));
-
+        
+        BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.Dart);
+        
         ObjectPool.Instance.CreateFlyingTextToTarget(
             "ShotDart",
             FlyingTextType.Dart,
@@ -351,8 +365,12 @@ public class CardView : MonoBehaviour
                 if(enemyView != null){
                     enemyView.Damage(1,cardView);
                 }
+
+                BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.Dart);
             }
         );
+
+        
 
         yield return null;
 

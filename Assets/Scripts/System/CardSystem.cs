@@ -90,7 +90,8 @@ public class CardSystem : Singleton<CardSystem>
     /// <param name="nextTurnGA"></param>
     /// <returns></returns>
     private IEnumerator RemoveAllCardsPerformer(RemoveAllCardsGA removeAllCardsGA){
-
+        yield return new WaitUntil(()=>BulletSystem.Instance.GetIsAllBulletDestroyed());
+        
         yield return HeroSystem.Instance.DiscardAllHero();
 
         for (int x = 0; x < cardsInBattlefield.GetLength(0); x++)
@@ -109,6 +110,8 @@ public class CardSystem : Singleton<CardSystem>
                 yield return battlefieldView.RemoveCard(x,y);
             }
         }
+
+        
 
         if(!CardSelectSystem.Instance.gameObject.activeSelf)CardSelectSystem.Instance.gameObject.SetActive(true);
         CardSelectSystem.Instance.ShowCardSelectView();
