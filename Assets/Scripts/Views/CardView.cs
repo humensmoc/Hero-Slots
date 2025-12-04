@@ -137,6 +137,10 @@ public class CardView : MonoBehaviour
             yield break;
         }
 
+        if(targetHeroView.hero.Energy >= targetHeroView.hero.MaxEnergy){
+            yield break;
+        }
+
         bool flyingTextCompleted = false;
 
         // 根据卡牌元素类型设置飞行文本类型

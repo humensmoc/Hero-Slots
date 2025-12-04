@@ -67,6 +67,12 @@ public class EnemyView : MonoBehaviour
         if(EnemySystem.Instance.enemyViews.Contains(this)){
             EnemySystem.Instance.RemoveEnemy(enemy);
         }
+
+        GameObject enemyDeadBodyView = Instantiate(Resources.Load<GameObject>("Prefabs/EnemyDeadBodyView"),transform.position,Quaternion.identity);
+        
+        enemyDeadBodyView.GetComponentInChildren<SpriteRenderer>().DOFade(0f,5f).OnComplete(()=>{
+            Destroy(enemyDeadBodyView);
+        });
     }
 
     void OnMouseDown()
