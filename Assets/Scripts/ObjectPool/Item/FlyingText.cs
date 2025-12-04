@@ -72,7 +72,7 @@ public class FlyingText : ObjectPoolItem
             transform.position = startPosition;
 
             if(isCurve){
-                flyDuration=1f;
+                flyDuration=0.5f;
                 transform.DOPath(new Vector3[]{startPosition,(startPosition+targetPosition)/2+new Vector3(0,1,0), targetPosition},
                     flyDuration, PathType.CatmullRom)
                     .SetEase(Ease.OutQuad)
@@ -85,6 +85,7 @@ public class FlyingText : ObjectPoolItem
                     });
 
             }else{
+                flyDuration=0.5f;
                 // 开始飞行动画
                 transform.DOMove(targetPosition, flyDuration)
                     .SetEase(Ease.OutQuad)
