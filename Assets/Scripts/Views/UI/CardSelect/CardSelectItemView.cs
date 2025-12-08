@@ -84,7 +84,7 @@ public class CardSelectItemView : MonoBehaviour,IPointerClickHandler,IPointerEnt
         // 按顺序播放多次动画
         for(int i=0;i<upgradeTime+1;i++){
             veilImage.gameObject.SetActive(true);
-            yield return new WaitForSeconds(0.15f+i*0.3f);
+            yield return new WaitForSeconds(0.15f+i*0.1f);
 
             Color fromColor = veilImage.color;
             Color toColor = cardRarityColorList[i].color;

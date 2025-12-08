@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using System;
 
 public class CardView : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class CardView : MonoBehaviour
     [SerializeField] private TMP_Text attackText;
     [SerializeField] private TMP_Text countdownText;
 
+    public GameObject killstreakMarker;
+    public TMP_Text killstreakText;
+    public int killstreakCount;
+
     public void Init(Card card,int x,int y){
         this.card = card;
         CardImage.sprite = ResourcesLoader.LoadCardSprite(card.CardData.CardNameEnum.ToString());
@@ -29,6 +34,9 @@ public class CardView : MonoBehaviour
         this.x = x;
         this.y = y;
         UpdateUI();
+        killstreakCount = 0;
+        killstreakText.text = killstreakCount.ToString();
+        killstreakMarker.SetActive(false);
     }
 
     void Update()
@@ -171,8 +179,21 @@ public class CardView : MonoBehaviour
         // yield return null;
     }
 
+    public void KillEnemy(EnemyView enemyView){
+        killstreakCount++;
+        killstreakText.text = killstreakCount.ToString();
+        killstreakMarker.SetActive(true);
+        Vector3 originalScale = killstreakMarker.transform.localScale;
+        killstreakMarker.transform.DOScale(originalScale*1.3f,0.1f).OnComplete(()=>{
+            killstreakMarker.transform.DOScale(originalScale,0.1f);
+        });
+    }
+
 #region Card Effect Methods 
 
+    /// <summary>
+    /// 触发式效果生效时的效果，类似炉石卡牌下的小闪电
+    /// </summary>
     public void Shine(){
         ObjectPool.Instance.CreateFlyingTextToTarget("Shine",FlyingTextType.Shine,transform.position,transform.position+new Vector3(0,1,0));
     }
