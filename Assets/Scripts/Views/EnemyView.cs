@@ -41,7 +41,9 @@ public class EnemyView : MonoBehaviour
         if(enemy.Health <= 0){
             Debug.Log($"Enemy {enemy.Name} should be removed, calling RemoveEnemy");
 
-            cardView.KillEnemy(this);
+            if(cardView != null){
+                cardView.KillEnemy(this);
+            }
 
             Dead();
         }

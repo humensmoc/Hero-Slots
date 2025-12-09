@@ -15,6 +15,8 @@ public class RuntimeEffectDataView : MonoBehaviour
     public TMP_Text stageText;
 
     void Update(){
+        if(!RuntimeEffectData.isAlreadyInit) return;
+        
         bloodGemValueText.text ="Blood Gem: " + RuntimeEffectData.bloodGemValue.ToString();
         electricityText.text ="Electricity: " + RuntimeEffectData.electricity.ToString();
         turnText.text="Turn : "+TurnSystem.Instance.currentTurn.ToString();

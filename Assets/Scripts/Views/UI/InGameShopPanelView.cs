@@ -25,6 +25,8 @@ public class InGameShopPanelView : MonoBehaviour
 
         HeroSelectSystem.Instance.ShowHeroSelectView();
         HeroSelectSystem.Instance.Refresh();
+
+        RelicSelectSystem.Instance.Refresh();
     }
 
     public void ClosePanel(){

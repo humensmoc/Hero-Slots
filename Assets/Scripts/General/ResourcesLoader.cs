@@ -54,4 +54,13 @@ public static class ResourcesLoader
         }
         return null;
     }
+
+    public static Sprite LoadRelicSprite(string path)
+    {
+        if(Load<Sprite>("Sprite/Relic/"+path, out Sprite sprite))
+        {
+            return sprite;
+        }
+        return null;
+    }
 }

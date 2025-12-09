@@ -26,15 +26,20 @@ public class GameInitializer : Singleton<GameInitializer>
         DevToolSystem.Instance.Init();
         CardSystem.Instance.Init(CardLibrary.cardDatas);  
         HeroSystem.Instance.Init(HeroLibrary.heroDatas);
+        RelicSystem.Instance.Init();
         EnemySystem.Instance.Init(EnemyLibrary.testLevelData);
         CardSelectSystem.Instance.Init();
         HeroSelectSystem.Instance.Init();
         DeleteCardPanelView.Instance.Init();
+        RelicSelectSystem.Instance.Init();
+
+        RuntimeEffectData.Init();
     }
 
     public void ResetInGame(){
         CardSystem.Instance.Reset();
         HeroSystem.Instance.Reset();
+        RelicSystem.Instance.Reset();
         EnemySystem.Instance.Reset();
         EventSystem.Instance.ClearActions();
         RuntimeEffectData.Reset();
