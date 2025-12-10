@@ -30,7 +30,7 @@ public class CardView : MonoBehaviour
         this.card = card;
         CardImage.sprite = ResourcesLoader.LoadCardSprite(card.CardData.CardNameEnum.ToString());
         attackText.text = card.Attack.ToString();
-        hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Card, CardImage.sprite, card.Name, card.Description);
+        hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Card, CardImage.sprite, card.CardData.CardNameEnum.ToString(), card.Description);
         this.x = x;
         this.y = y;
         UpdateUI();

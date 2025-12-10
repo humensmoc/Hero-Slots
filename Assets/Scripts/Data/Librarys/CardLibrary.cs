@@ -115,7 +115,7 @@ public static class CardLibrary
             }),
 
         new CardData(CardName.Big_Blood_Giver)
-            .SetDescription("倒计时3回合：本局内的鲜血宝石额外+1攻击力")
+            .SetDescription("倒计时3回合：本局内的<link=鲜血宝石>鲜血宝石</link>额外+1攻击力")
             .SetAttack(1)
             .SetElementType(ElementType.Element_Fire)
             .SetCardRarity(CardRarity.Rare)

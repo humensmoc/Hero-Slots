@@ -33,7 +33,7 @@ public class HeroView : MonoBehaviour
         this.hero = hero;
         spriteRenderer.sprite = ResourcesLoader.LoadHeroSprite(hero.HeroType.ToString());
         attackText.text = hero.Attack.ToString();
-        hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Hero, spriteRenderer.sprite, hero.Name, hero.Description);
+        hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Hero, spriteRenderer.sprite, hero.HeroType.ToString(), hero.Description);
         this.y = y;
         UpdateUI();
     }

@@ -8,9 +8,11 @@ public class RelicSelectItemView : MonoBehaviour,IPointerClickHandler,IPointerEn
 {
     public RelicData relicData;
     public Image relicImage;
+    public HoverInfoPanelData hoverInfoPanelData;
     public void Init(RelicData relicData){
         this.relicData = relicData;
         relicImage.sprite = ResourcesLoader.LoadRelicSprite(relicData.RelicType.ToString());
+        hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Relic, relicImage.sprite, relicData.RelicType.ToString(), relicData.Description);
     }
 
     public void OnPointerClick(PointerEventData eventData){
@@ -19,9 +21,11 @@ public class RelicSelectItemView : MonoBehaviour,IPointerClickHandler,IPointerEn
 
     public void OnPointerEnter(PointerEventData eventData){
         transform.DOScale(1.1f, 0.15f);
+        HoverInfoController.Instance.MouseEnterTargetView(hoverInfoPanelData);
     }
 
     public void OnPointerExit(PointerEventData eventData){
         transform.DOScale(1f, 0.15f);
+        HoverInfoController.Instance.MouseExitTargetView(hoverInfoPanelData);
     }
 }

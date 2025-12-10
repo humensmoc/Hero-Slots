@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 public enum HoverInfoPanelType{
-    Card,Hero,Perk,Enemy,Keyword
+    Card,Hero,Relic,Perk,Enemy,Keyword
 }
 
 public class HoverInfoPanelData{
@@ -86,7 +86,18 @@ public class HoverInfoPanel : MonoBehaviour,IPointerExitHandler
                 infoName.text = hoverInfoPanelData.skillName;
                 infoDescription.text = hoverInfoPanelData.skillDescription;
                 break;
+            case HoverInfoPanelType.Relic:
+                icon.sprite = hoverInfoPanelData.skillIcon;
+                infoName.text = hoverInfoPanelData.skillName;
+                infoDescription.text = hoverInfoPanelData.skillDescription;
+                break;
             case HoverInfoPanelType.Keyword:
+                icon.sprite = hoverInfoPanelData.skillIcon;
+                infoName.text = hoverInfoPanelData.skillName;
+                infoDescription.text = hoverInfoPanelData.skillDescription;
+                break;
+
+            case HoverInfoPanelType.Enemy:
                 icon.sprite = hoverInfoPanelData.skillIcon;
                 infoName.text = hoverInfoPanelData.skillName;
                 infoDescription.text = hoverInfoPanelData.skillDescription;

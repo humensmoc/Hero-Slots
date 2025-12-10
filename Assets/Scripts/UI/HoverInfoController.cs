@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class HoverInfoController : Singleton<HoverInfoController>
 {
@@ -25,7 +26,7 @@ public class HoverInfoController : Singleton<HoverInfoController>
         currentHoverInfoPanel.rectTransform.pivot = new Vector2(isInLeftArea?0:1,isInBottomArea?0:1);
 
         Vector2 pos = MouseUtil.GetMousePostionInScreenSpace()-new Vector2(Screen.width/2,Screen.height/2);
-        Vector2 offset = new Vector2(isInLeftArea?-10:10,isInBottomArea?-10:10);
+        Vector2 offset = new Vector2(isInLeftArea?50:-50,isInBottomArea?50:-50);
         pos += offset;
         currentHoverInfoPanel.rectTransform.anchoredPosition = pos;
 
@@ -38,18 +39,22 @@ public class HoverInfoController : Singleton<HoverInfoController>
         panels.Add(hoverInfoPanel);
         currentHoverInfoPanel = hoverInfoPanel;
         currentHoverInfoPanel.Init(hoverInfoPanelData);
+
+        currentHoverInfoPanel.transform.DOScale(1.1f, 0.15f).OnComplete(()=>{
+        });
     }
 
     public void DestroyHoverInfoPanel(HoverInfoPanel panel){
         // Debug.Log("DestroyHoverInfoPanel");
-
-        panels.Remove(panel);
-        Destroy(panel.gameObject);
-        if(panels.Count>0){
-            currentHoverInfoPanel = panels[panels.Count-1];
-        }else{
-            currentHoverInfoPanel = null;
-        }
+        panel.transform.DOScale(0f, 0.15f).OnComplete(()=>{
+            panels.Remove(panel);
+            Destroy(panel.gameObject);
+            if(panels.Count>0){
+                currentHoverInfoPanel = panels[panels.Count-1];
+            }else{
+                currentHoverInfoPanel = null;
+            }
+        });
     }
 
     public void MouseEnterTargetView(HoverInfoPanelData hoverInfoPanelData){
@@ -82,7 +87,7 @@ public class HoverInfoController : Singleton<HoverInfoController>
     public void MouseEnterKeyWord(string keyWord,HoverInfoPanel panel){
         if(panel!=currentHoverInfoPanel||!panel.isFocus)return;
 
-        HoverInfoPanelData hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Keyword,null,keyWord,"hero_Alpha description <link=keyword><b>keyword</b></link>");
+        HoverInfoPanelData hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Keyword,null,keyWord,"default keyword description in hoverinfopanel controller");
         CreateHoverInfoPanel(hoverInfoPanelData);
     }
 
