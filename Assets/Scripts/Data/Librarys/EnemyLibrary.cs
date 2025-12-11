@@ -4,7 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum EnemyName{
-    Enemy_Default,
+    one,
+    two,
+    three,
+    four,
+    five,
 }
 
 public class WaveData{
@@ -60,49 +64,65 @@ public static class EnemyLibrary{
         
         new StageData(new List<WaveData>(){
             new WaveData(new List<EnemyName>(){
-                EnemyName.Enemy_Default,
+                EnemyName.three,
             }),
             new WaveData(new List<EnemyName>(){
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
+                EnemyName.two,
+                EnemyName.two,
             }),
             new WaveData(new List<EnemyName>(){
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
+                EnemyName.two,
+                EnemyName.three,
+                EnemyName.one,
+                EnemyName.two,
             }),
             new WaveData(new List<EnemyName>(){
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
+                EnemyName.two,
+                EnemyName.two,
+                EnemyName.one,
+                EnemyName.one,
             }),
         }),
         new StageData(new List<WaveData>(){
             new WaveData(new List<EnemyName>(){
-                EnemyName.Enemy_Default,
+                EnemyName.three,
+                EnemyName.one,
+                EnemyName.one,
             }),
             new WaveData(new List<EnemyName>(){
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
+                EnemyName.two,
+                EnemyName.two,
+                EnemyName.one,
+                EnemyName.one,
             }),
             new WaveData(new List<EnemyName>(){
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
+                EnemyName.two,
+                EnemyName.three,
+                EnemyName.one,
+                EnemyName.two,
+                EnemyName.one,
             }),
             new WaveData(new List<EnemyName>(){
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
-                EnemyName.Enemy_Default,
+                EnemyName.two,
+                EnemyName.one,
+                EnemyName.one,
+                EnemyName.one,
             }),
         }),
     });
     public static List<EnemyData> enemyDatas = new List<EnemyData>(){
-        new EnemyData(EnemyName.Enemy_Default)
+        new EnemyData(EnemyName.one)
             .SetDescription("Enemy_Default Description")
-            .SetHealth(10),
+            .SetHealth(10)
+            .SetLength(1),
+        new EnemyData(EnemyName.two)
+            .SetDescription("Enemy_Default Description")
+            .SetHealth(10)
+            .SetLength(2),
+        new EnemyData(EnemyName.three)
+            .SetDescription("Enemy_Default Description")
+            .SetHealth(10)
+            .SetLength(3),
     };
 
     public static List<EnemyData> GetEnemyDatas(List<EnemyName> enemyNames){
@@ -110,7 +130,7 @@ public static class EnemyLibrary{
         foreach(var enemyName in enemyNames){
             EnemyData enemyData = enemyDatas.Find(e => e.EnemyNameEnum == enemyName);
             if(enemyData != null){
-                result.Add(enemyData);
+                result.Add(enemyData.Clone());
             }
         }
         return result;

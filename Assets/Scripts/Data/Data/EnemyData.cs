@@ -16,6 +16,7 @@ public class EnemyData{
     public EnemyName EnemyNameEnum;
     public string Description;
     public int Health;
+    public int Length;
 
     public EnemyData Clone(){
         EnemyData clone = new EnemyData(EnemyNameEnum);
@@ -23,11 +24,47 @@ public class EnemyData{
         clone.EnemyNameEnum=EnemyNameEnum;
         clone.Description=Description;
         clone.Health=Health;
+        clone.Length=Length;
         return clone;
     }
 
     public EnemyData(EnemyName enemyName){
+        EnemyNameEnum = enemyName;
         Name = enemyName.ToString();
+    }
+
+    public List<int> GetOccupiedPositions(int position){
+        switch(Length){
+            case 1:
+                return new List<int>{position};
+            case 2:
+                return new List<int>{position,position+1};
+            case 3:
+                return new List<int>{position,position+1,position+2};
+            case 4:
+                return new List<int>{position,position+1,position+2,position+3};
+            case 5:
+                return new List<int>{position,position+1,position+2,position+3,position+4};
+            default:
+                return new List<int>();
+        }
+    }
+
+    public List<int> GetPossiblePosition(){
+        switch(Length){
+            case 1:
+                return new List<int>{0,1,2,3,4};
+            case 2:
+                return new List<int>{0,1,2,3};
+            case 3:
+                return new List<int>{0,1,2};
+            case 4:
+                return new List<int>{0,1};
+            case 5:
+                return new List<int>{0};
+            default:
+                return new List<int>();
+        }
     }
 
     public EnemyData SetDescription(string description){
@@ -36,6 +73,10 @@ public class EnemyData{
     }
     public EnemyData SetHealth(int health){
         Health = health;
+        return this;
+    }
+    public EnemyData SetLength(int length){
+        Length = length;
         return this;
     }
 }

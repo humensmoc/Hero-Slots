@@ -83,36 +83,43 @@ public class EnemySystem : Singleton<EnemySystem>
     public void AddEnemy(List<EnemyData> enemyDataList){
         // 如果传入的list为空或null，直接返回
         if(enemyDataList == null || enemyDataList.Count == 0){
+            Debug.LogError("enemyDataList is null or empty");
             return;
         }
 
-        // 如果敌人数量大于5，随机选择5个
-        List<EnemyData> enemiesToSpawn = new List<EnemyData>();
-        if(enemyDataList.Count > 5){
-            // 创建一个副本并随机打乱，然后取前5个
-            List<EnemyData> shuffledList = new List<EnemyData>(enemyDataList);
-            for(int i = 0; i < 5; i++){
-                int randomIndex = UnityEngine.Random.Range(i, shuffledList.Count);
-                EnemyData temp = shuffledList[i];
-                shuffledList[i] = shuffledList[randomIndex];
-                shuffledList[randomIndex] = temp;
-            }
-            enemiesToSpawn = shuffledList.GetRange(0, 5);
-        }else{
-            enemiesToSpawn = new List<EnemyData>(enemyDataList);
-        }
+        // 复制敌人数据列表并洗牌
+        List<EnemyData> enemiesToSpawn = new List<EnemyData>(enemyDataList);
+        enemiesToSpawn.Shuffle();
 
         // 获取可用的Y坐标位置
-        int[] emptyYIndexs = enemyPositionYs;
+        List<int> emptyYIndexs = new List<int>(enemyPositionYs);
+        
         
         // 生成敌人
         for(int i=0; i<enemiesToSpawn.Count; i++){
+            Debug.Log($"before emptyYIndexs: {string.Join(", ", emptyYIndexs)}");
+
+            List<int> possiblePositions = enemiesToSpawn[i].GetPossiblePosition();
+            List<int> canPlacePositions = possiblePositions.Where(position => {
+                List<int> occupiedPositions = enemiesToSpawn[i].GetOccupiedPositions(position);
+                return occupiedPositions.All(pos => emptyYIndexs.Contains(pos));
+            }).ToList();
+            if(canPlacePositions.Count == 0){
+                Debug.Log($"No possible positions found for enemy {enemiesToSpawn[i].Name}");
+                continue;
+                
+            }else{
+                Debug.Log($"Possible positions found for enemy {enemiesToSpawn[i].Name}: {string.Join(", ", canPlacePositions)}");
+            }
+
+            int yIndex = canPlacePositions[UnityEngine.Random.Range(0, canPlacePositions.Count)];
+
+            Debug.Log($"enemy {enemiesToSpawn[i].Name} selected yIndex: {yIndex}");
+
             Enemy enemy = new Enemy(enemiesToSpawn[i]);
             // enemy.Health += math.max(2*TurnSystem.Instance.currentTurn, 0);
             enemies.Add(enemy);
 
-            // 从剩余的Y位置中随机选择一个
-            int yIndex = emptyYIndexs[UnityEngine.Random.Range(0, emptyYIndexs.Length)];
             EnemyView enemyView = EnemyCreator.Instance.CreateEnemyView(
                 enemy,
                 enemyParent.position + new Vector3(0, yIndex*1.2f, 0),
@@ -122,8 +129,11 @@ public class EnemySystem : Singleton<EnemySystem>
             );
             enemyViews.Add(enemyView);
 
-            // 从可用位置中移除已使用的Y坐标
-            emptyYIndexs = emptyYIndexs.Where(y => y != yIndex).ToArray();
+            // 从可用位置中移除所有被占据的Y坐标
+            List<int> occupiedPositions = enemiesToSpawn[i].GetOccupiedPositions(yIndex);
+            emptyYIndexs = emptyYIndexs.Where(y => !occupiedPositions.Contains(y)).ToList();
+            Debug.Log($"after emptyYIndexs: {string.Join(", ", emptyYIndexs)}");
+            Debug.Log($"-----------------------------------------");
         }
     }
 

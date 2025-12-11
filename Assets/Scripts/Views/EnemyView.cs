@@ -11,6 +11,8 @@ public class EnemyView : MonoBehaviour
     [SerializeField] private TMP_Text damageCountdown;
     [SerializeField] private Color originalColor;
     public HoverInfoPanelData hoverInfoPanelData;
+    public BoxCollider boxCollider;
+    public GameObject imageGameObject;
     public int x;
     public int y;
 
@@ -18,6 +20,9 @@ public class EnemyView : MonoBehaviour
         damageCountdown.text=" ";
         this.enemy = enemy;
         image.sprite = ResourcesLoader.LoadEnemySprite(enemy.enemyData.EnemyNameEnum.ToString());
+        imageGameObject.transform.localPosition = new Vector3(0,0.6f*(enemy.enemyData.Length-1),0);
+        boxCollider.size = new Vector3(1,enemy.enemyData.Length,1);
+        boxCollider.center = new Vector3(0,0.6f*(enemy.enemyData.Length-1),0);
         hoverInfoPanelData = new HoverInfoPanelData(HoverInfoPanelType.Enemy, image.sprite, enemy.enemyData.EnemyNameEnum.ToString(), enemy.enemyData.Description);
         healthText.text = "HP:"+enemy.Health.ToString()+"/"+enemy.MaxHealth.ToString();
         originalColor = image.color;
