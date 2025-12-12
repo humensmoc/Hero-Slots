@@ -554,6 +554,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a13ff7389ecd6f499fd7b846c81dedb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rarityDatas:
+  - rarity: 0
+    weight: 70
+    maxPityCount: 0
+    currentPityCount: 0
+  - rarity: 1
+    weight: 20
+    maxPityCount: 0
+    currentPityCount: 0
+  - rarity: 2
+    weight: 8
+    maxPityCount: 0
+    currentPityCount: 0
+  - rarity: 3
+    weight: 2
+    maxPityCount: 0
+    currentPityCount: 0
+  testCount: 10000
   cardSelectPanelView: {fileID: 1373316843}
   cardSelectPanel: {fileID: 2143388282}
   cardSelectItemPrefab: {fileID: 2052150553636089078, guid: 8e19fcadbed1fc24ebc4a0520db39f72, type: 3}

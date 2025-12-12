@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum CardName{
@@ -184,4 +185,8 @@ public static class CardLibrary
             })
             ,
     };
+
+    public static List<CardData> GetCardDatasByRarity(CardRarity rarity){
+        return cardDatas.Where(cardData => cardData.CardRarity == rarity).ToList();
+    }
 }
