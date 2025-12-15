@@ -22,7 +22,7 @@ public class RuntimeEffectDataView : MonoBehaviour
         turnText.text="Turn : "+TurnSystem.Instance.currentTurn.ToString();
         healthText.text="Health: " + Model.currentHealth.ToString() + "/" + Model.maxHealth.ToString();
         coinText.text="Coin: " + RuntimeEffectData.coin.ToString();
-        waveText.text="Wave: "+(EnemySystem.Instance.currentWaveIndex+1)+"/"+EnemySystem.Instance.currentLevelData.enemyStageDatas[EnemySystem.Instance.currentStageIndex].enemyWaveDatas.Count;
+        waveText.text="Wave: "+(EnemySystem.Instance.currentWaveIndex)+"/"+EnemySystem.Instance.currentLevelData.enemyStageDatas[EnemySystem.Instance.currentStageIndex].enemyWaveDatas.Count;
         stageText.text="Stage: "+(EnemySystem.Instance.currentStageIndex+1)+"/"+EnemySystem.Instance.currentLevelData.enemyStageDatas.Count;
     }
 

@@ -37,6 +37,7 @@ public class EnemySystem : Singleton<EnemySystem>
         currentStageIndex=0;
         currentWaveIndex=0;
         AddEnemy(EnemyLibrary.GetEnemyDatas(currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas[currentWaveIndex].enemyNames));
+        currentWaveIndex++;
     }
 
     private void DrawAllCardsPostReaction_MoveAllEnemy(DrawAllCardsGA drawAllCardsGA){
@@ -70,10 +71,11 @@ public class EnemySystem : Singleton<EnemySystem>
     }
 
     private IEnumerator AddEnemyPerformer(AddEnemyGA addEnemyGA){
-        if(currentWaveIndex==currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas.Count-1){
+        if(currentWaveIndex==currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas.Count){
             yield return null;
         }else{
-            AddEnemy(addEnemyGA.enemyDatas);
+            
+            AddEnemy(EnemyLibrary.GetEnemyDatas(currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas[currentWaveIndex].enemyNames));
             currentWaveIndex++;
             yield return new WaitForSeconds(0.15f);
         }
