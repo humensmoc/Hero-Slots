@@ -10,7 +10,8 @@ public class InGameShopPanelView : MonoBehaviour
     public GameObject body;
     public Button closeButton;
     public Button hideButton;
-    bool isShow =false;
+    public bool isNeedOpenInGameShop;
+    public bool isShow =false;
     public void Init(){
         closeButton.onClick.RemoveAllListeners();
         hideButton.onClick.RemoveAllListeners();
@@ -32,6 +33,7 @@ public class InGameShopPanelView : MonoBehaviour
     public void ClosePanel(){
         panel.SetActive(false);
         isShow = false;
+        isNeedOpenInGameShop=false;
     }
 
     public void SwitchVisibility(){

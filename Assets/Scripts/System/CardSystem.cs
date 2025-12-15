@@ -111,7 +111,10 @@ public class CardSystem : Singleton<CardSystem>
             }
         }
 
-        
+        if(UISystem.Instance.inGameShopPanelView.isNeedOpenInGameShop){
+            UISystem.Instance.inGameShopPanelView.OpenPanel();
+        }
+        yield return new WaitUntil(()=>!UISystem.Instance.inGameShopPanelView.isShow);
 
         if(!CardSelectSystem.Instance.gameObject.activeSelf)CardSelectSystem.Instance.gameObject.SetActive(true);
         CardSelectSystem.Instance.ShowCardSelectView();
