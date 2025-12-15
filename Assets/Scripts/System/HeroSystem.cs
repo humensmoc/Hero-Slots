@@ -124,7 +124,6 @@ public class HeroSystem : Singleton<HeroSystem>
                 yield return DiscardHero(heroesInBattlefield[i]);
             }
         }
-        yield return new WaitForSeconds(0.15f);
     }
 
     public HeroView GetHeroView(Hero hero){

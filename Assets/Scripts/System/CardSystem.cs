@@ -227,7 +227,12 @@ public class CardSystem : Singleton<CardSystem>
         cardViews.Add(cardView);
         battlefieldView.cardViewsInBattlefield[pos.x, pos.y] = cardView; 
         Tween tween = cardView.transform.DOLocalMove(cardParent.position + new Vector3(pos.x * cardPositionInterval, pos.y * cardPositionInterval, 0), 0.05f);
-        yield return tween.WaitForCompletion();
+
+        //一个一个的出来
+        // yield return tween.WaitForCompletion();
+
+        //一起出来，间隔0.001秒
+        yield return new WaitForSeconds(0.001f);
     }
 
     public CardView GetCardView(int x,int y){

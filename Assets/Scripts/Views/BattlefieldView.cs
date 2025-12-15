@@ -18,7 +18,7 @@ public class BattlefieldView : MonoBehaviour
         if(cardViewsInBattlefield[x,y]==null)
             yield break;
         cardViewsInBattlefield[x,y].transform.DOScale(Vector3.zero, 0.05f);
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.001f);
         Destroy(cardViewsInBattlefield[x,y].gameObject);
         cardViewsInBattlefield[x,y] = null;
     }
