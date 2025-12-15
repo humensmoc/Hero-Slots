@@ -350,13 +350,18 @@ public class CardView : MonoBehaviour
         //移动到最近的敌人
         sequence.Append(transform.DOMove(nearestEnemyView.transform.position,0.5f)).OnComplete(()=>{
             BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.MartialAttack);
-            //攻击最近的敌人
-            nearestEnemyView.Damage(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue,this);
+            
+            if(nearestEnemyView!=null){
+                
+                //攻击最近的敌人
+                nearestEnemyView.Damage(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue,this);
 
-            //判断敌人是否还存活（检查对象是否被销毁以及血量）
-            if(nearestEnemyView != null && nearestEnemyView.enemy != null && nearestEnemyView.enemy.Health > 0){
-                StartCoroutine(EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.OnMartialAttackHitEnemy,nearestEnemyView)));
+                //判断敌人是否还存活（检查对象是否被销毁以及血量）
+                if(nearestEnemyView != null && nearestEnemyView.enemy != null && nearestEnemyView.enemy.Health > 0){
+                    StartCoroutine(EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.OnMartialAttackHitEnemy,nearestEnemyView)));
+                }
             }
+            
 
             //移动到原始位置
             transform.DOMove(originalPosition,0.5f).OnComplete(()=>{
