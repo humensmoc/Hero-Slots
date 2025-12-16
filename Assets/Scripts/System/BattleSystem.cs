@@ -32,12 +32,12 @@ public class BattleSystem : Singleton<BattleSystem>
         //OnTurnStart
         for(int x = 0; x < CardSystem.Instance.cardsInBattlefield.GetLength(0); x++){
             for(int y = 0; y < CardSystem.Instance.cardsInBattlefield.GetLength(1); y++){
-                if(CardSystem.Instance.cardsInBattlefield[x,y]==null)
+                if(CardSystem.Instance.cardsInBattlefield[y,x]==null)
                     continue;
                 
-                if(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y].card.CardData.OnTurnStart!=null){
-                    yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y]
-                        .card.CardData.OnTurnStart(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y]);
+                if(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[y,x].card.CardData.OnTurnStart!=null){
+                    yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[y,x]
+                        .card.CardData.OnTurnStart(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[y,x]);
                 }
             }
         }
@@ -45,10 +45,10 @@ public class BattleSystem : Singleton<BattleSystem>
         //OnAttack
         for(int x = 0; x < CardSystem.Instance.cardsInBattlefield.GetLength(0); x++){
             for(int y = 0; y < CardSystem.Instance.cardsInBattlefield.GetLength(1); y++){
-                if(CardSystem.Instance.cardsInBattlefield[x,y]==null)
+                if(CardSystem.Instance.cardsInBattlefield[y,x]==null)
                     continue;
                 
-                yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[x,y].Shot();
+                yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[y,x].Shot();
             }
         }
     }

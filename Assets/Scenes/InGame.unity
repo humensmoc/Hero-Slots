@@ -554,23 +554,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a13ff7389ecd6f499fd7b846c81dedb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rarityDatas:
-  - rarity: 0
-    weight: 70
-    maxPityCount: 0
-    currentPityCount: 0
-  - rarity: 1
-    weight: 20
-    maxPityCount: 0
-    currentPityCount: 0
-  - rarity: 2
-    weight: 8
-    maxPityCount: 0
-    currentPityCount: 0
-  - rarity: 3
-    weight: 2
-    maxPityCount: 0
-    currentPityCount: 0
+  rarityData:
+    singleRarityDatas: []
+    isUsePitySystem: 0
   testCount: 10000
   cardSelectPanelView: {fileID: 1373316843}
   cardSelectPanel: {fileID: 2143388282}
@@ -2179,6 +2165,8 @@ MonoBehaviour:
   body: {fileID: 1331924514}
   closeButton: {fileID: 482274875}
   hideButton: {fileID: 1298048629}
+  isNeedOpenInGameShop: 0
+  isShow: 0
 --- !u!1 &348687680
 GameObject:
   m_ObjectHideFlags: 0
