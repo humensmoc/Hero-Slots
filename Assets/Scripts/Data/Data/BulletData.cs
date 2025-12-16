@@ -8,6 +8,7 @@ public class BulletData{
     public int Life;
     public ElementType ElementType;
     public BulletName BulletNameEnum;
+    public BulletMoveType BulletMoveType;
 
     public Action<BulletView> OnInit;
     public Action<BulletView,EnemyView> OnHitEnemy;
@@ -22,9 +23,15 @@ public class BulletData{
         clone.Life=Life;
         clone.ElementType=ElementType;
         clone.BulletNameEnum=BulletNameEnum;
+        clone.BulletMoveType=BulletMoveType;
         clone.OnInit = OnInit;
         clone.OnHitEnemy = OnHitEnemy;
         return clone;
+    }
+
+    public BulletData SetBulletMoveType(BulletMoveType bulletMoveType){
+        BulletMoveType = bulletMoveType;
+        return this;
     }
 
     public BulletData SetAttack(int attack){

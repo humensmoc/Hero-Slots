@@ -29,7 +29,7 @@ public class BulletSystem : Singleton<BulletSystem>
     }
     public void Shot(BulletView bulletView,Vector3 dir)
     {
-        bulletView.dir = dir;
+        bulletView.dir=dir;
     }
     public BulletView CreateBullet(Bullet bullet,Vector3 position,Quaternion rotation,CardView sourceCardView)
     {

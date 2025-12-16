@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public enum BulletName{
@@ -9,6 +10,8 @@ public enum BulletName{
     Bullet_Transparent,
     Bullet_Bounce,
     Bullet_Martial,
+    Bullet_Missile,
+    Bullet_Mayhem,
 }
 
 
@@ -135,5 +138,34 @@ public static class BulletLibrary
             .SetHitEnemyEvent((bulletView,enemyView) => {
                 // Debug.Log("Bullet_Martial Hit Enemy");
             }),
+        
+        new BulletData(BulletName.Bullet_Missile)
+            .SetAttack(3)
+            .SetLife(1)
+            .SetElementType(ElementType.Element_Fire)
+            .SetBulletMoveType(BulletMoveType.Closest)
+            .SetHitEnemyEvent((bulletView,enemyView)=>{
+                Debug.Log("missle attacked target");
+            }),
+        
+        new BulletData(BulletName.Bullet_Mayhem)
+            .SetAttack(1)
+            .SetLife(1)
+            .SetElementType(ElementType.Element_Fire)
+            .SetBulletMoveType(BulletMoveType.Random)
+            .SetHitEnemyEvent((bulletView,enemyView)=>{
+                Debug.Log("mayhem attacked target");
+            }),
     };
+
+    public static BulletData GetBulletDataByName(BulletName name) {
+        foreach (var data in BulletLibrary.bulletDatas) {
+            if (data.BulletNameEnum == name) {
+                return data;
+            }
+        }
+        // Return the first bullet data as a default if not found
+        return bulletDatas[0];
+    }
+
 }

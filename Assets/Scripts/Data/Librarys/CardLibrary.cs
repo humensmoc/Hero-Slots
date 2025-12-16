@@ -17,6 +17,8 @@ public enum CardName{
     Martial,
     Dart_Shooter,
     Dart_Wingman,
+    Missile,
+    Mayhem
 }
 
 public enum CardRarity{
@@ -49,8 +51,13 @@ public static class CardLibrary
                         cardView.AddElectricity(1)
                     );
                 }else{
-                    return cardView.AddElectricity(1);
+                    return EffectComposer
+                    .Sequential(
+                        cardView.AddElectricity(1)
+                    );
                 }
+
+                
             }),
 
         new CardData(CardName.Electric_Current)
@@ -66,7 +73,11 @@ public static class CardLibrary
                 if(RuntimeEffectData.electricity <= 0)
                     return null;
                 
-                return cardView.SpendElectricity(1);
+                return EffectComposer
+                    .Sequential(
+                        cardView.SpendElectricity(1)
+                    );
+                
             })
             ,
 
@@ -184,6 +195,38 @@ public static class CardLibrary
                 };
             })
             ,
+        
+        new CardData(CardName.Missile)
+            .SetDescription("发射导弹，攻击最近的敌人")
+            .SetAttack(3)
+            .SetElementType(ElementType.Element_Fire)
+            .SetCardRarity(CardRarity.Common)
+            .SetBullet(BulletName.Bullet_Missile)
+            .SetOnAttack((cardView) => {
+                if(RuntimeEffectData.electricity <= 0)
+                    return null;
+                
+                return EffectComposer
+                    .Sequential(
+                        cardView.Shot(true,new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Missile)))
+                    );
+                
+            })
+            ,
+        new CardData(CardName.Mayhem)
+            .SetDescription("发射3个混乱子弹，攻击随机的敌人")
+            .SetAttack(0)
+            .SetElementType(ElementType.Element_Fire)
+            .SetCardRarity(CardRarity.Common)
+            .SetBullet(BulletName.Bullet_Mayhem)
+            .SetOnAttack((cardView) => {
+                return EffectComposer
+                    .Sequential(
+                        cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Mayhem))),
+                        cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Mayhem))),
+                        cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Mayhem)))
+                    );
+            })
     };
 
     public static List<CardData> GetCardDatasByRarity(CardRarity rarity){

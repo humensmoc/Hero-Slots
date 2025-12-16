@@ -106,6 +106,11 @@ public class CardView : MonoBehaviour
 #endregion
     }
 
+    /// <summary>
+    /// 卡牌特效用的额外射击
+    /// </summary>
+    /// <param name="bullet"></param>
+    /// <returns></returns>
     public IEnumerator AdditionalShot(Bullet bullet){
         Tween tw =transform.DOScale(1.1f,0.075f).OnComplete(()=>{
             transform.DOScale(1f,0.075f);
@@ -117,7 +122,8 @@ public class CardView : MonoBehaviour
             bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
             bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
         }else{
-            bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
+            //额外子弹的攻击力不继承卡牌的攻击力
+            // bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
         }
 
         // Debug.Log("bullet.Attack:"+bullet.Attack);
@@ -344,15 +350,18 @@ public class CardView : MonoBehaviour
 
         //获取原始位置
         Vector3 originalPosition = transform.position;
+        
+        //保存目标位置，防止目标在移动过程中被销毁
+        Vector3 targetPosition = nearestEnemyView.transform.position;
 
         Sequence sequence = DOTween.Sequence();
         
         //移动到最近的敌人
-        sequence.Append(transform.DOMove(nearestEnemyView.transform.position,0.5f)).OnComplete(()=>{
+        sequence.Append(transform.DOMove(targetPosition,0.5f)).OnComplete(()=>{
             BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.MartialAttack);
             
-            if(nearestEnemyView!=null){
-                
+            //检查目标是否还存在且有效
+            if(nearestEnemyView != null && nearestEnemyView.enemy != null && nearestEnemyView.enemy.Health > 0){
                 //攻击最近的敌人
                 nearestEnemyView.Damage(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue,this);
 
@@ -362,8 +371,7 @@ public class CardView : MonoBehaviour
                 }
             }
             
-
-            //移动到原始位置
+            //移动到原始位置（无论目标是否还存在）
             transform.DOMove(originalPosition,0.5f).OnComplete(()=>{
                 BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.MartialAttack);
             });

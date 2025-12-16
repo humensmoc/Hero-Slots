@@ -184,6 +184,11 @@ public class EnemySystem : Singleton<EnemySystem>
         }
     }
 
+    /// <summary>
+    /// 获取距离输入的敌人最近的敌人
+    /// </summary>
+    /// <param name="enemyView"></param>
+    /// <returns></returns>
     public EnemyView GetNearestEnemyView(EnemyView enemyView){
         List<EnemyView> othersEnemyViews=enemyViews.Where(view => view != enemyView).ToList();
         if(othersEnemyViews.Count > 0){
@@ -191,6 +196,28 @@ public class EnemySystem : Singleton<EnemySystem>
         }else{
             return null;
         }
+    }
+
+    /// <summary>
+    /// 获取随机的敌人
+    /// </summary>
+    /// <returns></returns>
+    public EnemyView GetRandomEnemyView(){
+        if(enemyViews == null || enemyViews.Count == 0){
+            return null;
+        }
+        return enemyViews[UnityEngine.Random.Range(0, enemyViews.Count)];
+    }
+
+    /// <summary>
+    /// 获取x轴距离主城的敌人
+    /// </summary>
+    /// <returns></returns>
+    public EnemyView GetClosestEnemyView(){
+        if(enemyViews == null || enemyViews.Count == 0){
+            return null;
+        }
+        return enemyViews.OrderBy(view => -view.x).FirstOrDefault();
     }
 
     public void Reset()

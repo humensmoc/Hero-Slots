@@ -8,11 +8,13 @@ public class Bullet
     public int Attack;
     public int Life;
     public ElementType ElementType;
+    public BulletMoveType BulletMoveType;
 
     public Bullet(BulletData bulletData){
         this.bulletData = bulletData.Clone();
         Attack = this.bulletData.Attack;
         Life = this.bulletData.Life;
         ElementType = this.bulletData.ElementType;
+        BulletMoveType = this.bulletData.BulletMoveType;
     }
 }
