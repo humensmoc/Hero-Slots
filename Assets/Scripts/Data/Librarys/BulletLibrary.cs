@@ -12,6 +12,7 @@ public enum BulletName{
     Bullet_Martial,
     Bullet_Missile,
     Bullet_Mayhem,
+    Bullet_Dart,
 }
 
 
@@ -145,7 +146,6 @@ public static class BulletLibrary
             .SetElementType(ElementType.Element_Fire)
             .SetBulletMoveType(BulletMoveType.Closest)
             .SetHitEnemyEvent((bulletView,enemyView)=>{
-                Debug.Log("missle attacked target");
             }),
         
         new BulletData(BulletName.Bullet_Mayhem)
@@ -154,7 +154,14 @@ public static class BulletLibrary
             .SetElementType(ElementType.Element_Fire)
             .SetBulletMoveType(BulletMoveType.Random)
             .SetHitEnemyEvent((bulletView,enemyView)=>{
-                Debug.Log("mayhem attacked target");
+            }),
+        
+        new BulletData(BulletName.Bullet_Dart)
+            .SetAttack(1)
+            .SetLife(1)
+            .SetElementType(ElementType.Element_Fire)
+            .SetBulletMoveType(BulletMoveType.SelectByCard)
+            .SetHitEnemyEvent((bulletView,enemyView)=>{
             }),
     };
 

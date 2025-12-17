@@ -116,6 +116,10 @@ public class BulletView : MonoBehaviour
         if(enemyView!=null){
             enemyView.Damage(bullet.Attack,sourceCardView);
             bullet.bulletData.OnHitEnemy?.Invoke(this,enemyView);
+            // 在cardView上启动协程，避免BulletView被销毁后协程被中断
+            if(sourceCardView != null && sourceCardView.gameObject != null){
+                sourceCardView.StartCoroutine(EventSystem.Instance.CheckEvent(new EventInfo(sourceCardView,EventType.OnBulletHitEnemy,enemyView,this)));
+            }
         }
     }
 

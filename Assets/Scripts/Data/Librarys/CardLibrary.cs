@@ -162,6 +162,7 @@ public static class CardLibrary
                 Func<EventInfo, IEnumerator> martialAttackHitEnemyAction = (eventInfo) => {
                     // cardView.StartCoroutine(cardView.AddElectricity(1));
                     return cardView.ShotDart(cardView,eventInfo.enemyView);
+                    // return cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Dart)));
                 };
                 
                 EventSystem.Instance.AddAction(martialAttackHitEnemyAction,EventType.OnMartialAttackHitEnemy);
@@ -173,25 +174,52 @@ public static class CardLibrary
             ,
         
         new CardData(CardName.Dart_Wingman)
-            .SetDescription("相邻单位发射飞镖时，发射1个子弹")
+            .SetDescription("Missile命中时，发射1个Mayhem")
             .SetAttack(1)
             .SetElementType(ElementType.Element_Fire)
             .SetCardRarity(CardRarity.Rare)
             .SetBullet(BulletName.Bullet_Normal)
             .SetOnInit((cardView) => {
-                Func<EventInfo, IEnumerator> dartShotAction = (eventInfo) => {
+                // Func<EventInfo, IEnumerator> dartShotAction = (eventInfo) => {
 
-                    if(eventInfo.cardView.x <=cardView.x+1 && eventInfo.cardView.x >=cardView.x-1 && eventInfo.cardView.y <=cardView.y+1 && eventInfo.cardView.y >=cardView.y-1){
-                        return cardView.Shot(true);
+                //     if(eventInfo.cardView.x <=cardView.x+1 && eventInfo.cardView.x >=cardView.x-1 && eventInfo.cardView.y <=cardView.y+1 && eventInfo.cardView.y >=cardView.y-1){
+                //         return cardView.Shot(true);
+                //     }else{
+                //         return null;
+                //     }
+                // };
+                
+                // EventSystem.Instance.AddAction(dartShotAction,EventType.OnDartShot);
+
+                // cardView.card.CardData.OnLeave += () => {
+                //     EventSystem.Instance.RemoveAction(dartShotAction,EventType.OnDartShot);
+                // };
+
+                Func<EventInfo,IEnumerator> bulletHitEnemy=(eventInfo)=>{
+                    // 如果子弹不是由卡牌发射的（比如由英雄发射），eventInfo.cardView可能为null
+                    if(eventInfo.cardView == null || eventInfo.bulletView == null){
+                        return null;
+                    }
+                    
+                    if(
+                    //     eventInfo.cardView.x <=cardView.x+1 
+                    // && eventInfo.cardView.x >=cardView.x-1 
+                    // && eventInfo.cardView.y <=cardView.y+1 
+                    // && eventInfo.cardView.y >=cardView.y-1
+                    // && 
+                    eventInfo.bulletView.bullet.bulletData.BulletNameEnum==BulletName.Bullet_Missile){
+                        Debug.Log("[Dart_Wingman]Missile Hit Enemy");
+                        return cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Mayhem)));
                     }else{
                         return null;
                     }
+                    
                 };
-                
-                EventSystem.Instance.AddAction(dartShotAction,EventType.OnDartShot);
+
+                EventSystem.Instance.AddAction(bulletHitEnemy,EventType.OnBulletHitEnemy);
 
                 cardView.card.CardData.OnLeave += () => {
-                    EventSystem.Instance.RemoveAction(dartShotAction,EventType.OnDartShot);
+                    EventSystem.Instance.RemoveAction(bulletHitEnemy,EventType.OnBulletHitEnemy);
                 };
             })
             ,
