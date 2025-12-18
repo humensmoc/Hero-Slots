@@ -555,7 +555,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rarityData:
-    singleRarityDatas: []
+    singleRarityDatas:
+    - rarity: 0
+      weight: 80
+      maxPityCount: 1000
+      currentPityCount: 0
+      rarityIndex: 0
+    - rarity: 1
+      weight: 20
+      maxPityCount: 100
+      currentPityCount: 0
+      rarityIndex: 0
+    - rarity: 2
+      weight: 8
+      maxPityCount: 20
+      currentPityCount: 0
+      rarityIndex: 0
+    - rarity: 3
+      weight: 2
+      maxPityCount: 50
+      currentPityCount: 0
+      rarityIndex: 0
     isUsePitySystem: 0
   testCount: 10000
   cardSelectPanelView: {fileID: 1373316843}

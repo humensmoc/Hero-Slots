@@ -20,7 +20,14 @@ public class BulletView : MonoBehaviour
         this.sourceCardView = sourceCardView;
         image.sprite = ResourcesLoader.LoadBulletSprite(bullet.bulletData.BulletNameEnum.ToString());
         attackText.text = bullet.Attack.ToString();
-        SetTarget(bullet.BulletMoveType,TargetEnemy);
+
+        if(TargetEnemy==null){
+            SetTarget(bullet.BulletMoveType);
+        }else{
+            SetTarget(BulletMoveType.SelectByCard,TargetEnemy);
+        }
+
+        
 
     }
 

@@ -111,7 +111,7 @@ public class CardView : MonoBehaviour
     /// </summary>
     /// <param name="bullet"></param>
     /// <returns></returns>
-    public IEnumerator AdditionalShot(Bullet bullet){
+    public IEnumerator AdditionalShot(Bullet bullet,EnemyView targetEnemy=null){
         Tween tw =transform.DOScale(1.1f,0.075f).OnComplete(()=>{
             transform.DOScale(1f,0.075f);
         });
@@ -131,7 +131,8 @@ public class CardView : MonoBehaviour
             bullet,
             transform.position,
             transform.rotation,
-            this);
+            this,
+            targetEnemy);
 
         BulletSystem.Instance.Shot(
             bulletView,
@@ -379,39 +380,6 @@ public class CardView : MonoBehaviour
 
         yield return sequence.WaitForCompletion();
         
-    }
-
-    public IEnumerator ShotDart(CardView cardView,EnemyView enemyView){
-        // 检查 cardView 和 enemyView 是否还存在，避免访问已销毁的对象
-        if(cardView == null || enemyView == null){
-            yield break;
-        }
-
-        Vector3 targetPosition = enemyView.transform.position;
-        Vector3 startPosition = cardView.transform.position;
-        
-        yield return EventSystem.Instance.CheckEvent(new EventInfo(this,EventType.OnDartShot));
-        
-        BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.Dart);
-        
-        ObjectPool.Instance.CreateFlyingTextToTarget(
-            "ShotDart",
-            FlyingTextType.Dart,
-            startPosition,
-            targetPosition,
-            ()=>{
-                if(enemyView != null){
-                    enemyView.Damage(1,cardView);
-                }
-
-                BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.Dart);
-            }
-        );
-
-        
-
-        yield return null;
-
     }
 
 #endregion

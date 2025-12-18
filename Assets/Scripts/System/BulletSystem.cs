@@ -6,7 +6,6 @@ using DG.Tweening;
 public enum EndTurnBlocker{
     MartialAttack,
     Electricity,
-    Dart,
 }
 
 public class BulletSystem : Singleton<BulletSystem>
@@ -31,9 +30,9 @@ public class BulletSystem : Singleton<BulletSystem>
     {
         bulletView.dir=dir;
     }
-    public BulletView CreateBullet(Bullet bullet,Vector3 position,Quaternion rotation,CardView sourceCardView)
+    public BulletView CreateBullet(Bullet bullet,Vector3 position,Quaternion rotation,CardView sourceCardView,EnemyView targetEnemy=null)
     {
-        BulletView bulletView = BulletCreator.Instance.CreateBulletView(bullet,position,rotation,sourceCardView);
+        BulletView bulletView = BulletCreator.Instance.CreateBulletView(bullet,position,rotation,sourceCardView,targetEnemy);
         bulletInBattlefield.Add(bulletView);
         return bulletView;
     }

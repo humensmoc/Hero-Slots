@@ -160,9 +160,10 @@ public static class CardLibrary
             .SetBullet(BulletName.Bullet_Normal)
             .SetOnInit((cardView) => {
                 Func<EventInfo, IEnumerator> martialAttackHitEnemyAction = (eventInfo) => {
-                    // cardView.StartCoroutine(cardView.AddElectricity(1));
-                    return cardView.ShotDart(cardView,eventInfo.enemyView);
-                    // return cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Dart)));
+                    // return cardView.ShotDart(cardView,eventInfo.enemyView);
+                    return cardView.AdditionalShot(
+                        new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Dart))
+                        ,eventInfo.enemyView);
                 };
                 
                 EventSystem.Instance.AddAction(martialAttackHitEnemyAction,EventType.OnMartialAttackHitEnemy);
@@ -180,34 +181,13 @@ public static class CardLibrary
             .SetCardRarity(CardRarity.Rare)
             .SetBullet(BulletName.Bullet_Normal)
             .SetOnInit((cardView) => {
-                // Func<EventInfo, IEnumerator> dartShotAction = (eventInfo) => {
-
-                //     if(eventInfo.cardView.x <=cardView.x+1 && eventInfo.cardView.x >=cardView.x-1 && eventInfo.cardView.y <=cardView.y+1 && eventInfo.cardView.y >=cardView.y-1){
-                //         return cardView.Shot(true);
-                //     }else{
-                //         return null;
-                //     }
-                // };
-                
-                // EventSystem.Instance.AddAction(dartShotAction,EventType.OnDartShot);
-
-                // cardView.card.CardData.OnLeave += () => {
-                //     EventSystem.Instance.RemoveAction(dartShotAction,EventType.OnDartShot);
-                // };
-
                 Func<EventInfo,IEnumerator> bulletHitEnemy=(eventInfo)=>{
                     // 如果子弹不是由卡牌发射的（比如由英雄发射），eventInfo.cardView可能为null
                     if(eventInfo.cardView == null || eventInfo.bulletView == null){
                         return null;
                     }
                     
-                    if(
-                    //     eventInfo.cardView.x <=cardView.x+1 
-                    // && eventInfo.cardView.x >=cardView.x-1 
-                    // && eventInfo.cardView.y <=cardView.y+1 
-                    // && eventInfo.cardView.y >=cardView.y-1
-                    // && 
-                    eventInfo.bulletView.bullet.bulletData.BulletNameEnum==BulletName.Bullet_Missile){
+                    if(eventInfo.bulletView.bullet.bulletData.BulletNameEnum==BulletName.Bullet_Missile){
                         Debug.Log("[Dart_Wingman]Missile Hit Enemy");
                         return cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Mayhem)));
                     }else{
