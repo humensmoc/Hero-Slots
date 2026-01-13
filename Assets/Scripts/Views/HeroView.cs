@@ -78,6 +78,7 @@ public class HeroView : MonoBehaviour
         //是否是额外攻击
         if(!isAdditionalShot){
             //触发各种事件
+            yield return EventSystem.Instance.CheckEvent(new EventInfo(null,EventType.OnHeroAttack,null,bulletView,this));
         }
     }
 

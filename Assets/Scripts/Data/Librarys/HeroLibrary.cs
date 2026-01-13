@@ -9,6 +9,7 @@ public enum HeroType{
     Electric_Man,
     Fire_Boy,
     Fire_Diarrhea,
+    Double_Shot,
 
 }
 
@@ -108,6 +109,29 @@ public static class HeroLibrary
                 if(transparentBulletData != null){
                     heroView.StartCoroutine(heroView.Shot(new Bullet(transparentBulletData.Clone())));
                 }
+            }),
+        
+        new HeroData(HeroType.Double_Shot)
+            .SetDescription("连击")
+            .SetAttack(3)
+            .SetMaxEnergy(3)
+            .SetElementType(ElementType.Element_Water)
+            .SetBullet(BulletName.Bullet_Transparent)
+            .SetInitEvent((heroView) => {
+                Func<EventInfo, IEnumerator> heroAttackAction = (eventInfo) => {
+                    if(eventInfo.heroView==heroView){
+                        return EffectComposer.Sequential(
+                            heroView.Shot(true)
+                        );
+                    }else{
+                        return EmptyCoroutine();
+                    }
+                };
+                EventSystem.Instance.AddAction(heroAttackAction,EventType.OnHeroAttack);
+
+                heroView.hero.heroData.OnDead = (heroView) => {
+                    EventSystem.Instance.RemoveAction(heroAttackAction,EventType.OnHeroAttack);
+                };  
             }),
 
         new HeroData(HeroType.Electric_Man)

@@ -8,11 +8,13 @@ public class EventInfo{
     public EventType eventType;
     public EnemyView enemyView;
     public BulletView bulletView;
-    public EventInfo(CardView cardView,EventType eventType,EnemyView enemyView=null,BulletView bulletView=null){
+    public HeroView heroView;
+    public EventInfo(CardView cardView,EventType eventType,EnemyView enemyView=null,BulletView bulletView=null,HeroView heroView=null){
         this.cardView = cardView;
         this.eventType = eventType;
         this.enemyView = enemyView;
         this.bulletView=bulletView;
+        this.heroView=heroView;
     }
 }
 

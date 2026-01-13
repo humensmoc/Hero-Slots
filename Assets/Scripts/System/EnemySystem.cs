@@ -59,7 +59,7 @@ public class EnemySystem : Singleton<EnemySystem>
         if(currentWaveIndex < currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas.Count - 1){
             
         }else{
-            Debug.Log($"All waves in stage {currentStageIndex} have been spawned. Waiting for all enemies to be defeated.");
+            // Debug.Log($"All waves in stage {currentStageIndex} have been spawned. Waiting for all enemies to be defeated.");
         }
 
         for(int i = enemyViews.Count-1; i >= 0; i--){
@@ -85,7 +85,7 @@ public class EnemySystem : Singleton<EnemySystem>
     public void AddEnemy(List<EnemyData> enemyDataList){
         // 如果传入的list为空或null，直接返回
         if(enemyDataList == null || enemyDataList.Count == 0){
-            Debug.LogError("enemyDataList is null or empty");
+            // Debug.LogError("enemyDataList is null or empty");
             return;
         }
 
@@ -99,7 +99,6 @@ public class EnemySystem : Singleton<EnemySystem>
         
         // 生成敌人
         for(int i=0; i<enemiesToSpawn.Count; i++){
-            Debug.Log($"before emptyYIndexs: {string.Join(", ", emptyYIndexs)}");
 
             List<int> possiblePositions = enemiesToSpawn[i].GetPossiblePosition();
             List<int> canPlacePositions = possiblePositions.Where(position => {
@@ -107,16 +106,16 @@ public class EnemySystem : Singleton<EnemySystem>
                 return occupiedPositions.All(pos => emptyYIndexs.Contains(pos));
             }).ToList();
             if(canPlacePositions.Count == 0){
-                Debug.Log($"No possible positions found for enemy {enemiesToSpawn[i].Name}");
+                // Debug.Log($"No possible positions found for enemy {enemiesToSpawn[i].Name}");
                 continue;
                 
             }else{
-                Debug.Log($"Possible positions found for enemy {enemiesToSpawn[i].Name}: {string.Join(", ", canPlacePositions)}");
+                // Debug.Log($"Possible positions found for enemy {enemiesToSpawn[i].Name}: {string.Join(", ", canPlacePositions)}");
             }
 
             int yIndex = canPlacePositions[UnityEngine.Random.Range(0, canPlacePositions.Count)];
 
-            Debug.Log($"enemy {enemiesToSpawn[i].Name} selected yIndex: {yIndex}");
+            // Debug.Log($"enemy {enemiesToSpawn[i].Name} selected yIndex: {yIndex}");
 
             Enemy enemy = new Enemy(enemiesToSpawn[i]);
             // enemy.Health += math.max(2*TurnSystem.Instance.currentTurn, 0);
@@ -134,17 +133,17 @@ public class EnemySystem : Singleton<EnemySystem>
             // 从可用位置中移除所有被占据的Y坐标
             List<int> occupiedPositions = enemiesToSpawn[i].GetOccupiedPositions(yIndex);
             emptyYIndexs = emptyYIndexs.Where(y => !occupiedPositions.Contains(y)).ToList();
-            Debug.Log($"after emptyYIndexs: {string.Join(", ", emptyYIndexs)}");
-            Debug.Log($"-----------------------------------------");
+            // Debug.Log($"after emptyYIndexs: {string.Join(", ", emptyYIndexs)}");
+            // Debug.Log($"-----------------------------------------");
         }
     }
 
     public void RemoveEnemy(Enemy enemy){           
-        Debug.Log($"RemoveEnemy called for {enemy.Name}");
+        // Debug.Log($"RemoveEnemy called for {enemy.Name}");
         
         EnemyView enemyView = enemyViews.Find(view => view.enemy == enemy);
         if(enemyView != null){
-            Debug.Log($"Found EnemyView for {enemy.Name}, removing and destroying");
+            // Debug.Log($"Found EnemyView for {enemy.Name}, removing and destroying");
             Vector3 enemyPosition = enemyView.transform.position;
             enemyViews.Remove(enemyView);
             enemies.Remove(enemy);
@@ -155,7 +154,7 @@ public class EnemySystem : Singleton<EnemySystem>
             // 检查是否所有敌人都被击杀了
             CheckStageCompletion();
         }else{
-            Debug.LogError($"Could not find EnemyView for enemy {enemy.Name}!");
+            // Debug.LogError($"Could not find EnemyView for enemy {enemy.Name}!");
         }
     }
     
@@ -166,20 +165,20 @@ public class EnemySystem : Singleton<EnemySystem>
             bool allWavesSpawned = currentWaveIndex >= currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas.Count - 1;
             
             if(allWavesSpawned){
-                Debug.Log($"Stage {currentStageIndex} completed! All enemies defeated.");
+                // Debug.Log($"Stage {currentStageIndex} completed! All enemies defeated.");
                 
                 // 进入下一个stage
                 if(currentStageIndex < currentLevelData.enemyStageDatas.Count - 1){
-                    Debug.Log("Opening shop and advancing to next stage...");
+                    // Debug.Log("Opening shop and advancing to next stage...");
                     UISystem.Instance.inGameShopPanelView.isNeedOpenInGameShop=true;
                     currentStageIndex++;
                     currentWaveIndex = 0;
                 }else{
-                    Debug.Log("Level completed! All stages finished.");
+                    // Debug.Log("Level completed! All stages finished.");
                     // 这里可以添加关卡完成的逻辑
                 }
             }else{
-                Debug.Log($"All current enemies defeated, but stage {currentStageIndex} still has more waves to spawn.");
+                // Debug.Log($"All current enemies defeated, but stage {currentStageIndex} still has more waves to spawn.");/
             }
         }
     }

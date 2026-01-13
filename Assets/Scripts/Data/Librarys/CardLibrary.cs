@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 public enum CardName{
@@ -18,7 +19,11 @@ public enum CardName{
     Dart_Shooter,
     Dart_Wingman,
     Missile,
-    Mayhem
+    Mayhem,
+    adviser,
+    bigAdviser,
+    follower,
+    bigFollower,
 }
 
 public enum CardRarity{
@@ -66,7 +71,6 @@ public static class CardLibrary
             .SetElementType(ElementType.Element_Electricity)
             .SetCardRarity(CardRarity.Legendary)
             .SetOnInit((cardView) => {
-                Debug.Log("Card_Electric_Current Init");
             })
             .SetBullet(BulletName.Bullet_Bounce)
             .SetOnAttack((cardView) => {
@@ -234,6 +238,97 @@ public static class CardLibrary
                         cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Mayhem))),
                         cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Mayhem)))
                     );
+            })
+            ,
+
+        // new CardData(CardName.adviser)
+        //     .SetDescription("==倒计时3，随机同色英雄攻击1次==")
+        //     .SetAttack(1)
+        //     .SetElementType(ElementType.Element_Water)
+        //     .SetCardRarity(CardRarity.Common)
+        //     .SetBullet(BulletName.Bullet_Normal)
+        //     .SetOnCountdownEnd(3, (cardView) => {
+        //         HeroView targetHeroView = null;
+
+        //         List<HeroView> targetHeroViews = HeroSystem.Instance.heroViews.Where(heroView => heroView.hero.ElementType == cardView.card.ElementType).ToList();
+
+        //         targetHeroView=targetHeroViews.Draw();
+                
+        //         if(targetHeroView == null){
+        //             return null;
+        //         }
+                
+        //         return targetHeroView.Shot();
+        //     })
+        //     ,
+        new CardData(CardName.bigAdviser)
+            .SetDescription("==攻击时，随机同色英雄攻击1次==")
+            .SetAttack(1)
+            .SetElementType(ElementType.Element_Water)
+            .SetCardRarity(CardRarity.Common)
+            .SetBullet(BulletName.Bullet_Normal)
+            .SetOnAttack((cardView) => {
+                HeroView targetHeroView = null;
+
+                List<HeroView> targetHeroViews = HeroSystem.Instance.heroViews.Where(heroView => heroView.hero.ElementType == cardView.card.ElementType).ToList();
+
+                targetHeroView=targetHeroViews.Draw();
+
+                if(targetHeroView == null){
+                    return null;
+                }
+                
+                return targetHeroView.Shot();
+            })
+            ,
+        // new CardData(CardName.follower)
+        //     .SetDescription("同色英雄攻击时，发射1个什么子弹")
+        //     .SetAttack(1)
+        //     .SetElementType(ElementType.Element_Water)
+        //     .SetCardRarity(CardRarity.Common)
+        //     .SetBullet(BulletName.Bullet_Normal)
+        //     .SetOnInit((cardView) => {
+        //         Func<EventInfo, IEnumerator> heroAttackAction = (eventInfo) => {
+
+        //             Debug.Log("[follower]Hero Attack: " + eventInfo.heroView.hero.ElementType + " " + cardView.card.ElementType);
+
+        //             if(eventInfo.heroView.hero.ElementType == cardView.card.ElementType){
+        //                 return cardView.AdditionalShot(new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Normal)));
+        //             }else{
+        //                 return HeroLibrary.EmptyCoroutine();
+        //             }
+        //         };
+
+        //         EventSystem.Instance.AddAction(heroAttackAction,EventType.OnHeroAttack);
+
+        //         cardView.card.CardData.OnLeave += () => {
+        //             EventSystem.Instance.RemoveAction(heroAttackAction,EventType.OnHeroAttack);
+        //         };
+        //     })
+        //     ,
+        new CardData(CardName.bigFollower)
+            .SetDescription("==同色英雄攻击时，发射1个价值等同于此英雄攻击力的子弹==")
+            .SetAttack(1)
+            .SetElementType(ElementType.Element_Water)
+            .SetOnInit((cardView) => {
+                Func<EventInfo, IEnumerator> heroAttackAction = (eventInfo) => {
+
+                    // Debug.Log("[bigFollower]Hero Attack: " + eventInfo.heroView.hero.ElementType + " " + cardView.card.ElementType);
+
+                    if(eventInfo.heroView.hero.ElementType == cardView.card.ElementType){
+                        Bullet bullet = new Bullet(BulletLibrary.GetBulletDataByName(BulletName.Bullet_Normal));
+                        bullet.Attack = eventInfo.heroView.hero.Attack;
+                        return cardView.AdditionalShot(bullet);
+                    }else{
+                        return HeroLibrary.EmptyCoroutine();
+                    }
+                };
+
+                EventSystem.Instance.AddAction(heroAttackAction,EventType.OnHeroAttack);
+
+                cardView.card.CardData.OnLeave += () => {
+                    EventSystem.Instance.RemoveAction(heroAttackAction,EventType.OnHeroAttack);
+                };
             })
     };
 
