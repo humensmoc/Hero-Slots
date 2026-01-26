@@ -122,7 +122,7 @@ public static class BulletLibrary
                 // Debug.Log("Bullet_Bounce Init");
             })
             .SetHitEnemyEvent((bulletView,enemyView) => {
-                int bounceCount = RuntimeEffectData.electricity/2;
+                int bounceCount = Model.Electricity/2;
                 
                 // 递归执行弹跳逻辑，避免while循环死循环问题
                 ElectricBounce(bulletView, enemyView, bounceCount);

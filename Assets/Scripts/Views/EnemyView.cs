@@ -60,11 +60,11 @@ public class EnemyView : MonoBehaviour
         transform.Translate(Vector3.left);
         x++;
 
-        damageCountdown.text=x+"/"+Model.enemyDamageTrun;
+        damageCountdown.text=x+"/"+Model.EnemyDamageTrun;
 
-        if(x>=Model.enemyDamageTrun){
-            Model.currentHealth--;
-            if(Model.currentHealth<=0){
+        if(x>=Model.EnemyDamageTrun){
+            Model.CurrentHealth--;
+            if(Model.CurrentHealth<=0){
                 Debug.Log("Game Over");
                 EventSystem.Instance.OnGameLose?.Invoke();
             }

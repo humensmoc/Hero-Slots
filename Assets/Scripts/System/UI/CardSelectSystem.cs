@@ -63,14 +63,14 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
     }
 
     public void ManualRefresh(){
-        if(RuntimeEffectData.coin<Model.refreshCardCost){
+        if(Model.Coin<Model.RefreshCardCost){
             TipsController.Instance.ShowTips("Not enough coin");
             return;
         }
 
         InGameEconomySystem.Instance.SpendCoin(
             CoordinateConverter.UIToWorld(refreshButton.transform.position),
-            Model.refreshCardCost);
+            Model.RefreshCardCost);
 
         Refresh();
     }

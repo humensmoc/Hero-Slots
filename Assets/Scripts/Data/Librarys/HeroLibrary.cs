@@ -104,7 +104,7 @@ public static class HeroLibrary
             .SetElementType(ElementType.Element_Water)
             .SetBullet(BulletName.Bullet_Transparent)
             .SetSkillEvent((heroView) => {
-                heroView.hero.Attack+=TurnSystem.Instance.currentTurn/3+1;
+                heroView.hero.Attack+=Model.CurrentTurn/3+1;
                 BulletData transparentBulletData = BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == BulletName.Bullet_Transparent);
                 if(transparentBulletData != null){
                     heroView.StartCoroutine(heroView.Shot(new Bullet(transparentBulletData.Clone())));
@@ -140,7 +140,7 @@ public static class HeroLibrary
             .SetMaxEnergy(3)
             .SetElementType(ElementType.Element_Electricity)
             .SetSkillEvent((heroView) => {
-                RuntimeEffectData.electricity+=5;
+                Model.Electricity+=5;
             })
             .SetInitEvent((thisHeroView) => {
                     

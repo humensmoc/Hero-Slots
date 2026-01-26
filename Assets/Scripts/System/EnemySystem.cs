@@ -11,10 +11,6 @@ public class EnemySystem : Singleton<EnemySystem>
     [SerializeField] Transform enemyParent;
     public int[] enemyPositionYs={0,1,2,3,4};
 
-    public LevelData currentLevelData;
-    public int currentStageIndex=0;
-    public int currentWaveIndex=0;
-
     void OnEnable()
     {
         ActionSystem.AttachPerformer<MoveAllEnemyGA>(MoveAllEnemyPerformer);
@@ -33,11 +29,11 @@ public class EnemySystem : Singleton<EnemySystem>
 
 
     public void Init(LevelData levelData){
-        currentLevelData = levelData.Clone();
-        currentStageIndex=0;
-        currentWaveIndex=0;
-        AddEnemy(EnemyLibrary.GetEnemyDatas(currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas[currentWaveIndex].enemyNames));
-        currentWaveIndex++;
+        Model.CurrentLevelData = levelData.Clone();
+        Model.CurrentStageIndex=0;
+        Model.CurrentWaveIndex=0;
+        AddEnemy(EnemyLibrary.GetEnemyDatas(Model.CurrentLevelData.enemyStageDatas[Model.CurrentStageIndex].enemyWaveDatas[Model.CurrentWaveIndex].enemyNames));
+        Model.CurrentWaveIndex++;
     }
 
     private void DrawAllCardsPostReaction_MoveAllEnemy(DrawAllCardsGA drawAllCardsGA){
@@ -47,8 +43,8 @@ public class EnemySystem : Singleton<EnemySystem>
 
     private void MoveAllEnemyPostReaction_AddEnemy(MoveAllEnemyGA moveAllEnemyGA){
         // 只有当前stage还有wave时才添加敌人
-        if(currentWaveIndex < currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas.Count){
-            AddEnemyGA addEnemyGA = new AddEnemyGA(EnemyLibrary.GetEnemyDatas(currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas[currentWaveIndex].enemyNames));
+        if(Model.CurrentWaveIndex < Model.CurrentLevelData.enemyStageDatas[Model.CurrentStageIndex].enemyWaveDatas.Count){
+            AddEnemyGA addEnemyGA = new AddEnemyGA(EnemyLibrary.GetEnemyDatas(Model.CurrentLevelData.enemyStageDatas[Model.CurrentStageIndex].enemyWaveDatas[Model.CurrentWaveIndex].enemyNames));
             ActionSystem.Instance.AddReaction(addEnemyGA);
         }
     }
@@ -56,7 +52,7 @@ public class EnemySystem : Singleton<EnemySystem>
 
     public IEnumerator MoveAllEnemyPerformer(MoveAllEnemyGA moveAllEnemyGA){
         // 只推进wave索引，不推进stage（stage在所有敌人被击杀后才推进）
-        if(currentWaveIndex < currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas.Count - 1){
+        if(Model.CurrentWaveIndex < Model.CurrentLevelData.enemyStageDatas[Model.CurrentStageIndex].enemyWaveDatas.Count - 1){
             
         }else{
             // Debug.Log($"All waves in stage {currentStageIndex} have been spawned. Waiting for all enemies to be defeated.");
@@ -71,12 +67,12 @@ public class EnemySystem : Singleton<EnemySystem>
     }
 
     private IEnumerator AddEnemyPerformer(AddEnemyGA addEnemyGA){
-        if(currentWaveIndex==currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas.Count){
+        if(Model.CurrentWaveIndex==Model.CurrentLevelData.enemyStageDatas[Model.CurrentStageIndex].enemyWaveDatas.Count){
             yield return null;
         }else{
             
-            AddEnemy(EnemyLibrary.GetEnemyDatas(currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas[currentWaveIndex].enemyNames));
-            currentWaveIndex++;
+            AddEnemy(EnemyLibrary.GetEnemyDatas(Model.CurrentLevelData.enemyStageDatas[Model.CurrentStageIndex].enemyWaveDatas[Model.CurrentWaveIndex].enemyNames));
+            Model.CurrentWaveIndex++;
             yield return new WaitForSeconds(0.15f);
         }
        
@@ -149,7 +145,7 @@ public class EnemySystem : Singleton<EnemySystem>
             enemies.Remove(enemy);
             Destroy(enemyView.gameObject);
             
-            InGameEconomySystem.Instance.AddCoin(enemyPosition, Model.coinPerEnemy);
+            InGameEconomySystem.Instance.AddCoin(enemyPosition, Model.CoinPerEnemy);
             
             // 检查是否所有敌人都被击杀了
             CheckStageCompletion();
@@ -162,17 +158,17 @@ public class EnemySystem : Singleton<EnemySystem>
         // 检查是否所有敌人都被击杀了
         if(enemies.Count == 0){
             // 检查当前stage的所有wave是否都已经生成完毕
-            bool allWavesSpawned = currentWaveIndex >= currentLevelData.enemyStageDatas[currentStageIndex].enemyWaveDatas.Count - 1;
+            bool allWavesSpawned = Model.CurrentWaveIndex >= Model.CurrentLevelData.enemyStageDatas[Model.CurrentStageIndex].enemyWaveDatas.Count - 1;
             
             if(allWavesSpawned){
                 // Debug.Log($"Stage {currentStageIndex} completed! All enemies defeated.");
                 
                 // 进入下一个stage
-                if(currentStageIndex < currentLevelData.enemyStageDatas.Count - 1){
+                if(Model.CurrentStageIndex < Model.CurrentLevelData.enemyStageDatas.Count - 1){
                     // Debug.Log("Opening shop and advancing to next stage...");
                     UISystem.Instance.inGameShopPanelView.isNeedOpenInGameShop=true;
-                    currentStageIndex++;
-                    currentWaveIndex = 0;
+                    Model.CurrentStageIndex++;
+                    Model.CurrentWaveIndex = 0;
                 }else{
                     // Debug.Log("Level completed! All stages finished.");
                     // 这里可以添加关卡完成的逻辑

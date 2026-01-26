@@ -56,11 +56,11 @@ public class HeroSelectSystem : Singleton<HeroSelectSystem>
     }
 
     public void ManualRefresh(){
-        if(RuntimeEffectData.coin<Model.refreshHeroCost){
+        if(Model.Coin<Model.RefreshHeroCost){
             TipsController.Instance.ShowTips("Not enough coin");
             return;
         }
-        InGameEconomySystem.Instance.SpendCoin(CoordinateConverter.UIToWorld(refreshButton.transform.position),Model.refreshHeroCost);
+        InGameEconomySystem.Instance.SpendCoin(CoordinateConverter.UIToWorld(refreshButton.transform.position),Model.RefreshHeroCost);
         Refresh();
     }
 

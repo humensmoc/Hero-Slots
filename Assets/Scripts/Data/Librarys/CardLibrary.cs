@@ -74,7 +74,7 @@ public static class CardLibrary
             })
             .SetBullet(BulletName.Bullet_Bounce)
             .SetOnAttack((cardView) => {
-                if(RuntimeEffectData.electricity <= 0)
+                if(Model.Electricity <= 0)
                     return null;
                 
                 return EffectComposer
@@ -215,7 +215,7 @@ public static class CardLibrary
             .SetCardRarity(CardRarity.Common)
             .SetBullet(BulletName.Bullet_Missile)
             .SetOnAttack((cardView) => {
-                if(RuntimeEffectData.electricity <= 0)
+                if(Model.Electricity <= 0)
                     return null;
                 
                 return EffectComposer

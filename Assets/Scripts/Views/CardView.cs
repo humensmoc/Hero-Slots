@@ -52,7 +52,7 @@ public class CardView : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 #region shot
         //如果攻击力小于等于0，不发射子弹       
-        if(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue>0){
+        if(card.Attack+tempAdditionalAttack+bloodGemCount*Model.BloodGemValue>0){
             
             switch(card.BulletNameEnum){
                 case BulletName.Bullet_Martial:
@@ -63,7 +63,7 @@ public class CardView : MonoBehaviour
                     if(bullet == null){
 
                         bullet=new Bullet(BulletLibrary.bulletDatas.Find(bulletData => bulletData.BulletNameEnum == card.BulletNameEnum).Clone());
-                        bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
+                        bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*Model.BloodGemValue;
                         
                     }
 
@@ -120,7 +120,7 @@ public class CardView : MonoBehaviour
 
         if(bullet == null){
             bullet=new Bullet(BulletLibrary.bulletDatas[0].Clone());
-            bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
+            bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*Model.BloodGemValue;
         }else{
             //额外子弹的攻击力不继承卡牌的攻击力
             // bullet.Attack= card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue;
@@ -255,7 +255,7 @@ public class CardView : MonoBehaviour
             transform.position,
             CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.bloodGemValueText.transform.position),
             ()=>{
-                RuntimeEffectData.bloodGemValue+=bloodGem;
+                Model.BloodGemValue+=bloodGem;
                 flyingTextCompleted = true;
             }
         );
@@ -272,7 +272,7 @@ public class CardView : MonoBehaviour
             targetCardView.transform.position,
             ()=>{
                 if(isPermanent){
-                    targetCardView.card.Attack+=count*RuntimeEffectData.bloodGemValue;
+                    targetCardView.card.Attack+=count*Model.BloodGemValue;
                     targetCardView.UpdateUI();
                 }else{
                     targetCardView.bloodGemCount+=count;
@@ -293,7 +293,7 @@ public class CardView : MonoBehaviour
             transform.position,
             CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.electricityText.transform.position),
             ()=>{
-                RuntimeEffectData.electricity+=electricity;
+                Model.Electricity+=electricity;
                 flyingTextCompleted = true;
 
                 BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.Electricity);
@@ -311,7 +311,7 @@ public class CardView : MonoBehaviour
             CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.electricityText.transform.position),
             transform.position,
             ()=>{
-                RuntimeEffectData.electricity-=electricity;
+                Model.Electricity-=electricity;
                 flyingTextCompleted = true;
 
                 BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.Electricity);
@@ -364,7 +364,7 @@ public class CardView : MonoBehaviour
             //检查目标是否还存在且有效
             if(nearestEnemyView != null && nearestEnemyView.enemy != null && nearestEnemyView.enemy.Health > 0){
                 //攻击最近的敌人
-                nearestEnemyView.Damage(card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue,this);
+                nearestEnemyView.Damage(card.Attack+tempAdditionalAttack+bloodGemCount*Model.BloodGemValue,this);
 
                 //判断敌人是否还存活（检查对象是否被销毁以及血量）
                 if(nearestEnemyView != null && nearestEnemyView.enemy != null && nearestEnemyView.enemy.Health > 0){
@@ -386,7 +386,7 @@ public class CardView : MonoBehaviour
 
     public void UpdateUI(){
         if(card == null) return;
-        attackText.text = (card.Attack+tempAdditionalAttack+bloodGemCount*RuntimeEffectData.bloodGemValue).ToString();
+        attackText.text = (card.Attack+tempAdditionalAttack+bloodGemCount*Model.BloodGemValue).ToString();
         if(card.CardData.MaxCountdown > 0){
             countdownText.text = card.CardData.CurrentCountdown.ToString() + "/" + card.CardData.MaxCountdown.ToString();
         }else{
@@ -407,12 +407,12 @@ public class CardView : MonoBehaviour
     {
         if(!DeleteCardPanelView.Instance.isDeleteCardMode)return;
 
-        if(RuntimeEffectData.coin<Model.deleteCardCost){
+        if(Model.Coin<Model.DeleteCardCost){
             TipsController.Instance.ShowTips("Not enough coin");
             return;
         }
 
-        InGameEconomySystem.Instance.SpendCoin(transform.position,Model.deleteCardCost);
+        InGameEconomySystem.Instance.SpendCoin(transform.position,Model.DeleteCardCost);
 
         CardSystem.Instance.DeleteCardInBattleField(this);
 

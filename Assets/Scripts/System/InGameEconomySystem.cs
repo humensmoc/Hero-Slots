@@ -22,7 +22,7 @@ public class InGameEconomySystem : Singleton<InGameEconomySystem>
                 coin.ToString(),
                 FlyingTextType.AddCoin,
                 startPosition, CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.coinText.transform.position), 
-                ()=>{RuntimeEffectData.coin+=1;}, true);
+                ()=>{Model.Coin+=1;}, true);
             yield return new WaitForSeconds(0.1f);
         }
     }
@@ -30,7 +30,7 @@ public class InGameEconomySystem : Singleton<InGameEconomySystem>
     public IEnumerator SpendCoinCoroutine(Vector3 startPosition,int coin)
     {
         for(int i=0;i<coin;i++){
-            RuntimeEffectData.coin-=1;
+            Model.Coin-=1;
             
             ObjectPool.Instance.CreateFlyingTextToTarget(coin.ToString(), FlyingTextType.AddCoin, 
             CoordinateConverter.UIToWorld(UISystem.Instance.runtimeEffectDataView.coinText.transform.position),

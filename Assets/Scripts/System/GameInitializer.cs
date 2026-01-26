@@ -32,8 +32,6 @@ public class GameInitializer : Singleton<GameInitializer>
         HeroSelectSystem.Instance.Init();
         DeleteCardPanelView.Instance.Init();
         RelicSelectSystem.Instance.Init();
-
-        RuntimeEffectData.Init();
     }
 
     public void ResetInGame(){
@@ -42,8 +40,7 @@ public class GameInitializer : Singleton<GameInitializer>
         RelicSystem.Instance.Reset();
         EnemySystem.Instance.Reset();
         EventSystem.Instance.ClearActions();
-        RuntimeEffectData.Reset();
-        TurnSystem.Instance.Reset();
+        Model.ResetRuntimeData();
 
         InGameInit();
     }

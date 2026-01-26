@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class TurnSystem : Singleton<TurnSystem>
 {
-    [Header("RuntimeData")]
-    public int currentTurn=0;
     void OnEnable()
     {
         ActionSystem.AttachPerformer<NextTurnGA>(NextTurnPerformer);
@@ -18,7 +16,7 @@ public class TurnSystem : Singleton<TurnSystem>
 
 #region Performer
     public IEnumerator NextTurnPerformer(NextTurnGA nextTurnGA){
-        currentTurn++;
+        Model.CurrentTurn++;
         DamageRankSystem.Instance.damageRankPanelView.ClearDamageRankData();
         yield return null;
     }
@@ -27,9 +25,4 @@ public class TurnSystem : Singleton<TurnSystem>
 #region Reaction
 
 #endregion
-
-    public void Reset()
-    {
-        currentTurn = 0;
-    }
 }

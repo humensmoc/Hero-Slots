@@ -20,12 +20,12 @@ public class DeleteCardItemView : MonoBehaviour,IPointerClickHandler,IPointerEnt
     public void OnPointerClick(PointerEventData eventData){
         if(!DeleteCardPanelView.Instance.isDeleteCardMode)return;
 
-        if(RuntimeEffectData.coin<Model.deleteCardCost){
+        if(Model.Coin<Model.DeleteCardCost){
             TipsController.Instance.ShowTips("Not enough coin");
             return;
         }
 
-        InGameEconomySystem.Instance.SpendCoin(transform.position,Model.deleteCardCost);
+        InGameEconomySystem.Instance.SpendCoin(transform.position,Model.DeleteCardCost);
 
         CardSystem.Instance.DeleteCardInDeck(card);
         DeleteCardPanelView.Instance.deleteCardItemViews.Remove(this);
