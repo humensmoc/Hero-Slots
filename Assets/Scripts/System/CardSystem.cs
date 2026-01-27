@@ -5,10 +5,6 @@ using DG.Tweening;
 
 public class CardSystem : Singleton<CardSystem>
 {
-    public List<Card> cardsInDeck{get ; private set;}=new();
-    public Card[,] cardsInBattlefield { get; private set; } = new Card[5, 5];
-    public List<CardView> cardViews{get;private set;}=new();
-    [SerializeField] float cardPositionInterval;
     [SerializeField] Transform cardParent;  
     public BattlefieldView battlefieldView;
 
@@ -30,9 +26,9 @@ public class CardSystem : Singleton<CardSystem>
 
     public void Init(List<CardData> cardDatas)
     {
-        cardsInDeck.Add(new Card(cardDatas[Random.Range(0, cardDatas.Count)]));
-        cardsInDeck.Add(new Card(cardDatas[Random.Range(0, cardDatas.Count)]));
-        cardsInDeck.Add(new Card(cardDatas[Random.Range(0, cardDatas.Count)]));
+        Model.CardsInDeck.Add(new Card(cardDatas[Random.Range(0, cardDatas.Count)]));
+        Model.CardsInDeck.Add(new Card(cardDatas[Random.Range(0, cardDatas.Count)]));
+        Model.CardsInDeck.Add(new Card(cardDatas[Random.Range(0, cardDatas.Count)]));
 
         StartCoroutine(DrawAllCardsPerformer(new DrawAllCardsGA()));
     }
@@ -49,16 +45,16 @@ public class CardSystem : Singleton<CardSystem>
         yield return HeroSystem.Instance.DrawAllHero();
         
         // 检查cardsInDeck和cardsInBattlefield是否有效
-        if (cardsInDeck == null || cardsInBattlefield == null)
+        if (Model.CardsInDeck == null || Model.CardsInBattlefield == null)
             yield break;
 
         // 统计战场空位
         List<Vector2Int> emptySlots = new List<Vector2Int>();
-        for (int x = 0; x < cardsInBattlefield.GetLength(0); x++)
+        for (int x = 0; x < Model.CardsInBattlefield.GetLength(0); x++)
         {
-            for (int y = 0; y < cardsInBattlefield.GetLength(1); y++)
+            for (int y = 0; y < Model.CardsInBattlefield.GetLength(1); y++)
             {
-                if (cardsInBattlefield[x, y] == null)
+                if (Model.CardsInBattlefield[x, y] == null)
                 {
                     emptySlots.Add(new Vector2Int(x, y));
                 }
@@ -70,8 +66,8 @@ public class CardSystem : Singleton<CardSystem>
             yield break;
 
         List<Card> cardsToAdd = new List<Card>();
-        if(cardsInDeck.Count > 0){
-            foreach(Card card in cardsInDeck){
+        if(Model.CardsInDeck.Count > 0){
+            foreach(Card card in Model.CardsInDeck){
                 cardsToAdd.Add(card);
             }
         }
@@ -94,19 +90,19 @@ public class CardSystem : Singleton<CardSystem>
         
         yield return HeroSystem.Instance.DiscardAllHero();
 
-        for (int x = 0; x < cardsInBattlefield.GetLength(0); x++)
+        for (int x = 0; x < Model.CardsInBattlefield.GetLength(0); x++)
         {
-            for (int y = 0; y < cardsInBattlefield.GetLength(1); y++)
+            for (int y = 0; y < Model.CardsInBattlefield.GetLength(1); y++)
             {
-                if(cardsInBattlefield[x,y]==null)
+                if(Model.CardsInBattlefield[x,y]==null)
                     continue;
                 // cardsInDeck.Add(cardsInBattlefield[x,y]);
-                cardsInBattlefield[x,y].CardData.OnLeave?.Invoke();
-                cardsInBattlefield[x,y] = null;
+                Model.CardsInBattlefield[x,y].CardData.OnLeave?.Invoke();
+                Model.CardsInBattlefield[x,y] = null;
 
                 
 
-                cardViews.Remove(battlefieldView.cardViewsInBattlefield[x,y]);
+                Model.CardViews.Remove(battlefieldView.cardViewsInBattlefield[x,y]);
                 yield return battlefieldView.RemoveCard(x,y);
             }
         }
@@ -150,9 +146,9 @@ public class CardSystem : Singleton<CardSystem>
 #endregion
 
     public void DeleteCardInBattleField(CardView cardView){
-        cardsInDeck.Remove(cardView.card);
-        cardsInBattlefield[cardView.x,cardView.y] = null;
-        cardViews.Remove(cardView);
+        Model.CardsInDeck.Remove(cardView.card);
+        Model.CardsInBattlefield[cardView.x,cardView.y] = null;
+        Model.CardViews.Remove(cardView);
         Destroy(cardView.gameObject);
         battlefieldView.cardViewsInBattlefield[cardView.x,cardView.y] = null;
     }
@@ -161,7 +157,7 @@ public class CardSystem : Singleton<CardSystem>
         bool isCardInBattlefield = false;
         CardView cardViewInBattlefield = null;
 
-        foreach(CardView cardView in cardViews){
+        foreach(CardView cardView in Model.CardViews){
             if(cardView.card == card){
                 isCardInBattlefield = true;
                 cardViewInBattlefield = cardView;
@@ -172,7 +168,7 @@ public class CardSystem : Singleton<CardSystem>
         if(isCardInBattlefield){
             DeleteCardInBattleField(cardViewInBattlefield);
         }else{
-            cardsInDeck.Remove(card);
+            Model.CardsInDeck.Remove(card);
         }
     }
 
@@ -183,7 +179,7 @@ public class CardSystem : Singleton<CardSystem>
     private IEnumerator DrawCard(List<Vector2Int> emptySlots = null,List<Card> cardsToAdd = null)
     {
         // 检查cardsInDeck和cardsInBattlefield是否有效
-        if (cardsToAdd == null || cardsInBattlefield == null)
+        if (cardsToAdd == null || Model.CardsInBattlefield == null)
             yield break;
 
         // 如果没有传入空位列表，则重新统计
@@ -196,11 +192,11 @@ public class CardSystem : Singleton<CardSystem>
 
         if (needUpdateEmptySlots)
         {
-            for (int x = 0; x < cardsInBattlefield.GetLength(0); x++)
+            for (int x = 0; x < Model.CardsInBattlefield.GetLength(0); x++)
             {
-                for (int y = 0; y < cardsInBattlefield.GetLength(1); y++)
+                for (int y = 0; y < Model.CardsInBattlefield.GetLength(1); y++)
                 {
-                    if (cardsInBattlefield[x, y] == null)
+                    if (Model.CardsInBattlefield[x, y] == null)
                     {
                         emptySlots.Add(new Vector2Int(x, y));
                     }
@@ -220,13 +216,13 @@ public class CardSystem : Singleton<CardSystem>
         // 随机选择一个空位
         int slotIndex = Random.Range(0, emptySlots.Count);
         Vector2Int pos = emptySlots[slotIndex];
-        cardsInBattlefield[pos.x, pos.y] = card;
+        Model.CardsInBattlefield[pos.x, pos.y] = card;
         emptySlots.RemoveAt(slotIndex);
 
         CardView cardView = CardCreator.Instance.CreateCardView(card, cardParent.position, cardParent.rotation,pos.x,pos.y);
-        cardViews.Add(cardView);
+        Model.CardViews.Add(cardView);
         battlefieldView.cardViewsInBattlefield[pos.x, pos.y] = cardView; 
-        Tween tween = cardView.transform.DOLocalMove(cardParent.position + new Vector3(pos.x * cardPositionInterval, pos.y * cardPositionInterval, 0), 0.05f);
+        Tween tween = cardView.transform.DOLocalMove(cardParent.position + new Vector3(pos.x * Model.CardPositionInterval, pos.y * Model.CardPositionInterval, 0), 0.05f);
 
         //一个一个的出来
         // yield return tween.WaitForCompletion();
@@ -269,14 +265,14 @@ public class CardSystem : Singleton<CardSystem>
     }
 
     public CardView GetRandomCardView(){
-        return cardViews[Random.Range(0, cardViews.Count)];
+        return Model.CardViews[Random.Range(0, Model.CardViews.Count)];
     }
 
     public CardView GetRandomCardViewNotSelf(CardView cardView){
         List<CardView> cardViews = new List<CardView>();
-        for(int i=0;i<this.cardViews.Count;i++){
-            if(this.cardViews[i]!=cardView){
-                cardViews.Add(this.cardViews[i]);
+        for(int i=0;i<Model.CardViews.Count;i++){
+            if(Model.CardViews[i]!=cardView){
+                cardViews.Add(Model.CardViews[i]);
             }
         }
         return cardViews[Random.Range(0, cardViews.Count)];
@@ -284,8 +280,8 @@ public class CardSystem : Singleton<CardSystem>
 
     public void Reset()
     {
-        cardsInDeck.Clear();
-        cardsInBattlefield = new Card[5, 5];
+        Model.CardsInDeck.Clear();
+        Model.CardsInBattlefield = new Card[5, 5];
         battlefieldView.cardViewsInBattlefield = new CardView[5, 5];
         for(int i=0;i<5;i++){
             for(int j=0;j<5;j++){
@@ -293,9 +289,9 @@ public class CardSystem : Singleton<CardSystem>
             }
         }
 
-        foreach(var cardView in cardViews){
+        foreach(var cardView in Model.CardViews){
             Destroy(cardView.gameObject);
         }
-        cardViews.Clear();
+        Model.CardViews.Clear();
     }
 }

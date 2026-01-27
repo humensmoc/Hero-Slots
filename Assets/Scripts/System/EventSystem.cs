@@ -30,90 +30,50 @@ public class EventSystem : Singleton<EventSystem>
     public Action OnGameStart;
     public Action OnGameLose;
     public Action OnGameWin;
-    List<Func<EventInfo, IEnumerator>> OnCardAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
-    List<Func<EventInfo, IEnumerator>> OnHeroAttack_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
-    List<Func<EventInfo, IEnumerator>> OnMartialAttackHitEnemy_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
-    List<Func<EventInfo,IEnumerator>> OnBulletHitEnemy_ActionFunctions=new List<Func<EventInfo, IEnumerator>>();
+
+    /// <summary>
+    /// 事件函数列表
+    /// </summary>
+    Dictionary<EventType,List<Func<EventInfo, IEnumerator>>> eventFunctions=new Dictionary<EventType,List<Func<EventInfo, IEnumerator>>>();
     
+    /// <summary>
+    /// 添加事件函数
+    /// </summary>
+    /// <param name="actionFunction">事件函数</param>
+    /// <param name="eventType">事件类型</param>
     public void AddAction(Func<EventInfo, IEnumerator> actionFunction,EventType eventType){
-        switch(eventType){
-            case EventType.OnCardAttack:
-                OnCardAttack_ActionFunctions.Add(actionFunction);
-                break;
-            case EventType.OnHeroAttack:
-                OnHeroAttack_ActionFunctions.Add(actionFunction);
-                break;
-            case EventType.OnMartialAttackHitEnemy:
-                OnMartialAttackHitEnemy_ActionFunctions.Add(actionFunction);
-                break;
-            case EventType.OnBulletHitEnemy:
-                OnBulletHitEnemy_ActionFunctions.Add(actionFunction);
-                break;
+        if(!eventFunctions.ContainsKey(eventType)){
+            eventFunctions[eventType]=new List<Func<EventInfo, IEnumerator>>();
         }
+        eventFunctions[eventType].Add(actionFunction);
     }
-    
+
+    /// <summary>
+    /// 移除事件函数
+    /// </summary>
+    /// <param name="actionFunction">事件函数</param>
+    /// <param name="eventType">事件类型</param>
     public void RemoveAction(Func<EventInfo, IEnumerator> actionFunction,EventType eventType){
-        switch(eventType){
-            case EventType.OnCardAttack:
-                OnCardAttack_ActionFunctions.Remove(actionFunction);
-                break;
-            case EventType.OnHeroAttack:
-                OnHeroAttack_ActionFunctions.Remove(actionFunction);
-                break;
-            case EventType.OnMartialAttackHitEnemy:
-                OnMartialAttackHitEnemy_ActionFunctions.Remove(actionFunction);
-                break;
-            case EventType.OnBulletHitEnemy:
-                OnBulletHitEnemy_ActionFunctions.Remove(actionFunction);
-                break;
-        }
+        eventFunctions[eventType].Remove(actionFunction);
     }
     
+    /// <summary>
+    /// 清除所有事件函数
+    /// </summary>
     public void ClearActions(){
-        OnCardAttack_ActionFunctions.Clear();
-        OnHeroAttack_ActionFunctions.Clear();
-        OnMartialAttackHitEnemy_ActionFunctions.Clear();
-        OnBulletHitEnemy_ActionFunctions.Clear();
+        eventFunctions.Clear();
     }
 
+    /// <summary>
+    /// 检查事件
+    /// </summary>
+    /// <param name="eventInfo">事件信息</param>
+    /// <returns>协程</returns>
     public IEnumerator CheckEvent(EventInfo eventInfo){
-        switch(eventInfo.eventType){
-
-            case EventType.OnCardAttack:
-
-                if(OnCardAttack_ActionFunctions.Count>0){
-                    foreach(var actionFunction in OnCardAttack_ActionFunctions){
-                        yield return actionFunction(eventInfo); // 传递eventInfo参数
-                    }
-                }
-                break;
-
-            case EventType.OnHeroAttack:
-            
-                if(OnHeroAttack_ActionFunctions.Count>0){
-                    foreach(var actionFunction in OnHeroAttack_ActionFunctions){
-                        yield return actionFunction(eventInfo); // 传递eventInfo参数
-                    }
-                }
-                break;
-                
-            case EventType.OnMartialAttackHitEnemy:
-
-                if(OnMartialAttackHitEnemy_ActionFunctions.Count>0){
-                    foreach(var actionFunction in OnMartialAttackHitEnemy_ActionFunctions){
-                        yield return actionFunction(eventInfo); // 传递eventInfo参数
-                    }
-                }
-                break;
-
-            case EventType.OnBulletHitEnemy:
-
-                if(OnBulletHitEnemy_ActionFunctions.Count>0){
-                    foreach(var actionFunction in OnBulletHitEnemy_ActionFunctions){
-                        yield return actionFunction(eventInfo); // 传递eventInfo参数
-                    }
-                }
-                break;
+        if(eventFunctions.ContainsKey(eventInfo.eventType)){
+            foreach(var actionFunction in eventFunctions[eventInfo.eventType]){
+                yield return actionFunction(eventInfo);
+            }
         }
     }
     

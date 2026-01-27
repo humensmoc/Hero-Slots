@@ -65,7 +65,7 @@ public class HeroSelectSystem : Singleton<HeroSelectSystem>
     }
 
     public void SelectHero(HeroData heroData){
-        HeroSystem.Instance.heroesInDeck.Add(new Hero(heroData));
+        Model.HeroesInDeck.Add(new Hero(heroData));
         isSelectingHero = false;
         HideHeroSelectView();
     }

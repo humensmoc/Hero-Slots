@@ -30,9 +30,9 @@ public class BattleSystem : Singleton<BattleSystem>
         // Debug.Log("AllCardShotPerformer");
 
         //OnTurnStart
-        for(int x = 0; x < CardSystem.Instance.cardsInBattlefield.GetLength(0); x++){
-            for(int y = 0; y < CardSystem.Instance.cardsInBattlefield.GetLength(1); y++){
-                if(CardSystem.Instance.cardsInBattlefield[y,x]==null)
+        for(int x = 0; x < Model.CardsInBattlefield.GetLength(0); x++){
+            for(int y = 0; y < Model.CardsInBattlefield.GetLength(1); y++){
+                if(Model.CardsInBattlefield[y,x]==null)
                     continue;
                 
                 if(CardSystem.Instance.battlefieldView.cardViewsInBattlefield[y,x].card.CardData.OnTurnStart!=null){
@@ -43,9 +43,9 @@ public class BattleSystem : Singleton<BattleSystem>
         }
     
         //OnAttack
-        for(int x = 0; x < CardSystem.Instance.cardsInBattlefield.GetLength(0); x++){
-            for(int y = 0; y < CardSystem.Instance.cardsInBattlefield.GetLength(1); y++){
-                if(CardSystem.Instance.cardsInBattlefield[y,x]==null)
+        for(int x = 0; x < Model.CardsInBattlefield.GetLength(0); x++){
+            for(int y = 0; y < Model.CardsInBattlefield.GetLength(1); y++){
+                if(Model.CardsInBattlefield[y,x]==null)
                     continue;
                 
                 yield return CardSystem.Instance.battlefieldView.cardViewsInBattlefield[y,x].Shot();
@@ -54,8 +54,8 @@ public class BattleSystem : Singleton<BattleSystem>
     }
 
     private IEnumerator AllHeroShotPerformer(AllHeroShotGA allHeroShotGA){
-        for(int i=0;i<HeroSystem.Instance.heroViews.Count;i++){
-            HeroView heroView = HeroSystem.Instance.heroViews[i];
+        for(int i=0;i<Model.HeroViews.Count;i++){
+            HeroView heroView = Model.HeroViews[i];
             // 检查HeroView是否仍然有效
             if(heroView != null && heroView.gameObject != null){
                 yield return heroView.Shot();
@@ -84,9 +84,9 @@ public class BattleSystem : Singleton<BattleSystem>
 
     public List<CardView> GetCardViewByYIndex(int yIndex){
         List<CardView> cardViews = new List<CardView>();
-        for(int i=0;i<CardSystem.Instance.cardViews.Count;i++){
-            if(CardSystem.Instance.cardViews[i].y==yIndex){
-                cardViews.Add(CardSystem.Instance.cardViews[i]);
+        for(int i=0;i<Model.CardViews.Count;i++){
+            if(Model.CardViews[i].y==yIndex){
+                cardViews.Add(Model.CardViews[i]);
             }
         }
         return cardViews;
@@ -94,9 +94,9 @@ public class BattleSystem : Singleton<BattleSystem>
 
     public List<HeroView> GetHeroViewByYIndex(int yIndex){
         List<HeroView> heroViews = new List<HeroView>();
-        for(int i=0;i<HeroSystem.Instance.heroViews.Count;i++){
-            if(HeroSystem.Instance.heroViews[i].y==yIndex){
-                heroViews.Add(HeroSystem.Instance.heroViews[i]);
+        for(int i=0;i<Model.HeroViews.Count;i++){
+            if(Model.HeroViews[i].y==yIndex){
+                heroViews.Add(Model.HeroViews[i]);
             }
         }
         return heroViews;
@@ -104,9 +104,9 @@ public class BattleSystem : Singleton<BattleSystem>
 
     public List<EnemyView> GetEnemyViewByYIndex(int yIndex){
         List<EnemyView> enemyViews = new List<EnemyView>();
-        for(int i=0;i<EnemySystem.Instance.enemyViews.Count;i++){
-            if(EnemySystem.Instance.enemyViews[i].y==yIndex){
-                enemyViews.Add(EnemySystem.Instance.enemyViews[i]);
+        for(int i=0;i<Model.EnemyViews.Count;i++){
+            if(Model.EnemyViews[i].y==yIndex){
+                enemyViews.Add(Model.EnemyViews[i]);
             }
         }
         return enemyViews;

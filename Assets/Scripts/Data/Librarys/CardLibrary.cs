@@ -114,7 +114,7 @@ public static class CardLibrary
                         return null;
                     
                     bool isHasFireBoyInSameRow = false;
-                    foreach(HeroView heroView in HeroSystem.Instance.heroViews){
+                    foreach(HeroView heroView in Model.HeroViews){
                         if(heroView.y == targetCardView.y&&heroView.hero.HeroType==HeroType.Fire_Boy){
                             isHasFireBoyInSameRow = true;
                             break;
@@ -270,7 +270,7 @@ public static class CardLibrary
             .SetOnAttack((cardView) => {
                 HeroView targetHeroView = null;
 
-                List<HeroView> targetHeroViews = HeroSystem.Instance.heroViews.Where(heroView => heroView.hero.ElementType == cardView.card.ElementType).ToList();
+                List<HeroView> targetHeroViews = Model.HeroViews.Where(heroView => heroView.hero.ElementType == cardView.card.ElementType).ToList();
 
                 targetHeroView=targetHeroViews.Draw();
 

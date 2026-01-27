@@ -63,4 +63,22 @@ public static class ResourcesLoader
         }
         return null;
     }
+
+    public static GameObject LoadPrefab(string path)
+    {
+        if(Load<GameObject>("Prefabs/"+path, out GameObject prefab))
+        {
+            return prefab;
+        }
+        return null;
+    }
+
+    public static GameObject LoadUIPrefab(string path)
+    {
+        if(Load<GameObject>("Prefabs/UI/"+path, out GameObject prefab))
+        {
+            return prefab;
+        }
+        return null;
+    }
 }

@@ -48,11 +48,11 @@ public class DeleteCardPanelView : Singleton<DeleteCardPanelView>
 
         RemoveAllDeleteCardItem();
 
-        if(CardSystem.Instance.cardsInDeck.Count == 0){
+        if(Model.CardsInDeck.Count == 0){
             return;
         }
 
-        foreach(Card card in CardSystem.Instance.cardsInDeck){
+        foreach(Card card in Model.CardsInDeck){
             AddDeleteCardItem(card);
         }
     }

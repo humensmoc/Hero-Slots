@@ -6,8 +6,6 @@ using Unity.Mathematics;
 
 public class EnemySystem : Singleton<EnemySystem>
 {
-    public List<Enemy> enemies{get;private set;}=new();
-    public List<EnemyView> enemyViews{get;private set;}=new();
     [SerializeField] Transform enemyParent;
     public int[] enemyPositionYs={0,1,2,3,4};
 
@@ -58,8 +56,8 @@ public class EnemySystem : Singleton<EnemySystem>
             // Debug.Log($"All waves in stage {currentStageIndex} have been spawned. Waiting for all enemies to be defeated.");
         }
 
-        for(int i = enemyViews.Count-1; i >= 0; i--){
-            enemyViews[i].Move();
+        for(int i = Model.EnemyViews.Count-1; i >= 0; i--){
+            Model.EnemyViews[i].Move();
             yield return new WaitForSeconds(0.05f);
         }
         yield return null;
@@ -115,7 +113,7 @@ public class EnemySystem : Singleton<EnemySystem>
 
             Enemy enemy = new Enemy(enemiesToSpawn[i]);
             // enemy.Health += math.max(2*TurnSystem.Instance.currentTurn, 0);
-            enemies.Add(enemy);
+            Model.Enemies.Add(enemy);
 
             EnemyView enemyView = EnemyCreator.Instance.CreateEnemyView(
                 enemy,
@@ -124,7 +122,7 @@ public class EnemySystem : Singleton<EnemySystem>
                 0,
                 yIndex
             );
-            enemyViews.Add(enemyView);
+            Model.EnemyViews.Add(enemyView);
 
             // 从可用位置中移除所有被占据的Y坐标
             List<int> occupiedPositions = enemiesToSpawn[i].GetOccupiedPositions(yIndex);
@@ -137,12 +135,12 @@ public class EnemySystem : Singleton<EnemySystem>
     public void RemoveEnemy(Enemy enemy){           
         // Debug.Log($"RemoveEnemy called for {enemy.Name}");
         
-        EnemyView enemyView = enemyViews.Find(view => view.enemy == enemy);
+        EnemyView enemyView = Model.EnemyViews.Find(view => view.enemy == enemy);
         if(enemyView != null){
             // Debug.Log($"Found EnemyView for {enemy.Name}, removing and destroying");
             Vector3 enemyPosition = enemyView.transform.position;
-            enemyViews.Remove(enemyView);
-            enemies.Remove(enemy);
+            Model.EnemyViews.Remove(enemyView);
+            Model.Enemies.Remove(enemy);
             Destroy(enemyView.gameObject);
             
             InGameEconomySystem.Instance.AddCoin(enemyPosition, Model.CoinPerEnemy);
@@ -156,7 +154,7 @@ public class EnemySystem : Singleton<EnemySystem>
     
     private void CheckStageCompletion(){
         // 检查是否所有敌人都被击杀了
-        if(enemies.Count == 0){
+        if(Model.Enemies.Count == 0){
             // 检查当前stage的所有wave是否都已经生成完毕
             bool allWavesSpawned = Model.CurrentWaveIndex >= Model.CurrentLevelData.enemyStageDatas[Model.CurrentStageIndex].enemyWaveDatas.Count - 1;
             
@@ -185,7 +183,7 @@ public class EnemySystem : Singleton<EnemySystem>
     /// <param name="enemyView"></param>
     /// <returns></returns>
     public EnemyView GetNearestEnemyView(EnemyView enemyView){
-        List<EnemyView> othersEnemyViews=enemyViews.Where(view => view != enemyView).ToList();
+        List<EnemyView> othersEnemyViews=Model.EnemyViews.Where(view => view != enemyView).ToList();
         if(othersEnemyViews.Count > 0){
             return othersEnemyViews.OrderBy(view => Vector3.Distance(view.transform.position, enemyView.transform.position)).FirstOrDefault();
         }else{
@@ -198,10 +196,10 @@ public class EnemySystem : Singleton<EnemySystem>
     /// </summary>
     /// <returns></returns>
     public EnemyView GetRandomEnemyView(){
-        if(enemyViews == null || enemyViews.Count == 0){
+        if(Model.EnemyViews == null || Model.EnemyViews.Count == 0){
             return null;
         }
-        return enemyViews[UnityEngine.Random.Range(0, enemyViews.Count)];
+        return Model.EnemyViews[UnityEngine.Random.Range(0, Model.EnemyViews.Count)];
     }
 
     /// <summary>
@@ -209,18 +207,18 @@ public class EnemySystem : Singleton<EnemySystem>
     /// </summary>
     /// <returns></returns>
     public EnemyView GetClosestEnemyView(){
-        if(enemyViews == null || enemyViews.Count == 0){
+        if(Model.EnemyViews == null || Model.EnemyViews.Count == 0){
             return null;
         }
-        return enemyViews.OrderBy(view => -view.x).FirstOrDefault();
+        return Model.EnemyViews.OrderBy(view => -view.x).FirstOrDefault();
     }
 
     public void Reset()
     {
-        enemies.Clear();
-        foreach(var enemyView in enemyViews){
+        Model.Enemies.Clear();
+        foreach(var enemyView in Model.EnemyViews){
             Destroy(enemyView.gameObject);
         }
-        enemyViews.Clear();
+        Model.EnemyViews.Clear();
     }
 }

@@ -750,8 +750,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a00430d25b29d4040920f482923386ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletInBattlefield: []
-  endTurnBlockers: 
 --- !u!1 &92816344
 GameObject:
   m_ObjectHideFlags: 0
@@ -2786,7 +2784,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battlefieldView: {fileID: 1239367028}
-  heroPositionInterval: 1.2
   heroParent: {fileID: 1794453562}
 --- !u!1 &422040474
 GameObject:
@@ -6915,7 +6912,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed78019a98b0b8d4799c56a82bbfdc07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardPositionInterval: 1.2
   cardParent: {fileID: 972010261}
   battlefieldView: {fileID: 1239367028}
 --- !u!1 &1119554165
@@ -9547,7 +9543,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a6df9b6324794748b6b00e20e3fb0da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTurn: 0
 --- !u!1 &1451213227
 GameObject:
   m_ObjectHideFlags: 0
@@ -10920,8 +10915,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d57684f85cc24b4b932198b91706c41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  relicViews: []
-  relicViewPrefab: {fileID: 9198262742312680187, guid: 0ff10e8152360d14a9dedab9a87e8a8a, type: 3}
   relicParent: {fileID: 546552181}
 --- !u!1 &1643019227
 GameObject:
@@ -14627,8 +14620,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyParent: {fileID: 379163001}
   enemyPositionYs: 0000000001000000020000000300000004000000
-  currentStageIndex: 0
-  currentWaveIndex: 0
 --- !u!1001 &513768882963225292
 PrefabInstance:
   m_ObjectHideFlags: 0

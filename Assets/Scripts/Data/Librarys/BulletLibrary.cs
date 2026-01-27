@@ -70,7 +70,7 @@ public static class BulletLibrary
                 // Debug.Log("Bullet_Explode Hit Enemy");
                 if(enemyView.enemy.Health<bulletView.bullet.Attack){
                     List<EnemyView> attackedEnemyViews=new();
-                    List<EnemyView> allEnemyViews=EnemySystem.Instance.enemyViews;
+                    List<EnemyView> allEnemyViews=Model.EnemyViews;
                      EnemyView nearstNewEnemyView=null;
                     int extraAttack=bulletView.bullet.Attack-enemyView.enemy.Health;
                     

@@ -5,9 +5,7 @@ using UnityEngine.AI;
 
 public class RelicSystem : Singleton<RelicSystem>
 {
-    public List<Relic> relics = new List<Relic>();
-    public List<RelicView> relicViews = new List<RelicView>();
-    public GameObject relicViewPrefab;
+    GameObject _relicViewPrefab;
     public Transform relicParent;
     public void Init()
     {
@@ -21,28 +19,31 @@ public class RelicSystem : Singleton<RelicSystem>
     public void AddRelic(RelicType relicType){
         RelicData relicData = RelicLibrary.GetRelicData(relicType);
         Relic relic = new Relic(relicData);
-        relics.Add(relic);
-        RelicView relicView = Instantiate(relicViewPrefab,relicParent).GetComponent<RelicView>();
-        relicViews.Add(relicView);
+        Model.Relics.Add(relic);
+        if(_relicViewPrefab==null){
+            _relicViewPrefab = ResourcesLoader.LoadUIPrefab("RelicItem");
+        };
+        RelicView relicView = Instantiate(_relicViewPrefab,relicParent).GetComponent<RelicView>();
+        Model.RelicViews.Add(relicView);
         relicView.Init(relic);
     }
 
     public void RemoveRelic(RelicView relicView){
-        relics.Remove(relicView.relic);
-        relicViews.Remove(relicView);
+        Model.Relics.Remove(relicView.relic);
+        Model.RelicViews.Remove(relicView);
         Destroy(relicView.gameObject);
     }
 
     public void Reset()
     {
-        if(relicViews.Count == 0) return;
-        if(relics.Count == 0) return;
+        if(Model.RelicViews.Count == 0) return;
+        if(Model.Relics.Count == 0) return;
 
-        foreach(RelicView relicView in relicViews){
+        foreach(RelicView relicView in Model.RelicViews){
             RemoveRelic(relicView);
         }
-        relics.Clear();
-        relicViews.Clear();
+        Model.Relics.Clear();
+        Model.RelicViews.Clear();
 
         Init();
     }

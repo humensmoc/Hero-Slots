@@ -141,7 +141,7 @@ public class CardView : MonoBehaviour
 
     public IEnumerator ChargeHero(){
         HeroView targetHeroView = null;
-        foreach(HeroView heroView in HeroSystem.Instance.heroViews){
+        foreach(HeroView heroView in Model.HeroViews){
             if(heroView.y == y&&card.ElementType==heroView.hero.ElementType){
                 targetHeroView = heroView;
             }
@@ -286,7 +286,7 @@ public class CardView : MonoBehaviour
 
     public IEnumerator AddElectricity(int electricity){
         bool flyingTextCompleted = false;
-        BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.Electricity);
+        Model.EndTurnBlockers.Add(EndTurnBlocker.Electricity);
         ObjectPool.Instance.CreateFlyingTextToTarget(
             "+"+electricity,
             FlyingTextType.AddElectricity,
@@ -296,7 +296,7 @@ public class CardView : MonoBehaviour
                 Model.Electricity+=electricity;
                 flyingTextCompleted = true;
 
-                BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.Electricity);
+                Model.EndTurnBlockers.Remove(EndTurnBlocker.Electricity);
             }
         );
         yield return new WaitUntil(() => flyingTextCompleted);
@@ -304,7 +304,7 @@ public class CardView : MonoBehaviour
 
     public IEnumerator SpendElectricity(int electricity){
         bool flyingTextCompleted = false;
-        BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.Electricity);
+        Model.EndTurnBlockers.Add(EndTurnBlocker.Electricity);
         ObjectPool.Instance.CreateFlyingTextToTarget(
             "-"+electricity,
             FlyingTextType.AddElectricity,
@@ -314,7 +314,7 @@ public class CardView : MonoBehaviour
                 Model.Electricity-=electricity;
                 flyingTextCompleted = true;
 
-                BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.Electricity);
+                Model.EndTurnBlockers.Remove(EndTurnBlocker.Electricity);
             }
         );
         yield return new WaitUntil(() => flyingTextCompleted);
@@ -324,7 +324,7 @@ public class CardView : MonoBehaviour
 
         //获取当前行所有敌人
         List<EnemyView> enemyviews=new List<EnemyView>();
-        foreach(EnemyView enemyView in EnemySystem.Instance.enemyViews){
+        foreach(EnemyView enemyView in Model.EnemyViews){
             if(enemyView.y == y){
                 enemyviews.Add(enemyView);
             }
@@ -359,7 +359,7 @@ public class CardView : MonoBehaviour
         
         //移动到最近的敌人
         sequence.Append(transform.DOMove(targetPosition,0.5f)).OnComplete(()=>{
-            BulletSystem.Instance.endTurnBlockers.Add(EndTurnBlocker.MartialAttack);
+            Model.EndTurnBlockers.Add(EndTurnBlocker.MartialAttack);
             
             //检查目标是否还存在且有效
             if(nearestEnemyView != null && nearestEnemyView.enemy != null && nearestEnemyView.enemy.Health > 0){
@@ -374,7 +374,7 @@ public class CardView : MonoBehaviour
             
             //移动到原始位置（无论目标是否还存在）
             transform.DOMove(originalPosition,0.5f).OnComplete(()=>{
-                BulletSystem.Instance.endTurnBlockers.Remove(EndTurnBlocker.MartialAttack);
+                Model.EndTurnBlockers.Remove(EndTurnBlocker.MartialAttack);
             });
         });
 

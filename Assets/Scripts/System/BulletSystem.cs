@@ -10,15 +10,10 @@ public enum EndTurnBlocker{
 
 public class BulletSystem : Singleton<BulletSystem>
 {
-    public List<BulletView> bulletInBattlefield = new ();
-
-    public List<EndTurnBlocker> endTurnBlockers = new ();
-
-
     public bool GetIsAllBulletDestroyed(){
         bool isAllBulletDestroyed=false;
         
-        if(bulletInBattlefield.Count==0&&endTurnBlockers.Count==0){
+        if(Model.BulletInBattlefield.Count==0&&Model.EndTurnBlockers.Count==0){
             isAllBulletDestroyed=true;
         }else{
             isAllBulletDestroyed=false;
@@ -33,7 +28,7 @@ public class BulletSystem : Singleton<BulletSystem>
     public BulletView CreateBullet(Bullet bullet,Vector3 position,Quaternion rotation,CardView sourceCardView,EnemyView targetEnemy=null)
     {
         BulletView bulletView = BulletCreator.Instance.CreateBulletView(bullet,position,rotation,sourceCardView,targetEnemy);
-        bulletInBattlefield.Add(bulletView);
+        Model.BulletInBattlefield.Add(bulletView);
         return bulletView;
     }
 }

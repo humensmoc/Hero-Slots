@@ -76,7 +76,7 @@ public class CardSelectSystem : Singleton<CardSelectSystem>
     }
 
     public void SelectCard(CardData cardData){
-        CardSystem.Instance.cardsInDeck.Add(new Card(cardData));
+        Model.CardsInDeck.Add(new Card(cardData));
         isSelectingCard = false;
         HideCardSelectView();
     }

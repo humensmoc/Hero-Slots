@@ -32,7 +32,7 @@ public class DevToolSystem : Singleton<DevToolSystem>
             Debug.LogError("Card not found: " + cardName);
             return;
         }
-        CardSystem.Instance.cardsInDeck.Add(new Card(cardData));
+        Model.CardsInDeck.Add(new Card(cardData));
         Debug.Log("Added card: " + cardName);
     }
 
@@ -45,7 +45,7 @@ public class DevToolSystem : Singleton<DevToolSystem>
             return;
         }
 
-        HeroSystem.Instance.heroesInDeck.Add(new Hero(heroData));
+        Model.HeroesInDeck.Add(new Hero(heroData));
         Debug.Log("Added hero: " + heroName);
     }
 }

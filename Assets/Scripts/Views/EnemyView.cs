@@ -74,7 +74,7 @@ public class EnemyView : MonoBehaviour
 
     public void Dead()
     {
-        if(EnemySystem.Instance.enemyViews.Contains(this)){
+        if(Model.EnemyViews.Contains(this)){
             EnemySystem.Instance.RemoveEnemy(enemy);
         }
 

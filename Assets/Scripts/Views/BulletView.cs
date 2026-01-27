@@ -149,7 +149,7 @@ public class BulletView : MonoBehaviour
     }
 
     public void Dead(){
-        BulletSystem.Instance.bulletInBattlefield.Remove(this);
+        Model.BulletInBattlefield.Remove(this);
         Destroy(this.gameObject);
     }
 }
